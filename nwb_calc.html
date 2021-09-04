@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<p id="time"></p>
+<p id="nwb"></p>
+
+<script language="JavaScript" type="text/javascript">
+var d, stID, rDtTm, Ta, Tw, RH, Pa, wbgt;
+const xmlhttp = new XMLHttpRequest();
+//KLCK
+//xmlhttp.open("GET", "https://api.synopticdata.com/v2/stations/latest?token=21b8403530954b0086093a47b496e954&stid=KLCK&vars=air_temp,relative_humidity,wind_speed,pressure&units=english&obtimezone=local&timeformat=%m/%d/%Y%20at%20%H:%M");
+//KFFO
+//xmlhttp.open("GET", "https://api.synopticdata.com/v2/stations/latest?token=21b8403530954b0086093a47b496e954&stid=KFFO&vars=air_temp,relative_humidity,wind_speed,pressure&units=english&obtimezone=local&timeformat=%m/%d/%Y%20at%20%H:%M");
+//KSGH
+xmlhttp.open("GET", "https://api.synopticdata.com/v2/stations/latest?token=21b8403530954b0086093a47b496e954&stid=KSGH&vars=air_temp,relative_humidity,wind_speed,pressure&units=english&obtimezone=local&timeformat=%m/%d/%Y%20at%20%H:%M");
+xmlhttp.send();
+xmlhttp.onload = function() {
+  const myObj = JSON.parse(this.responseText);
+  stID = myObj.STATION[0]["STID"];
+  rDtTm = myObj.STATION[0]["OBSERVATIONS"]["air_temp_value_1"]["date_time"];
+  Ta = myObj.STATION[0]["OBSERVATIONS"]["air_temp_value_1"]["value"];
+  RH = myObj.STATION[0]["OBSERVATIONS"]["relative_humidity_value_1"]["value"];
+  Ws = myObj.STATION[0]["OBSERVATIONS"]["wind_speed_value_1"]["value"];
+  Pa = myObj.STATION[0]["OBSERVATIONS"]["pressure_value_1d"]["value"];
+  nwb.innerHTML = "Tnwb = " + decideConvert(Ta, RH, Pa) + " F";
+  time.innerHTML = stID.slice(1) + " Reading: " + rDtTm;
+}
+function decideConvert(temp, rh, pressure) {
+  var temp = parseFloat(temp),
+      pressure = parseFloat(pressure),
+      MBpressure = parseFloat(pressure),
+      Ctemp = parseFloat(ftoc(temp)),
+      rh = parseFloat(rh),
+      Es = parseFloat(esubs(Ctemp)),
+      E = parseFloat(invertedRH(Es,rh)),
+      E2 = parseFloat(invertedRH(Es,rh)),
+      Twguess = 0,
+      incr = 10,
+      previoussign = 1,
+      Edifference = 1,
+      wetbulb = calcwetbulb(Edifference,Twguess,Ctemp,MBpressure,E2,previoussign,incr);
+  return(parseFloat(ctof(wetbulb)).toFixed(1));
+}
+function ftoc(Fahr) {
+  var Cels;
+  Cels = .55556 * (Fahr - 32);
+  return Cels;
+}
+
+function ctof(Cels) {
+  var Fahr;
+  Fahr = 1.8 * Cels + 32;
+  return Fahr;
+}
+
+function esubs(Ctemp) {
+  var Es;
+  Es = 6.112 * Math.exp(17.67 * Ctemp / (Ctemp + 243.5));
+  return Es;
+}
+
+function invertedRH(Es,rh) {
+  var E;
+  E = Es * (rh/100);
+  return E;
+}
+
+function calcwetbulb(Edifference,Twguess,Ctemp,MBpressure,E2,previoussign,incr) {
+  var cursign,
+      Edifference = Edifference,
+      Eguess,
+      Ewguess,
+      incr = incr,
+      previoussign = previoussign,
+      Twguess = Twguess;
+  while (Math.abs(Edifference) > 0.005)  {
+    Ewguess = 6.112 * Math.exp((17.67 * Twguess) / (Twguess + 243.5));
+    Eguess = Ewguess - MBpressure * (Ctemp - Twguess) * 0.00066 * (1 + (0.00115 * Twguess));
+    Edifference = E2 - Eguess;
+
+    if (Edifference == 0) {
+      incr = 0;
+    } 
+    else {
+      if (Edifference < 0) {
+        cursign = -1;
+        if (cursign != previoussign) {
+          previoussign = cursign;
+          incr = incr/10;
+        }
+        else {
+          incr = incr;
+        }
+      }
+      else {
+        cursign = 1;
+        if (cursign != previoussign) {
+          previoussign = cursign;
+          incr = incr/10;
+        }
+        else {
+          incr = incr;
+        }
+      }
+    }
+
+    Twguess = Twguess + incr * previoussign;
+  }
+  var wetbulb = Twguess - incr * previoussign;  // Thanks BruceZ
+  return wetbulb;
+}		
+</script>
+
+</body>
+</html> 
+
