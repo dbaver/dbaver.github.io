@@ -54,7 +54,23 @@ td {
 <script language="JavaScript" type="text/javascript">
 const xmlhttp = new XMLHttpRequest();
 //KLCK
-xmlhttp.open("GET", "https://api.synopticdata.com/v2/stations/timeseries?token=21b8403530954b0086093a47b496e954&stid=KLCK&recent=1440&vars=air_temp,relative_humidity,wind_speed,pressure&units=english&obtimezone=local&timeformat=%m/%d/%Y%20at%20%H:%M");
+var url = "https://api.synopticdata.com/v2/stations/timeseries?token=21b8403530954b0086093a47b496e954&stid=KLCK";
+var d = new Date();
+var yyyy = d.getFullYear();
+var mm = d.getMonth()+1;
+mm = ("00" + mm).slice(-2);
+var dd = d.getDate()-1;
+var ddd = dd + 1-1;
+dd = ("00" + dd).slice(-2);
+ddd = ("00" + ddd).slice(-2);
+var st = "&start=" + yyyy + mm + dd + "1100";
+var en = "&end=" + yyyy + mm + ddd + "0200";
+var vrs = "&vars=air_temp,relative_humidity,wind_speed,pressure";
+var unts = "&units=english";
+var obtz = "&obtimezone=local";
+var tmfmt = "&timeformat=%m/%d/%Y%20at%20%H:%M";
+url += st + en + vrs + unts + obtz + tmfmt;
+xmlhttp.open("GET", url);
 xmlhttp.send();
 xmlhttp.onload = function() {
   var stID, stNM, rDtTm, Ta, RH, Pa;
