@@ -63,7 +63,7 @@ var dd = d.getDate();
 var ddd = dd + 1;
 dd = ("00" + dd).slice(-2);
 ddd = ("00" + ddd).slice(-2);
-var st = "&start=" + yyyy + mm + dd + "0400";
+var st = "&start=" + yyyy + mm + dd + "1000";
 var en = "&end=" + yyyy + mm + ddd + "0200";
 var vrs = "&vars=air_temp,relative_humidity,wind_speed,pressure";
 var unts = "&units=english";
@@ -119,7 +119,7 @@ function csvSave() {
   mm = ("00" + mm).slice(-2);
   fileName += hh + mm + ".csv";
   var CSV = [];
-  CSV.push('"Date/Time","NWBnws","NWBanl","WBGTnws","WBGTanl"');
+  CSV.push('"Date/Time","NWB-NWS","NWB-ANL","WBGT-NWS","WBGT-ANL"');
   var rows = document.getElementById("wbgtTable").rows;
   var iTr;
   for (iTr = 3;iTr < rows.length;iTr++) {
