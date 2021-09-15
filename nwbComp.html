@@ -33,49 +33,88 @@ td {
 </head>
 
 <body>
-<table>
+<div style="overflow-x:auto">
+<table id="wbgtTable">
   <tr>
-    <th id="wbgtTime" colspan="4"></th>
+    <td colspan="5"><a id="sl" href="#" onclick="csvSave()">Download</a></td>
   </tr>
   <tr>
+    <th id="wbgtTime" colspan="5"></th>
+  </tr>
+  <tr>
+    <th>Date/Time</th>
     <th>NWB<sub>NWS</sub> (<sup><small>o</small></sup>F)</th>
-    <th>WBGT<sub>NWS</sub> (<sup><small>o</small></sup>F)</th>
     <th>NWB<sub>ANL</sub> (<sup><small>o</small></sup>F)</th>
+    <th>WBGT<sub>NWS</sub> (<sup><small>o</small></sup>F)</th>
     <th>WBGT<sub>ANL</sub> (<sup><small>o</small></sup>F)</th>
   </tr>
-  <tr>
-    <td id="nwbNWS":></td>
-    <td id="wbgtNWS"></td>
-    <td id="nwbANL"></td>
-    <td id="wbgtANL"></td>
-  </tr>
 </table>
+</div>
 
 <script language="JavaScript" type="text/javascript">
 const xmlhttp = new XMLHttpRequest();
 //KLCK
-xmlhttp.open("GET", "https://api.synopticdata.com/v2/stations/latest?token=21b8403530954b0086093a47b496e954&stid=KLCK&vars=air_temp,relative_humidity,wind_speed,pressure&units=english&obtimezone=local&timeformat=%m/%d/%Y%20at%20%H:%M");
-//KFFO
-//xmlhttp.open("GET", "https://api.synopticdata.com/v2/stations/latest?token=21b8403530954b0086093a47b496e954&stid=KFFO&vars=air_temp,relative_humidity,wind_speed,pressure&units=english&obtimezone=local&timeformat=%m/%d/%Y%20at%20%H:%M");
-//KSGH
-//xmlhttp.open("GET", "https://api.synopticdata.com/v2/stations/latest?token=21b8403530954b0086093a47b496e954&stid=KSGH&vars=air_temp,relative_humidity,wind_speed,pressure&units=english&obtimezone=local&timeformat=%m/%d/%Y%20at%20%H:%M");
+xmlhttp.open("GET", "https://api.synopticdata.com/v2/stations/timeseries?token=21b8403530954b0086093a47b496e954&stid=KLCK&recent=1440&vars=air_temp,relative_humidity,wind_speed,pressure&units=english&obtimezone=local&timeformat=%m/%d/%Y%20at%20%H:%M");
 xmlhttp.send();
 xmlhttp.onload = function() {
-  var stID, rDtTm, Ta, RH, Pa, wbgt;
+  var stID, stNM, rDtTm, Ta, RH, Pa;
   const myObj = JSON.parse(this.responseText);
   stID = myObj.STATION[0]["STID"];
-  rDtTm = myObj.STATION[0]["OBSERVATIONS"]["air_temp_value_1"]["date_time"];
-  Ta = myObj.STATION[0]["OBSERVATIONS"]["air_temp_value_1"]["value"];
-  RH = myObj.STATION[0]["OBSERVATIONS"]["relative_humidity_value_1"]["value"];
-  Ws = myObj.STATION[0]["OBSERVATIONS"]["wind_speed_value_1"]["value"];
-  Pa = myObj.STATION[0]["OBSERVATIONS"]["pressure_value_1d"]["value"];
-  Tw = decideConvert(Ta, RH, Pa);
-  wbgt = wbgt_calculator(rDtTm, Ta, Tw, RH, Ws, Pa);
-  wbgtTime.innerHTML = stID.slice(1) + " Reading: " + rDtTm;
-  nwbNWS.innerHTML = Tw;
-  wbgtNWS.innerHTML = wbgt.toFixed(1);
+  stNM = myObj.STATION[0]["NAME"];
+  rDtTm = myObj.STATION[0]["OBSERVATIONS"]["date_time"];
+  Ta = myObj.STATION[0]["OBSERVATIONS"]["air_temp_set_1"];
+  RH = myObj.STATION[0]["OBSERVATIONS"]["relative_humidity_set_1"];
+  Ws = myObj.STATION[0]["OBSERVATIONS"]["wind_speed_set_1"];
+  Pa = myObj.STATION[0]["OBSERVATIONS"]["pressure_set_1d"];
+  wbgtTime.innerHTML = stID.slice(1) + " - " + stNM;
+  var i, nwbN, wbgtN, nwbA, wbgtA;
+  for (i = 0; i < rDtTm.length; i++) {
+    nwbN =  decideConvert(Ta[i],RH[i],Pa[i]);
+    [wbgtN, nwbA, wbgtA] = wbgt_calculator(rDtTm[i],Ta[i],nwbN,RH[i],Ws[i],Pa[i]);
+    var table = document.getElementById("wbgtTable");
+    var r = table.rows.length;
+    var row = table.insertRow(r);
+    var cell = {};
+    var rdngs = [rDtTm[i],nwbN,nwbA.toFixed(1),wbgtN.toFixed(1),wbgtA.toFixed(1)];
+    var j;
+    for (j = 0; j < rdngs.length; j++) {
+      cell = row.insertCell(j);
+      cell.innerHTML = rdngs[j];
+    }
+  }
 }
-
+function csvSave() {
+  var d = new Date();
+  var yyyy = d.getFullYear();
+  var mm = d.getMonth()+1;
+  mm = ("00" + mm).slice(-2);
+  var dd = d.getDate();
+  dd = ("00" + dd).slice(-2);
+  var fileName = "nwbComp_" + yyyy + mm + dd + "_";
+  var hh = d.getHours();
+  hh = ("00" + hh).slice(-2);
+  var mm = d.getMinutes();
+  mm = ("00" + mm).slice(-2);
+  fileName += hh + mm + ".csv";
+  var CSV = [];
+  var rows = document.getElementById("wbgtTable").rows;
+  var iTr;
+  for (iTr = 3;iTr < rows.length;iTr++) {
+    var sTr = '';
+    var cells = rows[iTr].cells;
+    var iTd = 0;
+    for (iTd = 0;iTd < cells.length;iTd++) {
+      sTr += '"' + cells[iTd].innerHTML + '"' + ',';
+    }
+    sTr = sTr.slice(0,sTr.length-1);
+    CSV.push(sTr);
+  }
+  CSV = CSV.join("\n");
+  var csvFile = new Blob([CSV],{type:'text/csv'});
+  var a = document.getElementById("sl");
+  a.href = URL.createObjectURL(csvFile);
+  a.download = fileName;
+}
 function decideConvert(temp, rh, pressure) {
   var temp = parseFloat(temp),
       pressure = parseFloat(pressure),
@@ -400,17 +439,12 @@ function wbgt_calculator(rDtTm, Ta, Tw, RH, Ws, Pa) {
 				    lat, lon, csi, pres, temp_c, rh, speed_mps,
 				    zspeed, dT, urban); // full sun
 
-        nwbANL.innerHTML = ctof(wbgtOutput2.Tnwb).toFixed(1);
-
 	// Use the WBGT values calculated by the Liljegren function,
 	// unless the user supplied the wet bulb temperature, in which
 	// case we need to calculate the weighted average, using only
 	// the globe temperature from Liljegren.
 	var wbgtSun = wbgtOutput2.Twbg, // Celsius
 	    wbgtShade = wbgtOutput1.Twbg; // Celsius
-
-        wbgtANL.innerHTML = ctof(wbgtSun).toFixed(1);
-
 	if (wbKnown == "Y") {
 	    wbgtSun = 0.7*ftoc(wb_user) + 0.2*wbgtOutput2.Tg + 0.1*ftoc(temp_f);
 	    wbgtShade = 0.7*ftoc(wb_user) + 0.2*wbgtOutput1.Tg + 0.1*ftoc(temp_f);
@@ -422,7 +456,7 @@ function wbgt_calculator(rDtTm, Ta, Tw, RH, Ws, Pa) {
     var hi = heat1((1.8*temp_c+32), rh);
 
     wbgtSun = ctof(wbgtSun);
-    return(wbgtSun);
+    return[wbgtSun, ctof(wbgtOutput2.Tnwb), ctof(wbgtOutput2.Twbg)];
 }
 function ftoc(Fahr) {
   var Cels;
