@@ -63,7 +63,7 @@ var dd = d.getDate();
 var ddd = dd + 1;
 dd = ("00" + dd).slice(-2);
 ddd = ("00" + ddd).slice(-2);
-var st = "&start=" + yyyy + mm + dd + "1000";
+var st = "&start=" + yyyy + mm + dd + "0400";
 var en = "&end=" + yyyy + mm + ddd + "0200";
 var vrs = "&vars=air_temp,relative_humidity,wind_speed,pressure";
 var unts = "&units=english";
@@ -77,7 +77,7 @@ xmlhttp.onload = function() {
   const myObj = JSON.parse(this.responseText);
   if (myObj.SUMMARY["NUMBER_OF_OBJECTS"] == 0) {
     sl.onclick = "";
-    wbgtTime.innerHTML = mm + "/" + dd + "/" + yyyy + " -- No Readings";
+    wbgtTime.innerHTML = mm + "/" + dd + "/" + yyyy + " - No Readings";
   }
   else {
     stID = myObj.STATION[0]["STID"];
