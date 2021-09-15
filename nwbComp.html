@@ -76,7 +76,8 @@ xmlhttp.onload = function() {
   var stID, stNM, rDtTm, Ta, RH, Pa;
   const myObj = JSON.parse(this.responseText);
   if (myObj.SUMMARY["NUMBER_OF_OBJECTS"] == 0) {
-    wbgtTime.innerHTML = "No Readings for 0700-2200, " + mm + "/" + dd + "/" + yyyy;
+    sl.onclick = "";
+    wbgtTime.innerHTML = mm + "/" + dd + "/" + yyyy + "-- No Readings";
     return;
   }
   stID = myObj.STATION[0]["STID"];
