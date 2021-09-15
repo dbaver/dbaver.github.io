@@ -78,29 +78,30 @@ xmlhttp.onload = function() {
   if (myObj.SUMMARY["NUMBER_OF_OBJECTS"] == 0) {
     sl.onclick = "";
     wbgtTime.innerHTML = mm + "/" + dd + "/" + yyyy + " -- No Readings";
-    return;
   }
-  stID = myObj.STATION[0]["STID"];
-  stNM = myObj.STATION[0]["NAME"];
-  rDtTm = myObj.STATION[0]["OBSERVATIONS"]["date_time"];
-  Ta = myObj.STATION[0]["OBSERVATIONS"]["air_temp_set_1"];
-  RH = myObj.STATION[0]["OBSERVATIONS"]["relative_humidity_set_1"];
-  Ws = myObj.STATION[0]["OBSERVATIONS"]["wind_speed_set_1"];
-  Pa = myObj.STATION[0]["OBSERVATIONS"]["pressure_set_1d"];
-  wbgtTime.innerHTML = stID.slice(1) + " - " + stNM;
-  var i, nwbN, wbgtN, nwbA, wbgtA;
-  for (i = 0; i < rDtTm.length; i++) {
-    nwbN =  decideConvert(Ta[i],RH[i],Pa[i]);
-    [wbgtN, nwbA, wbgtA] = wbgt_calculator(rDtTm[i],Ta[i],nwbN,RH[i],Ws[i],Pa[i]);
-    var table = document.getElementById("wbgtTable");
-    var r = table.rows.length;
-    var row = table.insertRow(r);
-    var cell = {};
-    var rdngs = [rDtTm[i],nwbN,nwbA.toFixed(1),wbgtN.toFixed(1),wbgtA.toFixed(1)];
-    var j;
-    for (j = 0; j < rdngs.length; j++) {
-      cell = row.insertCell(j);
-      cell.innerHTML = rdngs[j];
+  else {
+    stID = myObj.STATION[0]["STID"];
+    stNM = myObj.STATION[0]["NAME"];
+    rDtTm = myObj.STATION[0]["OBSERVATIONS"]["date_time"];
+    Ta = myObj.STATION[0]["OBSERVATIONS"]["air_temp_set_1"];
+    RH = myObj.STATION[0]["OBSERVATIONS"]["relative_humidity_set_1"];
+    Ws = myObj.STATION[0]["OBSERVATIONS"]["wind_speed_set_1"];
+    Pa = myObj.STATION[0]["OBSERVATIONS"]["pressure_set_1d"];
+    wbgtTime.innerHTML = stID.slice(1) + " - " + stNM;
+    var i, nwbN, wbgtN, nwbA, wbgtA;
+    for (i = 0; i < rDtTm.length; i++) {
+      nwbN =  decideConvert(Ta[i],RH[i],Pa[i]);
+      [wbgtN, nwbA, wbgtA] = wbgt_calculator(rDtTm[i],Ta[i],nwbN,RH[i],Ws[i],Pa[i]);
+      var table = document.getElementById("wbgtTable");
+      var r = table.rows.length;
+      var row = table.insertRow(r);
+      var cell = {};
+      var rdngs = [rDtTm[i],nwbN,nwbA.toFixed(1),wbgtN.toFixed(1),wbgtA.toFixed(1)];
+      var j;
+      for (j = 0; j < rdngs.length; j++) {
+        cell = row.insertCell(j);
+        cell.innerHTML = rdngs[j];
+      }
     }
   }
 }
