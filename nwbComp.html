@@ -122,7 +122,7 @@ function csvSave() {
   var rows = document.getElementById("wbgtTable").rows;
   var iTr;
   for (iTr = 3;iTr < rows.length;iTr++) {
-    var sTr = '';
+    var sTr = '"Time/Date","NWBnws","NWBanl","WBGTnws","WBGTanl",';
     var cells = rows[iTr].cells;
     var iTd = 0;
     for (iTd = 0;iTd < cells.length;iTd++) {
