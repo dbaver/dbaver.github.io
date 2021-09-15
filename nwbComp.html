@@ -70,6 +70,7 @@ var unts = "&units=english";
 var obtz = "&obtimezone=local";
 var tmfmt = "&timeformat=%m/%d/%Y%20at%20%H:%M";
 url += st + en + vrs + unts + obtz + tmfmt;
+alert(url);
 xmlhttp.open("GET", url);
 xmlhttp.send();
 xmlhttp.onload = function() {
