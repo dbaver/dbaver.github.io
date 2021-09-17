@@ -940,14 +940,15 @@ function calc_wbgt(year, month, day, hour, minute, gmt, avg, lat, lon,
     var retVar = calc_solar_parameters(year, month, dday, lat, lon, solar);
     var solar = retVar.solarRet; // adjusted solar irradiance if out of bounds
     //adjust solar irradiance for cloud layer
-    if (cldlyr == "scattered") {
-      solar = (980/990)*solar;
+    var cl = cldlyr;
+    if (cl == "scattered") {
+      solar = solar*(1-0.75*(0.25^3)); //0.28 middle of NWS range
     }
-    else if (cldlyr == "broken") {
-      solar = (710/990)*solar;
+    else if (cl == "broken") {
+      solar = solar*(1-0.75*(0.65^3)); //0.69 middle of NWS range
     }
-    else if (cldlyr == "overcast") {
-      solar = (250/990)*solar;
+    else if (cl == "overcast") {
+      solar = solar*(1-0.75*(0.95^3)); //0.94 middle of NWS range
     }
     var cza = retVar.cza; // cosine of solar zenith angle
     var fdir = retVar.fdir; // fraction of solar irradiance due to direct beam
