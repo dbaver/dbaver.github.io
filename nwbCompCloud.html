@@ -645,11 +645,11 @@ function calc_wbgt(year, month, day, hour, minute, gmt, avg, lat, lon,
      */
     var retVar = calc_solar_parameters(year, month, dday, lat, lon, solar);
     var solar = retVar.solarRet; // adjusted solar irradiance if out of bounds
+    wbgtTime.innerHTML = solar.toFixed(1);
     //adjust solar irradiance for cloud layer
     var cl = cldlyr;
     if (cl == "scattered") {
       solar = solar*(1-0.75*(0.25^3)); //0.28 middle of NWS range
-      wbgtTime.innerHTML = solar.toFixed(1);
     }
     else if (cl == "broken") {
       solar = solar*(1-0.75*(0.65^3)); //0.69 middle of NWS range
