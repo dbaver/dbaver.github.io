@@ -649,6 +649,7 @@ function calc_wbgt(year, month, day, hour, minute, gmt, avg, lat, lon,
     var cl = cldlyr;
     if (cl == "scattered") {
       solar = solar*(1-0.75*(0.25^3)); //0.28 middle of NWS range
+      alert(solar);
     }
     else if (cl == "broken") {
       solar = solar*(1-0.75*(0.65^3)); //0.69 middle of NWS range
