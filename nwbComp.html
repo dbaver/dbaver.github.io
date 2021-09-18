@@ -48,6 +48,7 @@ td {
     <th>NWB<sub>ANL</sub> (<sup><small>o</small></sup>F)</th>
     <th>WBGT<sub>NWS</sub> (<sup><small>o</small></sup>F)</th>
     <th>WBGT<sub>ANL</sub> (<sup><small>o</small></sup>F)</th>
+    <th>WBGT<sub>COM</sub> (<sup><small>o</small></sup>F)</th>
   </tr>
 </table>
 </div>
@@ -89,15 +90,15 @@ xmlhttp.onload = function() {
     Ws = myObj.STATION[0]["OBSERVATIONS"]["wind_speed_set_1"];
     Pa = myObj.STATION[0]["OBSERVATIONS"]["pressure_set_1d"];
     wbgtTime.innerHTML = stID.slice(1) + " - " + stNM;
-    var i, nwbN, wbgtN, nwbA, wbgtA;
+    var i, nwbN, nwbA, wbgtN, wbgtA, wbgtC;
     for (i = 0; i < rDtTm.length; i++) {
       nwbN =  decideConvert(Ta[i],RH[i],Pa[i]);
-      [wbgtN, nwbA, wbgtA] = wbgt_calculator(rDtTm[i],Ta[i],nwbN,RH[i],Ws[i],Pa[i]);
+      [nwbA, wbgtN, wbgtA, wbgtC] = wbgt_calculator(rDtTm[i],Ta[i],nwbN,RH[i],Ws[i],Pa[i]);
       var table = document.getElementById("wbgtTable");
       var r = table.rows.length;
       var row = table.insertRow(r);
       var cell = {};
-      var rdngs = [rDtTm[i],nwbN,nwbA.toFixed(1),wbgtN.toFixed(1),wbgtA.toFixed(1)];
+      var rdngs = [rDtTm[i],nwbN,nwbA.toFixed(1),wbgtN.toFixed(1),wbgtA.toFixed(1),wbgtC.toFixed(1)];
       var j;
       for (j = 0; j < rdngs.length; j++) {
         cell = row.insertCell(j);
@@ -120,7 +121,7 @@ function csvSave() {
   mm = ("00" + mm).slice(-2);
   fileName += hh + mm + ".csv";
   var CSV = [];
-  CSV.push('"Date/Time","NWB-NWS","NWB-ANL","WBGT-NWS","WBGT-ANL"');
+  CSV.push('"Date/Time","NWB-NWS","NWB-ANL","WBGT-NWS","WBGT-ANL","WBGT-C"');
   var rows = document.getElementById("wbgtTable").rows;
   var iTr;
   for (iTr = 3;iTr < rows.length;iTr++) {
@@ -468,10 +469,11 @@ function wbgt_calculator(rDtTm, Ta, Tw, RH, Ws, Pa) {
 	// case we need to calculate the weighted average, using only
 	// the globe temperature from Liljegren.
 	var wbgtSun = wbgtOutput2.Twbg, // Celsius
-	    wbgtShade = wbgtOutput1.Twbg; // Celsius
+	    wbgtShade = wbgtOutput1.Twbg, // Celsius
+            wbgtSunC;
 	if (wbKnown == "Y") {
             wbgtSun = 0.7*ftoc(wb_user) + 0.2*wbgtOutput2.Tg + 0.1*ftoc(temp_f);
-	    //wbgtSun = 0.7*(0.5*ftoc(wb_user)+0.5*wbgtOutput2.Tnwb) + 0.2*wbgtOutput2.Tg + 0.1*ftoc(temp_f);
+	    wbgtSunC = 0.7*(0.5*ftoc(wb_user)+0.5*wbgtOutput2.Tnwb) + 0.2*wbgtOutput2.Tg + 0.1*ftoc(temp_f);
 	    wbgtShade = 0.7*ftoc(wb_user) + 0.2*wbgtOutput1.Tg + 0.1*ftoc(temp_f);
 	}
     }
@@ -480,8 +482,7 @@ function wbgt_calculator(rDtTm, Ta, Tw, RH, Ws, Pa) {
     // NWS web site (http://www.wpc.ncep.noaa.gov/html/heatindex.shtml)
     var hi = heat1((1.8*temp_c+32), rh);
 
-    wbgtSun = ctof(wbgtSun);
-    return[wbgtSun, ctof(wbgtOutput2.Tnwb), ctof(wbgtOutput2.Twbg)];
+    return[ctof(wbgtOutput2.Tnwb), ctof(wbgtSun), ctof(wbgtOutput2.Twbg), ctof(wbgtSunC)];
 }
 function ftoc(Fahr) {
   var Cels;
