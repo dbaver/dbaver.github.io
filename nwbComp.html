@@ -999,15 +999,15 @@ function esat(tk,phase,pres) {
     if ( phase == 0 ) {	/* over liquid water */
 	y = (tk - 273.15)/(tk - 32.18);
 	es = 6.1121 * Math.exp( 17.502 * y );
-	//es = (1.0007 + (3.46E-6 * pres)) * es; /* correction for moist air, if pressure is available */
+	es = (1.0007 + (3.46E-6 * pres)) * es; /* correction for moist air, if pressure is available */
     } 
     else {			/* over ice */
         y = (tk - 273.15)/(tk - 0.6);
 	es = 6.1115 * Math.exp( 22.452 * y );
-        //es = (1.0003 + (4.18E-6 * pres)) * es; /* correction for moist air, if pressure is available */
+        es = (1.0003 + (4.18E-6 * pres)) * es; /* correction for moist air, if pressure is available */
     }
 	
-        es = 1.004 * es;  /* correction for moist air, if pressure is not available; for pressure > 800 mb */
+/*      es = 1.004 * es;  /* correction for moist air, if pressure is not available; for pressure > 800 mb */
 /*	es = 1.0034 * es; /* correction for moist air, if pressure is not available; for pressure down to 200 mb */
 
 	return ( es );
