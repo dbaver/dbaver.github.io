@@ -473,7 +473,7 @@ function wbgt_calculator(rDtTm, Ta, Tw, RH, Ws, Pa) {
             wbgtSunC;
 	if (wbKnown == "Y") {
             wbgtSun = 0.7*ftoc(wb_user) + 0.2*wbgtOutput2.Tg + 0.1*ftoc(temp_f);
-	    wbgtSunC = 0.7*(0.5*ftoc(wb_user)+0.5*wbgtOutput2.Tnwb) + 0.2*wbgtOutput2.Tg + 0.1*ftoc(temp_f);
+	    wbgtSunC = 0.7*(0.3*ftoc(wb_user)+0.7*wbgtOutput2.Tnwb) + 0.2*wbgtOutput2.Tg + 0.1*ftoc(temp_f);
 	    wbgtShade = 0.7*ftoc(wb_user) + 0.2*wbgtOutput1.Tg + 0.1*ftoc(temp_f);
 	}
     }
