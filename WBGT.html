@@ -775,7 +775,8 @@ function wbgt_calculator(rDtTm, Ta, Tw, RH, Ws, Pa) {
     // NWS web site (http://www.wpc.ncep.noaa.gov/html/heatindex.shtml)
     var hi = heat1((1.8*temp_c+32), rh);
 
-    wbgtSun = ctof(wbgtSun);
+    //wbgtSun = ctof(wbgtSun);
+    wbgtSun = ctof(wbgtOutput2.Twbg);
     return(wbgtSun);
 }
 function ftoc(Fahr) {
