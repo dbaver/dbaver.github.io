@@ -279,16 +279,12 @@ xmlhttp.onload = function() {
 }
 
 function wbgtValue(sliderValue) {
-  var d = new Date();
+  var d = new Date(2021, 8, 9, 9, 9);
   var month = ("0" + (d.getMonth()+1)).slice(-2),
-      day = d.getDate().toString(),
+      day = ("0" + d.getDate()).slice(-2),
       year = d.getFullYear().toString(),
-      hour = d.getHours(),
-      minute = d.getMinutes();
-  if (month.length == 1) month = "0" + month;
-  if (day.length == 1) day = "0" + day;
-  if (hour.length == 1) hour = "0" + hour;
-  if (minute.length == 1) minute = "0" + minute;
+      hour = ("0" + d.getHours()).slice(-2),
+      minute = ("0" + d.getMinutes()).slice(-2);
   wbgtTime.innerHTML = "BEE Reading: " + month + "/" + day + "/" + year + " at " + hour + ":" + minute;
   wbgt = sliderValue/10;
   wbgtRead.innerHTML = "WBGT<sub>O</sub> (<small><sup>o</sup></small>F): " + wbgt.toFixed(1);
