@@ -777,7 +777,8 @@ function wbgt_calculator(rDtTm, Ta, Tw, RH, Ws, Pa, Cl) {
     // NWS web site (http://www.wpc.ncep.noaa.gov/html/heatindex.shtml)
     var hi = heat1((1.8*temp_c+32), rh);
 
-    wbgtSun = ctof(wbgtSun);
+    //wbgtSun = ctof(wbgtSun);
+    wbgtSun = ctof(wbgtOutput2.Twbg);
     return(wbgtSun);
 }
 function ftoc(Fahr) {
@@ -942,15 +943,17 @@ function calc_wbgt(year, month, day, hour, minute, gmt, avg, lat, lon,
     var solar = retVar.solarRet; // adjusted solar irradiance if out of bounds
     //adjust solar irradiance for cloud layer
     var cl = cldlyr;
-    if (cl == "scattered") {
-      solar = solar*(1-(0.75*Math.pow(0.25,3))); //0.28 middle of NWS range
+    if (cl == "clear") {
+      solar = solar*(1-(0.75*Math.pow(0.05,3.4))); //0% to 5% cloud coverage
+    else if (cl == "scattered") {
+      solar = solar*(1-(0.75*Math.pow(0.50,3.4))); //6% to 50% cloud coverage
       wbgtTime.innerHTML = solar.toFixed(1);
     }
     else if (cl == "broken") {
-      solar = solar*(1-(0.75*Math.pow(0.65,3))); //0.69 middle of NWS range
+      solar = solar*(1-(0.75*Math.pow(0.87,3.4))); //51% to 87% cloud coverage
     }
     else if (cl == "overcast") {
-      solar = solar*(1-(0.75*Math.pow(0.95,3))); //0.94 middle of NWS range
+      solar = solar*(1-(0.75*Math.pow(1.00,3.4))); //88% to 100% cloud coverage
     }
     var cza = retVar.cza; // cosine of solar zenith angle
     var fdir = retVar.fdir; // fraction of solar irradiance due to direct beam
