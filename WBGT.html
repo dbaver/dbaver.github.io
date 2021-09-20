@@ -946,7 +946,6 @@ function calc_wbgt(year, month, day, hour, minute, gmt, avg, lat, lon,
     var solar = retVar.solarRet; // adjusted solar irradiance if out of bounds
     //adjust solar irradiance for cloud layer
     var cl = cldlyr;
-    cl = "clear";
     if (cl == "clear") {
       solar = solar*(1-(0.75*Math.pow(0.05,3.4))); //0% to 5% cloud coverage
     }
