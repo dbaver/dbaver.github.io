@@ -936,6 +936,7 @@ function calc_wbgt(year, month, day, hour, minute, gmt, avg, lat, lon,
      */
     var retVar = calc_solar_parameters(year, month, dday, lat, lon, solar);
     var solar = retVar.solarRet; // adjusted solar irradiance if out of bounds
+    wbgtTime.innerHTML = solar.toFixed(1);
     //adjust solar irradiance for cloud layer
     var cl = cldlyr;
     if (cl == "clear") {
@@ -949,6 +950,7 @@ function calc_wbgt(year, month, day, hour, minute, gmt, avg, lat, lon,
     }
     else if (cl == "overcast") {
       solar = solar*(1-(0.75*Math.pow(1.00,3.4))); //88% to 100% cloud coverage
+      wbgtTime.innerHTML = wbgtTime.innerHTML + ", " + solar.toFixed(1);
     }
     var cza = retVar.cza; // cosine of solar zenith angle
     var fdir = retVar.fdir; // fraction of solar irradiance due to direct beam
