@@ -613,7 +613,7 @@ function wbgt_calculator(rDtTm, Ta, Tw, RH, Ws, Pa, Lt, Ln) {
     // Get the longitude. The number must be between 0 and 180. Then,
     // the calculator turns the longitude into a negative number if
     // the user specifies the Western hemisphere (default).
-    var lat = parseFloat(Lt);
+    var lon = parseFloat(Ln);
     /*
     var lon = 82.93333;
     if (isNaN(lon) | lon > 180 | lon < 0) {
