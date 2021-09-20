@@ -266,8 +266,8 @@ xmlhttp.onload = function() {
   var stID, Lt, Ln, rDtTm, Ta, RH, Ws, Pa, Cl, Tw;
   const myObj = JSON.parse(this.responseText);
   stID = myObj.STATION[0]["STID"];
-  Lt = myObj.STATION[0]["LONGITUDE"];
-  Ln = myObj.STATION[0]["LATITUDE"];
+  Lt = myObj.STATION[0]["LATITUDE"];
+  Ln = myObj.STATION[0]["LONGITUDE"];
   rDtTm = myObj.STATION[0]["OBSERVATIONS"]["air_temp_value_1"]["date_time"];
   Ta = myObj.STATION[0]["OBSERVATIONS"]["air_temp_value_1"]["value"];
   RH = myObj.STATION[0]["OBSERVATIONS"]["relative_humidity_value_1"]["value"];
