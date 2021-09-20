@@ -255,7 +255,8 @@ var wbgtMod = 0,
 
 const xmlhttp = new XMLHttpRequest();
 //KLCK
-xmlhttp.open("GET", "https://api.synopticdata.com/v2/stations/latest?token=21b8403530954b0086093a47b496e954&stid=KLCK&vars=air_temp,relative_humidity,wind_speed,pressure&units=english&obtimezone=local&timeformat=%m/%d/%Y%20at%20%H:%M");
+//xmlhttp.open("GET", "https://api.synopticdata.com/v2/stations/latest?token=21b8403530954b0086093a47b496e954&stid=KLCK&vars=air_temp,relative_humidity,wind_speed,pressure&units=english&obtimezone=local&timeformat=%m/%d/%Y%20at%20%H:%M");
+xmlhttp.open("GET", "https://api.synopticdata.com/v2/stations/latest?token=21b8403530954b0086093a47b496e954&stid=KLCK&vars=air_temp,relative_humidity,wind_speed,pressure,cloud_layer_1&units=english&obtimezone=local&timeformat=%m/%d/%Y%20at%20%H:%M");
 //KFFO
 //xmlhttp.open("GET", "https://api.synopticdata.com/v2/stations/latest?token=21b8403530954b0086093a47b496e954&stid=KFFO&vars=air_temp,relative_humidity,wind_speed,pressure&units=english&obtimezone=local&timeformat=%m/%d/%Y%20at%20%H:%M");
 //KSGH
@@ -270,9 +271,10 @@ xmlhttp.onload = function() {
   RH = myObj.STATION[0]["OBSERVATIONS"]["relative_humidity_value_1"]["value"];
   Ws = myObj.STATION[0]["OBSERVATIONS"]["wind_speed_value_1"]["value"];
   Pa = myObj.STATION[0]["OBSERVATIONS"]["pressure_value_1d"]["value"];
+  Cl = myObj.STATION[0]["OBSERVATIONS"]["cloud_layer_1_value_1d"]["value"]["sky_condition"];
   Tw = decideConvert(Ta, RH, Pa);
   wbgtTime.innerHTML = stID.slice(1) + " Reading: " + rDtTm;
-  wbgt = wbgt_calculator(rDtTm, Ta, Tw, RH, Ws, Pa);
+  wbgt = wbgt_calculator(rDtTm, Ta, Tw, RH, Ws, Pa, Cl);
   wbgtRange.value = wbgt*10;
   wbgtRead.innerHTML = "WBGT<sub>O</sub> (<small><sup>o</sup></small>F): " + wbgt.toFixed(1);
   flagColor(wbgt);
@@ -499,7 +501,7 @@ function calcwetbulb(Edifference,Twguess,Ctemp,MBpressure,E2,previoussign,incr) 
   var wetbulb = Twguess - incr * previoussign;  // Thanks BruceZ
   return wetbulb;
 }
-function wbgt_calculator(rDtTm, Ta, Tw, RH, Ws, Pa) {
+function wbgt_calculator(rDtTm, Ta, Tw, RH, Ws, Pa, Cl) {
 
     // First validate all of the inputs. Alert the user if there
     // is a problem.
@@ -742,15 +744,16 @@ function wbgt_calculator(rDtTm, Ta, Tw, RH, Ws, Pa) {
 	
 	// Estimate the clear-sky solar irradiance.
 	var csi = clearSkyIrradiance(cza);
+        var cl = Cl;
 	
 	// Call the WBGT function twice. Once for shade (irradiance = 0)
 	// and once for full sun.
 	var wbgtOutput1 = calc_wbgt(year, month, day, hour, minute, gmt, avg,
-				    lat, lon, 0, pres, temp_c, rh, speed_mps,
+				    lat, lon, 0, cl, pres, temp_c, rh, speed_mps,
 				    zspeed, dT, urban); // shade (solar=0)
 	
 	var wbgtOutput2 = calc_wbgt(year, month, day, hour, minute, gmt, avg,
-				    lat, lon, csi, pres, temp_c, rh, speed_mps,
+				    lat, lon, csi, cl, pres, temp_c, rh, speed_mps,
 				    zspeed, dT, urban); // full sun
 
 	// Use the WBGT values calculated by the Liljegren function,
@@ -761,7 +764,6 @@ function wbgt_calculator(rDtTm, Ta, Tw, RH, Ws, Pa) {
 	    wbgtShade = wbgtOutput1.Twbg; // Celsius
 	if (wbKnown == "Y") {
 	    wbgtSun = 0.7*ftoc(wb_user) + 0.2*wbgtOutput2.Tg + 0.1*ftoc(temp_f);
-            //wbgtSun = 0.7*(0.5*ftoc(wb_user)+0.5*wbgtOutput2.Tnwb) + 0.2*wbgtOutput2.Tg + 0.1*ftoc(temp_f);
 	    wbgtShade = 0.7*ftoc(wb_user) + 0.2*wbgtOutput1.Tg + 0.1*ftoc(temp_f);
 	}
     }
@@ -885,7 +887,7 @@ tustin.aaron.w@dol.gov
  *		 Argonne National Laboratory
  */
 function calc_wbgt(year, month, day, hour, minute, gmt, avg, lat, lon, 
-		   solar, pres, Tair, relhum, speed, zspeed, dT, urban) {
+		   solar, cldlyr, pres, Tair, relhum, speed, zspeed, dT, urban) {
 
     // INPUTS:
     // int year,		// 4-digit, e.g. 2007
@@ -899,6 +901,7 @@ function calc_wbgt(year, month, day, hour, minute, gmt, avg, lat, lon,
     // float lat,		// north latitude, decimal
     // lon,		// east longitude, decimal (negative in USA)
     // solar,	// total solar irradiance falling on a horizontal detector, W/m2
+    // cldlyr,  //cloud layer type - clear, scattered, broken, overcast
     // pres,		// barometric pressure, mb
     // Tair,		// air (dry bulb) temperature, degC
     // relhum,	// relative humidity, %
@@ -933,6 +936,20 @@ function calc_wbgt(year, month, day, hour, minute, gmt, avg, lat, lon,
      */
     var retVar = calc_solar_parameters(year, month, dday, lat, lon, solar);
     var solar = retVar.solarRet; // adjusted solar irradiance if out of bounds
+    //adjust solar irradiance for cloud layer
+    var cl = cldlyr;
+    if (cl == "clear") {
+      solar = solar*(1-(0.75*Math.pow(0.05,3.4))); //0% to 5% cloud coverage
+    }
+    else if (cl == "scattered") {
+      solar = solar*(1-(0.75*Math.pow(0.50,3.4))); //6% to 50% cloud coverage
+    }
+    else if (cl == "broken") {
+      solar = solar*(1-(0.75*Math.pow(0.87,3.4))); //51% to 87% cloud coverage
+    }
+    else if (cl == "overcast") {
+      solar = solar*(1-(0.75*Math.pow(1.00,3.4))); //88% to 100% cloud coverage
+    }
     var cza = retVar.cza; // cosine of solar zenith angle
     var fdir = retVar.fdir; // fraction of solar irradiance due to direct beam
 
