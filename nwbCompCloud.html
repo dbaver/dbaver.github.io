@@ -423,7 +423,7 @@ function wbgt_calculator(rDtTm, Ta, Tw, RH, Ws, Pa, Cl) {
 
     // Enforce a minimum wind speed of 1 mph to account for the fact that
     // outdoor workers are always moving.
-    ws = Math.max(ws, 1);
+    ws = Math.max(ws, 2);
     
     // Set the reference height for the wind speed.
     var zspeed = 2, // reference height (2 m)
