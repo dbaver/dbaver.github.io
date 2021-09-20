@@ -263,9 +263,11 @@ xmlhttp.open("GET", "https://api.synopticdata.com/v2/stations/latest?token=21b84
 //xmlhttp.open("GET", "https://api.synopticdata.com/v2/stations/latest?token=21b8403530954b0086093a47b496e954&stid=KSGH&vars=air_temp,relative_humidity,wind_speed,pressure&units=english&obtimezone=local&timeformat=%m/%d/%Y%20at%20%H:%M");
 xmlhttp.send();
 xmlhttp.onload = function() {
-  var stID, rDtTm, Ta, RH, Pa;
+  var stID, Lt, Ln, rDtTm, Ta, RH, Ws, Pa, Cl, Tw;
   const myObj = JSON.parse(this.responseText);
   stID = myObj.STATION[0]["STID"];
+  Lt = myObj.STATION[0]["LONGITUDE"];
+  Ln = myObj.STATION[0]["LATITUDE"];
   rDtTm = myObj.STATION[0]["OBSERVATIONS"]["air_temp_value_1"]["date_time"];
   Ta = myObj.STATION[0]["OBSERVATIONS"]["air_temp_value_1"]["value"];
   RH = myObj.STATION[0]["OBSERVATIONS"]["relative_humidity_value_1"]["value"];
@@ -274,7 +276,7 @@ xmlhttp.onload = function() {
   Cl = myObj.STATION[0]["OBSERVATIONS"]["cloud_layer_1_value_1d"]["value"]["sky_condition"];
   Tw = decideConvert(Ta, RH, Pa);
   wbgtTime.innerHTML = stID.slice(1) + " Reading: " + rDtTm;
-  wbgt = wbgt_calculator(rDtTm, Ta, Tw, RH, Ws, Pa, Cl);
+  wbgt = wbgt_calculator(rDtTm, Ta, Tw, RH, Ws, Pa, Cl, Lt, Ln);
   wbgtRange.value = wbgt*10;
   wbgtRead.innerHTML = "WBGT<sub>O</sub> (<small><sup>o</sup></small>F): " + wbgt.toFixed(1);
   flagColor(wbgt);
@@ -501,7 +503,7 @@ function calcwetbulb(Edifference,Twguess,Ctemp,MBpressure,E2,previoussign,incr) 
   var wetbulb = Twguess - incr * previoussign;  // Thanks BruceZ
   return wetbulb;
 }
-function wbgt_calculator(rDtTm, Ta, Tw, RH, Ws, Pa, Cl) {
+function wbgt_calculator(rDtTm, Ta, Tw, RH, Ws, Pa, Cl, Lt, Ln) {
 
     // First validate all of the inputs. Alert the user if there
     // is a problem.
@@ -592,7 +594,8 @@ function wbgt_calculator(rDtTm, Ta, Tw, RH, Ws, Pa, Cl) {
     // Get the latitude. The number must be between 0 and 90. Then,
     // the calculator turns the latitude into a negative number if
     // the user specifies the Southern hemisphere.
-    var lat = 39.81667;
+    //var lat = 39.81667;
+    var lat = parseFloat(Lt);
     if (isNaN(lat) | lat < 0 | lat > 90) {
 	alert("Error: Invalid latitude. Must be between 0 and +90 degrees.");
 	return;
@@ -604,13 +607,14 @@ function wbgt_calculator(rDtTm, Ta, Tw, RH, Ws, Pa, Cl) {
     }
     if (latNS == "S") {
 	// Southern hemisphere, latitude is negative:
-	lat = -lat;
+	//lat = -lat;
     }
 
     // Get the longitude. The number must be between 0 and 180. Then,
     // the calculator turns the longitude into a negative number if
     // the user specifies the Western hemisphere (default).
-    var lon = 82.93333;
+    //var lon = 82.93333;
+    var lon = parseFloat(Ln);
     if (isNaN(lon) | lon > 180 | lon < 0) {
 	alert("Error: Invalid longitude. Must be between 0 and +180 degrees.");
 	return;
@@ -622,7 +626,7 @@ function wbgt_calculator(rDtTm, Ta, Tw, RH, Ws, Pa, Cl) {
     }
     if (lonWE == "W") {
 	// Western hemisphere (default): longitude is negative:
-	lon = -lon;
+	//lon = -lon;
     }
 
     // Validate meteorologic inputs
