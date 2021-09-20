@@ -936,16 +936,15 @@ function calc_wbgt(year, month, day, hour, minute, gmt, avg, lat, lon,
      */
     var retVar = calc_solar_parameters(year, month, dday, lat, lon, solar);
     var solar = retVar.solarRet; // adjusted solar irradiance if out of bounds
-    //wbgtTime.innerHTML = solar.toFixed(1);
-    //var sStr = solar.toFixed(1);
+    wbgtTime.innerHTML = solar.toFixed(1);
     //adjust solar irradiance for cloud layer
     var cl = cldlyr;
-    wbgtTime.innerHTML = cl;
     if (cl == "clear") {
       solar = solar*(1-(0.75*Math.pow(0.05,3.4))); //0% to 5% cloud coverage
     }
     else if (cl == "scattered") {
       solar = solar*(1-(0.75*Math.pow(0.50,3.4))); //6% to 50% cloud coverage
+      wbgtTime.innerHTML = wbgtTime.innerHTML + ", " + solar.toFixed(1);
     }
     else if (cl == "broken") {
       solar = solar*(1-(0.75*Math.pow(0.87,3.4))); //51% to 87% cloud coverage
