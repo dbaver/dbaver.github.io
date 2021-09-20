@@ -594,8 +594,9 @@ function wbgt_calculator(rDtTm, Ta, Tw, RH, Ws, Pa, Cl, Lt, Ln) {
     // Get the latitude. The number must be between 0 and 90. Then,
     // the calculator turns the latitude into a negative number if
     // the user specifies the Southern hemisphere.
-    //var lat = 39.81667;
     var lat = parseFloat(Lt);
+    /*
+    var lat = 39.81667;
     if (isNaN(lat) | lat < 0 | lat > 90) {
 	alert("Error: Invalid latitude. Must be between 0 and +90 degrees.");
 	return;
@@ -607,14 +608,16 @@ function wbgt_calculator(rDtTm, Ta, Tw, RH, Ws, Pa, Cl, Lt, Ln) {
     }
     if (latNS == "S") {
 	// Southern hemisphere, latitude is negative:
-	//lat = -lat;
+	lat = -lat;
     }
+    */
 
     // Get the longitude. The number must be between 0 and 180. Then,
     // the calculator turns the longitude into a negative number if
     // the user specifies the Western hemisphere (default).
-    //var lon = 82.93333;
     var lon = parseFloat(Ln);
+    /*
+    var lon = 82.93333;
     if (isNaN(lon) | lon > 180 | lon < 0) {
 	alert("Error: Invalid longitude. Must be between 0 and +180 degrees.");
 	return;
@@ -626,8 +629,9 @@ function wbgt_calculator(rDtTm, Ta, Tw, RH, Ws, Pa, Cl, Lt, Ln) {
     }
     if (lonWE == "W") {
 	// Western hemisphere (default): longitude is negative:
-	//lon = -lon;
+	lon = -lon;
     }
+    */
 
     // Validate meteorologic inputs
     var temp_f = parseFloat(Ta),
