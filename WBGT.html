@@ -255,12 +255,11 @@ var wbgtMod = 0,
 
 const xmlhttp = new XMLHttpRequest();
 //KLCK
-//xmlhttp.open("GET", "https://api.synopticdata.com/v2/stations/latest?token=21b8403530954b0086093a47b496e954&stid=KLCK&vars=air_temp,relative_humidity,wind_speed,pressure&units=english&obtimezone=local&timeformat=%m/%d/%Y%20at%20%H:%M");
 xmlhttp.open("GET", "https://api.synopticdata.com/v2/stations/latest?token=21b8403530954b0086093a47b496e954&stid=KLCK&vars=air_temp,relative_humidity,wind_speed,pressure,cloud_layer_1&units=english&obtimezone=local&timeformat=%m/%d/%Y%20at%20%H:%M");
 //KFFO
-//xmlhttp.open("GET", "https://api.synopticdata.com/v2/stations/latest?token=21b8403530954b0086093a47b496e954&stid=KFFO&vars=air_temp,relative_humidity,wind_speed,pressure&units=english&obtimezone=local&timeformat=%m/%d/%Y%20at%20%H:%M");
+//xmlhttp.open("GET", "https://api.synopticdata.com/v2/stations/latest?token=21b8403530954b0086093a47b496e954&stid=KFFO&vars=air_temp,relative_humidity,wind_speed,pressure,cloud_layer_1&units=english&obtimezone=local&timeformat=%m/%d/%Y%20at%20%H:%M");
 //KSGH
-//xmlhttp.open("GET", "https://api.synopticdata.com/v2/stations/latest?token=21b8403530954b0086093a47b496e954&stid=KSGH&vars=air_temp,relative_humidity,wind_speed,pressure&units=english&obtimezone=local&timeformat=%m/%d/%Y%20at%20%H:%M");
+//xmlhttp.open("GET", "https://api.synopticdata.com/v2/stations/latest?token=21b8403530954b0086093a47b496e954&stid=KSGH&vars=air_temp,relative_humidity,wind_speed,pressure,cloud_layer_1&units=english&obtimezone=local&timeformat=%m/%d/%Y%20at%20%H:%M");
 xmlhttp.send();
 xmlhttp.onload = function() {
   var stID, Lt, Ln, rDtTm, Ta, RH, Ws, Pa, Cl, Tw;
