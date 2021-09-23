@@ -119,13 +119,14 @@ p {
   <div id="wbgtReadDiv">
     <select id="awosSel" onchange="selectAWOS()">
       <option value="">----Select AWOS----</option>
-      <option value="KFFO" style="text-align:center">KFFO - Dayton / Wright-Patterson Air Force Base</option>
-      <option value="KLCK" style="text-align:center">KLCK - Rickenbacker Air National Guard Base</option>
-      <option value="KSGH" style="text-align:center">KSGH - Springfield, Springfield-Beckley Municipal Airport</option>
+      <option value="KFFO">KFFO - Dayton / Wright-Patterson Air Force Base</option>
+      <option value="KLCK">KLCK - Rickenbacker Air National Guard Base</option>
+      <option value="KSGH">KSGH - Springfield, Springfield-Beckley Municipal Airport</option>
     </select>
+    <h1 id="wbgtRead"></h1>
   </div>
   <div id="wbgtRangeDiv">
-    <input type="range" min="600" max="900" value="750" class="slider" id="wbgtRange">
+    <input type="range" min="600" max="900" value="750" class="slider" id="wbgtRange" oninput=wbgtValue(this.value)>
   </div>
   <div id="wbgtTimeDiv">
     <h3 id="wbgtTime"></h3>
@@ -273,7 +274,7 @@ var wbgtMod = 0,
 function selectAWOS() {
   var awos = awosSel.options[awosSel.selectedIndex].value;
   awosSel.remove();
-  wbgtReadDiv.innerHTML = "<h1 id="wbgtRead"></h1>";
+  //wbgtReadDiv.innerHTML = "<h1 id="wbgtRead"></h1>";
   const xmlhttp = new XMLHttpRequest();
   var url = "https://api.synopticdata.com/v2/stations/latest?token=21b8403530954b0086093a47b496e954&vars=air_temp,relative_humidity,wind_speed,pressure,cloud_layer_1&units=english&obtimezone=local&timeformat=%m/%d/%Y%20at%20%H:%M&stid=" + awos;
   xmlhttp.open("GET", url);
@@ -297,7 +298,6 @@ function selectAWOS() {
     wbgtRead.innerHTML = "WBGT<sub>O</sub> (<small><sup>o</sup></small>F): " + wbgt.toFixed(1);
     flagColor(wbgt);
   }
-  wbgtRange.oninput = "wbgtValue(this.value)";
 }
 function wbgtValue(sliderValue) {
   var d = new Date();
