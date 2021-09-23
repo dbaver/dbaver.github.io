@@ -37,7 +37,11 @@
   box-sizing: border-box;
   border-width: 1px;
   font-family: monospace;
-  text-align:left;
+  text-align: left;
+}
+
+#selDef {
+  text-align: center;
 }
 
 h1 {
@@ -132,7 +136,7 @@ p {
   <div id="wbgtReadDiv">
     <div id="awosDiv">
       <select id="awosSel" onchange="selectAWOS()">
-        <option value="" style="text-align:center">----Select AWOS----</option>
+        <option value="" id="selDef">----Select AWOS----</option>
         <option value="KFFO">KFFO - Dayton / Wright-Patterson Air Force Base</option>
         <option value="KLCK">KLCK - Rickenbacker Air National Guard Base</option>
         <option value="KSGH">KSGH - Springfield, Springfield-Beckley Municipal Airport</option>
