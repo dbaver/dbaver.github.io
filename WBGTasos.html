@@ -16,6 +16,18 @@
   border-bottom: 2px solid black;
 }
 
+#awosSel {
+  margin: 0;
+  padding: 0;
+  position:relative;
+  top:50%;
+  -ms-transform:translateY(-50%);
+  transform:translateY(-50%);
+  box-sizing: border-box;
+  border-width: 1px;
+  text-align: left;
+}
+
 h1 {
   text-align: center;
   color: lightgray;
@@ -105,10 +117,15 @@ p {
 <body>
 <div style="position:fixed; left:0; top:0; width:100%">
   <div id="wbgtReadDiv">
-    <h1 id="wbgtRead"></h1>
+    <select id="test" onchange="selectAWOS()">
+      <option value="">----Select AWOS----</option>
+      <option value="KFFO" style="text-align:center">KFFO - Dayton / Wright-Patterson Air Force Base</option>
+      <option value="KLCK" style="text-align:center">KLCK - Rickenbacker Air National Guard Base</option>
+      <option value="KSGH" style="text-align:center">KSGH - Springfield, Springfield-Beckley Municipal Airport</option>
+    </select>
   </div>
   <div id="wbgtRangeDiv">
-    <input type="range" min="600" max="900" value="750" class="slider" id="wbgtRange" oninput=wbgtValue(this.value)>
+    <input type="range" min="600" max="900" value="750" class="slider" id="wbgtRange">
   </div>
   <div id="wbgtTimeDiv">
     <h3 id="wbgtTime"></h3>
@@ -253,32 +270,34 @@ var wbgtMod = 0,
     tacticalGear = "noTactical",
     wbgt;
 
-const xmlhttp = new XMLHttpRequest();
-//KLCK
-xmlhttp.open("GET", "https://api.synopticdata.com/v2/stations/latest?token=21b8403530954b0086093a47b496e954&stid=KLCK&vars=air_temp,relative_humidity,wind_speed,pressure,cloud_layer_1&units=english&obtimezone=local&timeformat=%m/%d/%Y%20at%20%H:%M");
-//KFFO
-//xmlhttp.open("GET", "https://api.synopticdata.com/v2/stations/latest?token=21b8403530954b0086093a47b496e954&stid=KFFO&vars=air_temp,relative_humidity,wind_speed,pressure,cloud_layer_1&units=english&obtimezone=local&timeformat=%m/%d/%Y%20at%20%H:%M");
-//KSGH
-//xmlhttp.open("GET", "https://api.synopticdata.com/v2/stations/latest?token=21b8403530954b0086093a47b496e954&stid=KSGH&vars=air_temp,relative_humidity,wind_speed,pressure,cloud_layer_1&units=english&obtimezone=local&timeformat=%m/%d/%Y%20at%20%H:%M");
-xmlhttp.send();
-xmlhttp.onload = function() {
-  var stID, Lt, Ln, rDtTm, Ta, RH, Ws, Pa, Cl, Tw;
-  const myObj = JSON.parse(this.responseText);
-  stID = myObj.STATION[0]["STID"];
-  Lt = myObj.STATION[0]["LATITUDE"];
-  Ln = myObj.STATION[0]["LONGITUDE"];
-  rDtTm = myObj.STATION[0]["OBSERVATIONS"]["air_temp_value_1"]["date_time"];
-  Ta = myObj.STATION[0]["OBSERVATIONS"]["air_temp_value_1"]["value"];
-  RH = myObj.STATION[0]["OBSERVATIONS"]["relative_humidity_value_1"]["value"];
-  Ws = myObj.STATION[0]["OBSERVATIONS"]["wind_speed_value_1"]["value"];
-  Pa = myObj.STATION[0]["OBSERVATIONS"]["pressure_value_1d"]["value"];
-  Cl = myObj.STATION[0]["OBSERVATIONS"]["cloud_layer_1_value_1d"]["value"]["sky_condition"];
-  Tw = decideConvert(Ta, RH, Pa);
-  wbgtTime.innerHTML = stID.slice(1) + " Reading: " + rDtTm;
-  wbgt = wbgt_calculator(rDtTm, Ta, Tw, RH, Ws, Pa, Cl, Lt, Ln);
-  wbgtRange.value = wbgt*10;
-  wbgtRead.innerHTML = "WBGT<sub>O</sub> (<small><sup>o</sup></small>F): " + wbgt.toFixed(1);
-  flagColor(wbgt);
+function selectAWOS() {
+  var awos = awosSel.options[awosSel.selectedIndex].value;
+  awosSel.remove();
+  wbgtReadDiv.innerHTML = "<h1 id="wbgtRead"></h1>";
+  const xmlhttp = new XMLHttpRequest();
+  var url = "https://api.synopticdata.com/v2/stations/latest?token=21b8403530954b0086093a47b496e954&vars=air_temp,relative_humidity,wind_speed,pressure,cloud_layer_1&units=english&obtimezone=local&timeformat=%m/%d/%Y%20at%20%H:%M&stid=" + awos;
+  xmlhttp.open("GET", url);
+  xmlhttp.send();
+  xmlhttp.onload = function() {
+    var stID, Lt, Ln, rDtTm, Ta, RH, Ws, Pa, Cl, Tw;
+    const myObj = JSON.parse(this.responseText);
+    stID = myObj.STATION[0]["STID"];
+    Lt = myObj.STATION[0]["LATITUDE"];
+    Ln = myObj.STATION[0]["LONGITUDE"];
+    rDtTm = myObj.STATION[0]["OBSERVATIONS"]["air_temp_value_1"]["date_time"];
+    Ta = myObj.STATION[0]["OBSERVATIONS"]["air_temp_value_1"]["value"];
+    RH = myObj.STATION[0]["OBSERVATIONS"]["relative_humidity_value_1"]["value"];
+    Ws = myObj.STATION[0]["OBSERVATIONS"]["wind_speed_value_1"]["value"];
+    Pa = myObj.STATION[0]["OBSERVATIONS"]["pressure_value_1d"]["value"];
+    Cl = myObj.STATION[0]["OBSERVATIONS"]["cloud_layer_1_value_1d"]["value"]["sky_condition"];
+    Tw = decideConvert(Ta, RH, Pa);
+    wbgtTime.innerHTML = stID.slice(1) + " Reading: " + rDtTm;
+    wbgt = wbgt_calculator(rDtTm, Ta, Tw, RH, Ws, Pa, Cl, Lt, Ln);
+    wbgtRange.value = wbgt*10;
+    wbgtRead.innerHTML = "WBGT<sub>O</sub> (<small><sup>o</sup></small>F): " + wbgt.toFixed(1);
+    flagColor(wbgt);
+  }
+  wbgtRange.oninput = "wbgtValue(this.value)";
 }
 function wbgtValue(sliderValue) {
   var d = new Date();
