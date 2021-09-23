@@ -21,8 +21,9 @@
   padding: 0;
   position:relative;
   top:50%;
-  -ms-transform:translateY(-50%);
-  transform:translateY(-50%);
+  left:50%;
+  -ms-transform:translate(-50%,-50%);
+  transform:translate(-50%,-50%);
   box-sizing: border-box;
   border-width: 1px;
   text-align: left;
@@ -117,7 +118,7 @@ p {
 <body>
 <div style="position:fixed; left:0; top:0; width:100%">
   <div id="wbgtReadDiv">
-    <select id="awosSel" onchange="selectAWOS()">
+    <select id="awosSel" onchange=selectAWOS()>
       <option value="">----Select AWOS----</option>
       <option value="KFFO">KFFO - Dayton / Wright-Patterson Air Force Base</option>
       <option value="KLCK">KLCK - Rickenbacker Air National Guard Base</option>
