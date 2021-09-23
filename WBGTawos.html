@@ -267,7 +267,8 @@ p {
 </div>
 
 <script language="JavaScript" type="text/javascript">
-var wbgtMod = 0,
+var selAWOS = false;
+    wbgtMod = 0,
     workLoad = "easy",
     addClothing = "noClothing",
     tacticalGear = "noTactical",
@@ -299,25 +300,30 @@ function selectAWOS() {
     wbgtRead.innerHTML = "WBGT<sub>O</sub> (<small><sup>o</sup></small>F): " + wbgt.toFixed(1);
     flagColor(wbgt);
   }
+  selAWOS = true;
 }
 function wbgtValue(sliderValue) {
-  var d = new Date();
-  var month = ("0" + (d.getMonth()+1)).slice(-2),
-      day = ("0" + d.getDate()).slice(-2),
-      year = d.getFullYear().toString(),
-      hour = ("0" + d.getHours()).slice(-2),
-      minute = ("0" + d.getMinutes()).slice(-2);
-  wbgtTime.innerHTML = "BEE Reading: " + month + "/" + day + "/" + year + " at " + hour + ":" + minute;
-  wbgt = sliderValue/10;
-  wbgtRead.innerHTML = "WBGT<sub>O</sub> (<small><sup>o</sup></small>F): " + wbgt.toFixed(1);
-  wbgtMod = 0;
-  workLoad = "easy";
-  addClothing = "noClothing";
-  tacticalGear = "noTactical";
-  workEasy.checked = true;
-  clothingNone.checked = true;
-  armorNo.checked = true;
-  flagColor(wbgt);
+  if (selAWOS == false) {
+    return;
+  } else if (selAWOS == true) {
+    var d = new Date();
+    var month = ("0" + (d.getMonth()+1)).slice(-2),
+        day = ("0" + d.getDate()).slice(-2),
+        year = d.getFullYear().toString(),
+        hour = ("0" + d.getHours()).slice(-2),
+        minute = ("0" + d.getMinutes()).slice(-2);
+    wbgtTime.innerHTML = "BEE Reading: " + month + "/" + day + "/" + year + " at " + hour + ":" + minute;
+    wbgt = sliderValue/10;
+    wbgtRead.innerHTML = "WBGT<sub>O</sub> (<small><sup>o</sup></small>F): " + wbgt.toFixed(1);
+    wbgtMod = 0;
+    workLoad = "easy";
+    addClothing = "noClothing";
+    tacticalGear = "noTactical";
+    workEasy.checked = true;
+    clothingNone.checked = true;
+    armorNo.checked = true;
+    flagColor(wbgt);
+  }
 }
 function flagColor(t) {
   var tdFlagOn;
