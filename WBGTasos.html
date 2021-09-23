@@ -119,7 +119,7 @@ p {
 <body>
 <div style="position:fixed; left:0; top:0; width:100%">
   <div id="wbgtReadDiv">
-    <select id="awosSel" onchange=selectAWOS()>
+    <select id="awosSel" onchange="selectAWOS()">
       <option value="" style="text-align:center">----Select AWOS----</option>
       <option value="KFFO">KFFO - Dayton / Wright-Patterson Air Force Base</option>
       <option value="KLCK">KLCK - Rickenbacker Air National Guard Base</option>
@@ -276,7 +276,6 @@ var wbgtMod = 0,
 function selectAWOS() {
   var awos = awosSel.options[awosSel.selectedIndex].value;
   awosSel.remove();
-  //wbgtReadDiv.innerHTML = "<h1 id="wbgtRead"></h1>";
   const xmlhttp = new XMLHttpRequest();
   var url = "https://api.synopticdata.com/v2/stations/latest?token=21b8403530954b0086093a47b496e954&vars=air_temp,relative_humidity,wind_speed,pressure,cloud_layer_1&units=english&obtimezone=local&timeformat=%m/%d/%Y%20at%20%H:%M&stid=" + awos;
   xmlhttp.open("GET", url);
