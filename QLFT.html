@@ -602,6 +602,9 @@
         while (sizeList.options.length > 1) {
           sizeList.remove(1);
         }
+        document.getElementById("entProtocol").value="";
+        document.getElementById("entTaste").value="";
+        document.getElementById("entTaste").disabled = true;
         var mfrs = manufacturers[selStyle];
         if (mfrs) {
           var i;
@@ -719,6 +722,9 @@
         while (sizeList.options.length > 1) {
           sizeList.remove(1);
         }
+        document.getElementById("entProtocol").value="";
+        document.getElementById("entTaste").value="";
+        document.getElementById("entTaste").disabled = true;
         var mdls = models[selManufacturer];
         if (mdls) {
           var i;
@@ -777,6 +783,9 @@
         while (sizeList.options.length > 1) {
           sizeList.remove(1);
         }
+        document.getElementById("entProtocol").value="";
+        document.getElementById("entTaste").value="";
+        document.getElementById("entTaste").disabled = true;
         var szes = sizes[selModel];
         if (szes) {
           var i;
