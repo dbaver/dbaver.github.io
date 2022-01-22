@@ -380,7 +380,7 @@
           <tr>
             <td class="m"><label id="lblManufacturer" for="entManufacturer">Manufacturer:</label></td>
             <td class="m">
-              <select id="entManufacturer" class="m" onchange="changeModelList()">
+              <select id="entManufacturer" class="m" onchange="changeModelList()" disabled>
                 <option value="">--Select--</option>
               </select>
             </td>
@@ -388,7 +388,7 @@
           <tr>
             <td class="m"><label id="lblModel" for="entModel"></label>Model #:</td>
             <td class="m">
-              <select id="entModel" class="m" onchange="changeSizeList()">
+              <select id="entModel" class="m" onchange="changeSizeList()" disabled>
                 <option value="">--Select--</option>
               </select>
             </td>
@@ -396,7 +396,7 @@
           <tr>
             <td class="m"><label id="lblSize" for="entSize">Mask Size:</label></td>
             <td class="m">
-              <select id="entSize" class="m">
+              <select id="entSize" class="m" onchange="enableProtocol()" disabled>
                 <option value="">--Select--</option>
               </select>
             </td>
@@ -404,7 +404,7 @@
           <tr>
             <td class="m"><label id="lblProtocol" for="entProtocol">QLFT Type:</label></td>
             <td class="m">
-              <select id="entProtocol" class="m" onchange="fitProtocol()">
+              <select id="entProtocol" class="m" onchange="enableTaste()" disabled>
                 <option value="">--Select--</option>
                 <option value="Isoamyl Acetate">Isoamyl Acetate</option>
                 <option value="Saccharin Solution Aerosol">Saccharin Solution Aerosol</option>
@@ -588,6 +588,15 @@
         ["hmNS","North Safety Products"]
       ];
       function changeManufacturerList() {
+        if (entStyle.value != "") {
+          entManufacturer.disabled = false;
+        } else {
+          entManufacturer.disabled = true;
+        }
+        entModel.disabled = true;
+        entSize.disabled = true;
+        entProtocol.disabled = true;
+        entTaste.disabled = true;
         var styleList = document.getElementById("entStyle");
         var manufacturerList = document.getElementById("entManufacturer");
         var modelList = document.getElementById("entModel");
@@ -712,6 +721,14 @@
         ["sz06","7700"]
       ];
       function changeModelList() {
+        if (entManufacturer.value != "") {
+          entModel.disabled = false;
+        } else {
+          entModel.disabled = true;
+        }
+        entSize.disabled = true;
+        entProtocol.disabled = true;
+        entTaste.disabled = true;
         var manufacturerList = document.getElementById("entManufacturer");
         var modelList = document.getElementById("entModel");
         var sizeList = document.getElementById("entSize");
@@ -777,6 +794,13 @@
         ["Low Profile"]
       ];
       function changeSizeList() {
+        if (entModel.value != "") {
+          entSize.disabled = false;
+        } else {
+          entSize.disabled = true;
+        }
+        entProtocol.disabled = true;
+        entTaste.disabled = true;
         var modelList = document.getElementById("entModel");
         var sizeList = document.getElementById("entSize");
         var selModel = modelList.options[modelList.selectedIndex].value;
@@ -795,7 +819,15 @@
           }
         }
       }
-      function fitProtocol() {
+      function enableProtocol() {
+        if (entSize.value != "") {
+          entProtocol.disabled = false;
+        } else {
+          entProtocol.disabled = true;
+        }
+        entTaste.disabled = true;
+      }
+      function enableTaste() {
         var p = document.getElementById("entProtocol").value;
         document.getElementById("entTaste").value = "";
         if (p == "Saccharin Solution Aerosol" || p =="BitrexTM (Denatonium Benzoate) Solution Aerosol") {
@@ -841,15 +873,19 @@
         while (document.getElementById("entManufacturer").options.length > 1) {
           document.getElementById("entManufacturer").remove(1);
         }
+        entManufacturer.disabled = true;
         document.getElementById("entModel").value = "";
         while (document.getElementById("entModel").options.length > 1) {
           document.getElementById("entModel").remove(1);
         }
+        entModel.disabled = true;
         document.getElementById("entSize").value = "";
         while (document.getElementById("entSize").options.length > 1) {
           document.getElementById("entSize").remove(1);
         }
+        entSize.disabled = true;
         document.getElementById("entProtocol").value = "";
+        entProtocol.disabled = true;
         document.getElementById("entTaste").value = "";
         document.getElementById("entTaste").disabled = true;
         document.getElementById("btnStart").onclick = openQLFT;
