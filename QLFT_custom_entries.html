@@ -379,25 +379,28 @@
           </tr>
           <tr>
             <td class="m"><label id="lblManufacturer" for="entManufacturer">Manufacturer:</label></td>
-            <td class="m">
+            <td id="cellManufacturer" class="m">
               <select id="entManufacturer" class="m" onchange="changeModelList()" disabled>
                 <option value="">--Select--</option>
+                <option value="custom">Other/Custom</option>
               </select>
             </td>
           </tr>
           <tr>
             <td class="m"><label id="lblModel" for="entModel"></label>Model #:</td>
-            <td class="m">
+            <td id="cellModel" class="m">
               <select id="entModel" class="m" onchange="changeSizeList()" disabled>
                 <option value="">--Select--</option>
+                <option value="custom">Other/Custom</option>
               </select>
             </td>
           </tr>
           <tr>
             <td class="m"><label id="lblSize" for="entSize">Mask Size:</label></td>
-            <td class="m">
+            <td id="cellSize" class="m">
               <select id="entSize" class="m" onchange="enableProtocol()" disabled>
                 <option value="">--Select--</option>
+                <option value="custom">Other/Custom</option>
               </select>
             </td>
           </tr>
@@ -602,13 +605,13 @@
         var modelList = document.getElementById("entModel");
         var sizeList = document.getElementById("entSize");
         var selStyle = styleList.options[styleList.selectedIndex].value;
-        while (manufacturerList.options.length > 1) {
+        while (manufacturerList.options.length > 2) {
           manufacturerList.remove(1);
         }
-        while (modelList.options.length > 1) {
+        while (modelList.options.length > 2) {
           modelList.remove(1);
         }
-        while (sizeList.options.length > 1) {
+        while (sizeList.options.length > 2) {
           sizeList.remove(1);
         }
         document.getElementById("entProtocol").value="";
@@ -617,9 +620,9 @@
         var mfrs = manufacturers[selStyle];
         if (mfrs) {
           var i;
-          for (i = 1;i < mfrs.length+1;i++) {
-            var mfr = new Option(mfrs[i-1][1], i);
-            mfr.value = mfrs[i-1][0];
+          for (i = 2;i < mfrs.length+2;i++) {
+            var mfr = new Option(mfrs[i-2][1], i);
+            mfr.value = mfrs[i-2][0];
             manufacturerList.options.add(mfr);
           }
         }
@@ -733,10 +736,10 @@
         var modelList = document.getElementById("entModel");
         var sizeList = document.getElementById("entSize");
         var selManufacturer = manufacturerList.options[manufacturerList.selectedIndex].value;
-        while (modelList.options.length>1) {
+        while (modelList.options.length>2) {
           modelList.remove(1);
         }
-        while (sizeList.options.length > 1) {
+        while (sizeList.options.length > 2) {
           sizeList.remove(1);
         }
         document.getElementById("entProtocol").value="";
@@ -745,9 +748,9 @@
         var mdls = models[selManufacturer];
         if (mdls) {
           var i;
-          for (i = 1;i < mdls.length+1;i++) {
-            var mdl = new Option(mdls[i-1][1], i);
-            mdl.value = mdls[i-1][0];
+          for (i = 2;i < mdls.length+2;i++) {
+            var mdl = new Option(mdls[i-2][1], i);
+            mdl.value = mdls[i-2][0];
             modelList.options.add(mdl);
           }
         }
@@ -804,7 +807,7 @@
         var modelList = document.getElementById("entModel");
         var sizeList = document.getElementById("entSize");
         var selModel = modelList.options[modelList.selectedIndex].value;
-        while (sizeList.options.length > 1) {
+        while (sizeList.options.length > 2) {
           sizeList.remove(1);
         }
         document.getElementById("entProtocol").value="";
@@ -813,8 +816,8 @@
         var szes = sizes[selModel];
         if (szes) {
           var i;
-          for (i = 1;i < szes.length+1;i++) {
-            var sze = new Option(szes[i-1][0], i);
+          for (i = 2;i < szes.length+2;i++) {
+            var sze = new Option(szes[i-2][0], i);
             sizeList.options.add(sze);
           }
         }
@@ -870,17 +873,17 @@
         document.getElementById("entSSN").value = "";
         document.getElementById("entStyle").value = "";
         document.getElementById("entManufacturer").value = "";
-        while (document.getElementById("entManufacturer").options.length > 1) {
+        while (document.getElementById("entManufacturer").options.length > 2) {
           document.getElementById("entManufacturer").remove(1);
         }
         entManufacturer.disabled = true;
         document.getElementById("entModel").value = "";
-        while (document.getElementById("entModel").options.length > 1) {
+        while (document.getElementById("entModel").options.length > 2) {
           document.getElementById("entModel").remove(1);
         }
         entModel.disabled = true;
         document.getElementById("entSize").value = "";
-        while (document.getElementById("entSize").options.length > 1) {
+        while (document.getElementById("entSize").options.length > 2) {
           document.getElementById("entSize").remove(1);
         }
         entSize.disabled = true;
