@@ -28,13 +28,15 @@ function myFunction() {
   y.innerHTML = "Custom";
   mySelect.add(x);
   mySelect.add(y);
+  demo.innerHTML = ent.children[0].id;
 }
 function addCustom(){
   if (mySelect.options[mySelect.selectedIndex].value == "custom"){
     var t = document.createElement("INPUT");
-    t.id = "entTxt";
+    t.id = "entInput";
     t.value = "Enter Custom";
     ent.replaceChild(t,mySelect);
+    demo.innerHTML = ent.children[0].id;
   }
 }
 </script>
