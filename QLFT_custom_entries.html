@@ -382,7 +382,6 @@
             <td id="cellManufacturer" class="m">
               <select id="entManufacturer" class="m" onchange="changeModelList()" disabled>
                 <option value="">--Select--</option>
-                <option value="custom">Other/Custom</option>
               </select>
             </td>
           </tr>
@@ -391,7 +390,6 @@
             <td id="cellModel" class="m">
               <select id="entModel" class="m" onchange="changeSizeList()" disabled>
                 <option value="">--Select--</option>
-                <option value="custom">Other/Custom</option>
               </select>
             </td>
           </tr>
@@ -400,7 +398,6 @@
             <td id="cellSize" class="m">
               <select id="entSize" class="m" onchange="enableProtocol()" disabled>
                 <option value="">--Select--</option>
-                <option value="custom">Other/Custom</option>
               </select>
             </td>
           </tr>
@@ -571,6 +568,7 @@
       }
       var manufacturers = {};
       manufacturers["FF"] = [
+        ["ffOC","Other/Custom"],
         ["ff3M","3M Company"],
         ["ffDR","Drager"],
         ["ffGR","Gerson"],
@@ -583,6 +581,7 @@
         ["ffUL","Uline"]
       ];
       manufacturers["HM"] = [
+        ["hmOC","Other/Custom"],
         ["hm3M","3M Company"],
         ["hmAS","Allegro"],
         ["hmDR","Drager"],
@@ -605,14 +604,14 @@
         var modelList = document.getElementById("entModel");
         var sizeList = document.getElementById("entSize");
         var selStyle = styleList.options[styleList.selectedIndex].value;
-        while (manufacturerList.options.length > 2) {
-          manufacturerList.remove(2);
+        while (manufacturerList.options.length > 1) {
+          manufacturerList.remove(1);
         }
-        while (modelList.options.length > 2) {
-          modelList.remove(2);
+        while (modelList.options.length > 1) {
+          modelList.remove(1);
         }
-        while (sizeList.options.length > 2) {
-          sizeList.remove(2);
+        while (sizeList.options.length > 1) {
+          sizeList.remove(1);
         }
         document.getElementById("entManufacturer").value="";
         document.getElementById("entModel").value="";
@@ -623,15 +622,19 @@
         var mfrs = manufacturers[selStyle];
         if (mfrs) {
           var i;
-          for (i = 2;i < mfrs.length+2;i++) {
-            var mfr = new Option(mfrs[i-2][1], i);
-            mfr.value = mfrs[i-2][0];
+          for (i = 1;i < mfrs.length+1;i++) {
+            var mfr = new Option(mfrs[i-1][1], i);
+            mfr.value = mfrs[i-1][0];
             manufacturerList.options.add(mfr);
           }
         }
       }
       var models = {};
+      models["ffOC"] = [
+        ["szOC","Other/Custom"]
+      ];
       models["ff3M"]= [
+        ["szOC","Other/Custom"],
         ["sz10","1804/1804S"],["sz10","1805/1805S"],
         ["sz10","1860/1860S"],["sz12","1870"],
         ["sz12","1870+"],["sz12","8000"],
@@ -653,25 +656,30 @@
         ["sz12","9926"]
       ];
       models["ffDR"]= [
+        ["szOC","Other/Custom"],
         ["sz12","Piccola"],
         ["sz12","X-Plore 1350"],
         ["sz12","X-Plore 1730"]
       ];
       models["ffGR"]= [
+        ["szOC","Other/Custom"],
         ["sz12","1730"],["sz12","1740"]
       ];
       models["ffHH"]= [
+        ["szOC","Other/Custom"],
         ["sz04","Fluidshield N95 46727"],
         ["sz04","Fluidshield N95 46767"],
         ["sz05","Fluidshield N95 46827"],
         ["sz05","Fluidshield N95 46867"]
       ];
       models["ffHW"]= [
+        ["szOC","Other/Custom"],
         ["sz12","NBW95V"],
         ["sz08","Saf-T-Fit"],
         ["sz03","Saf-T-Fit Plus P1135"]
       ];
       models["ffKC"]= [
+        ["szOC","Other/Custom"],
         ["sz09","Fluidshield PFR95"],
         ["sz04","Fluidshield N95 46727"],
         ["sz04","Fluidshield N95 46767"],
@@ -679,6 +687,7 @@
         ["sz05","Fluidshield N95 46867"]
       ];
       models["ffMX"]= [
+        ["szOC","Other/Custom"],
         ["sz01","1500 Series"],
         ["sz07","2200"],
         ["sz02","2300"],
@@ -692,31 +701,42 @@
         ["sz05","4201"]
       ];
       models["ffPC"]= [
+        ["szOC","Other/Custom"],
         ["sz12","65-3395"]
       ];
       models["ffSL"]= [
+        ["szOC","Other/Custom"],
         ["sz11","B130/B150"]
       ];
       models["ffUL"]= [
+        ["szOC","Other/Custom"],
         ["sz12","S-9632"]
       ];
+      models["hmOC"] = [
+        ["szOC","Other/Custom"]
+      ];
       models["hm3M"] = [
+        ["szOC","Other/Custom"],
         ["sz06","5000 Series"],
         ["sz06","6000 Series - HF"],
         ["sz06","7500 Series"]
       ];
       models["hmAS"] = [
+        ["szOC","Other/Custom"],
         ["sz04","9920"]
       ];
       models["hmDR"] = [
+        ["szOC","Other/Custom"],
         ["sz11","X-Plore 4740"]
       ];
       models["hmHW"] = [
+        ["szOC","Other/Custom"],
         ["sz06","Survivair 2000"],
         ["sz06","Survivair Blue 1"],
         ["sz06","Survivair Premier"]
       ];
       models["hmMS"] = [
+        ["szOC","Other/Custom"],
         ["sz06","Advantage 200 LS"],
         ["sz06","Advantage 290"],
         ["sz06","Comfo II"],
@@ -724,6 +744,7 @@
         ["sz06","Comfo Elite"]
       ];
       models["hmNS"] = [
+        ["szOC","Other/Custom"],
         ["sz06","7700"]
       ];
       function changeModelList() {
@@ -739,11 +760,11 @@
         var modelList = document.getElementById("entModel");
         var sizeList = document.getElementById("entSize");
         var selManufacturer = manufacturerList.options[manufacturerList.selectedIndex].value;
-        while (modelList.options.length>2) {
-          modelList.remove(2);
+        while (modelList.options.length>1) {
+          modelList.remove(1);
         }
-        while (sizeList.options.length > 2) {
-          sizeList.remove(2);
+        while (sizeList.options.length > 1) {
+          sizeList.remove(1);
         }
         document.getElementById("entModel").value="";
         document.getElementById("entSize").value="";
@@ -753,14 +774,17 @@
         var mdls = models[selManufacturer];
         if (mdls) {
           var i;
-          for (i = 2;i < mdls.length+2;i++) {
-            var mdl = new Option(mdls[i-2][1], i);
-            mdl.value = mdls[i-2][0];
+          for (i = 1;i < mdls.length+1;i++) {
+            var mdl = new Option(mdls[i-1][1], i);
+            mdl.value = mdls[i-1][0];
             modelList.options.add(mdl);
           }
         }
       }
       var sizes = {};
+      sizes["szOC"] = [
+        ["Other/Custom"]
+      ];
       sizes["sz01"] = [
         ["Extra Small"],["Small"],
         ["Medium"],["Large"]
@@ -812,8 +836,8 @@
         var modelList = document.getElementById("entModel");
         var sizeList = document.getElementById("entSize");
         var selModel = modelList.options[modelList.selectedIndex].value;
-        while (sizeList.options.length > 2) {
-          sizeList.remove(2);
+        while (sizeList.options.length > 1) {
+          sizeList.remove(1);
         }
         document.getElementById("entSize").value="";
         document.getElementById("entProtocol").value="";
@@ -822,8 +846,8 @@
         var szes = sizes[selModel];
         if (szes) {
           var i;
-          for (i = 2;i < szes.length+2;i++) {
-            var sze = new Option(szes[i-2][0], i);
+          for (i = 1;i < szes.length+1;i++) {
+            var sze = new Option(szes[i-1][0], i);
             sizeList.options.add(sze);
           }
         }
@@ -834,6 +858,8 @@
         } else {
           entProtocol.disabled = true;
         }
+        document.getElementById("entProtocol").value="";
+        document.getElementById("entTaste").value="";
         entTaste.disabled = true;
       }
       function enableTaste() {
