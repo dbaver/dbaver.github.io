@@ -606,13 +606,13 @@
         var sizeList = document.getElementById("entSize");
         var selStyle = styleList.options[styleList.selectedIndex].value;
         while (manufacturerList.options.length > 2) {
-          manufacturerList.remove(1);
+          manufacturerList.remove(2);
         }
         while (modelList.options.length > 2) {
-          modelList.remove(1);
+          modelList.remove(2);
         }
         while (sizeList.options.length > 2) {
-          sizeList.remove(1);
+          sizeList.remove(2);
         }
         document.getElementById("entProtocol").value="";
         document.getElementById("entTaste").value="";
@@ -737,10 +737,10 @@
         var sizeList = document.getElementById("entSize");
         var selManufacturer = manufacturerList.options[manufacturerList.selectedIndex].value;
         while (modelList.options.length>2) {
-          modelList.remove(1);
+          modelList.remove(2);
         }
         while (sizeList.options.length > 2) {
-          sizeList.remove(1);
+          sizeList.remove(2);
         }
         document.getElementById("entProtocol").value="";
         document.getElementById("entTaste").value="";
@@ -808,7 +808,7 @@
         var sizeList = document.getElementById("entSize");
         var selModel = modelList.options[modelList.selectedIndex].value;
         while (sizeList.options.length > 2) {
-          sizeList.remove(1);
+          sizeList.remove(2);
         }
         document.getElementById("entProtocol").value="";
         document.getElementById("entTaste").value="";
@@ -874,17 +874,17 @@
         document.getElementById("entStyle").value = "";
         document.getElementById("entManufacturer").value = "";
         while (document.getElementById("entManufacturer").options.length > 2) {
-          document.getElementById("entManufacturer").remove(1);
+          document.getElementById("entManufacturer").remove(2);
         }
         entManufacturer.disabled = true;
         document.getElementById("entModel").value = "";
         while (document.getElementById("entModel").options.length > 2) {
-          document.getElementById("entModel").remove(1);
+          document.getElementById("entModel").remove(2);
         }
         entModel.disabled = true;
         document.getElementById("entSize").value = "";
         while (document.getElementById("entSize").options.length > 2) {
-          document.getElementById("entSize").remove(1);
+          document.getElementById("entSize").remove(2);
         }
         entSize.disabled = true;
         document.getElementById("entProtocol").value = "";
