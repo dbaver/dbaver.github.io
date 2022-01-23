@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<table>
+  <tr>
+    <td id="ent">
+      <select id="mySelect" onchange="addCustom()">
+        <option value="">--Select--</option>
+      </select>
+    </td>
+  </tr>
+</table>
+
+<p>Click the button to create an OPTION element.</p>
+
+<button onclick="myFunction()">Try it</button>
+
+<p id="demo">No Custom</p>
+
+<script>
+function myFunction() {
+  var x = document.createElement("OPTION");
+  x.value = "volvocar";
+  x.innerHTML = "Volvo";
+  var y = document.createElement("OPTION");
+  y.value = "custom";
+  y.innerHTML = "Custom";
+  mySelect.add(x);
+  mySelect.add(y);
+}
+function addCustom(){
+  if (mySelect.options[mySelect.selectedIndex].value == "custom"){
+    var t = document.createElement("INPUT");
+    t.id = "entTxt";
+    t.value = "Enter Custom";
+    ent.replaceChild(t,mySelect);
+  }
+}
+</script>
+
+</body>
+</html>
