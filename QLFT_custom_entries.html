@@ -521,51 +521,6 @@
       app.i = 0;
       app.t = 0;
       app.r = 0;
-      function fitRecords() {
-        document.getElementById("app").hidden = true;
-        document.getElementById("mbr").hidden = true;
-        document.getElementById("res").hidden = true;
-        document.getElementById("fit").hidden = false;
-      }
-      function member() {
-        btnApp.onclick = "";
-        btnApp.value = ("00" + app.t).slice(-2);
-        lblExc.innerHTML = app.exercises[app.i];
-        btnMbr.onclick = addMember;
-        var d = new Date();
-        var yyyy = d.getFullYear();
-        var mm = d.getMonth()+1;
-        mm = ("00" + mm).slice(-2);
-        var dd = d.getDate();
-        dd = ("00" + dd).slice(-2);
-        entTestDate.value = yyyy + "/" + mm + "/" + dd;
-        entDueDate.value = (yyyy + 1) + "/" + mm + "/" + dd;
-        var hh = d.getHours();
-        hh = ("00" + hh).slice(-2);
-        var mm = d.getMinutes();
-        mm = ("00" + mm).slice(-2);
-        entTestTime.value = hh + ":" + mm;
-        document.getElementById("app").hidden = true;
-        document.getElementById("mbr").hidden = false;
-        document.getElementById("res").hidden = true;
-        document.getElementById("fit").hidden = true;
-      }
-      function fName() {
-        var fn = entFirstName.value;
-        if (fn.length > 1) {
-          entFirstName.value = fn[0].toUpperCase() + fn.slice(-(fn.length-1)).toLowerCase();
-        } else {
-          entFirstName.value = fn[0].toUpperCase();
-        }
-      }
-      function lName() {
-        var ln = entLastName.value;
-        if (ln.length > 1) {
-          entLastName.value = ln[0].toUpperCase() + ln.slice(-(ln.length-1)).toLowerCase();
-        } else {
-          entLastName.value = ln[0].toUpperCase();
-        }
-      }
       var manufacturers = {};
       manufacturers["FF"] = [
         ["ffOC","Other/Custom"],
@@ -589,46 +544,6 @@
         ["hmMS","MSA"],
         ["hmNS","North Safety Products"]
       ];
-      function changeManufacturerList() {
-        if (entStyle.value != "") {
-          entManufacturer.disabled = false;
-        } else {
-          entManufacturer.disabled = true;
-        }
-        entModel.disabled = true;
-        entSize.disabled = true;
-        entProtocol.disabled = true;
-        entTaste.disabled = true;
-        var styleList = entStyle;
-        var manufacturerList = entManufacturer;
-        var modelList = entModel;
-        var sizeList = entSize;
-        var selStyle = styleList.options[styleList.selectedIndex].value;
-        while (manufacturerList.options.length > 1) {
-          manufacturerList.remove(1);
-        }
-        while (modelList.options.length > 1) {
-          modelList.remove(1);
-        }
-        while (sizeList.options.length > 1) {
-          sizeList.remove(1);
-        }
-        entManufacturer.value="";
-        entModel.value="";
-        entSize.value="";
-        entProtocol.value="";
-        entTaste.value="";
-        entTaste.disabled = true;
-        var mfrs = manufacturers[selStyle];
-        if (mfrs) {
-          var i;
-          for (i = 1;i < mfrs.length+1;i++) {
-            var mfr = new Option(mfrs[i-1][1], i);
-            mfr.value = mfrs[i-1][0];
-            manufacturerList.options.add(mfr);
-          }
-        }
-      }
       var models = {};
       models["ffOC"] = [
         ["szOC","Other/Custom"]
@@ -747,40 +662,6 @@
         ["szOC","Other/Custom"],
         ["sz06","7700"]
       ];
-      function changeModelList() {
-        if (entManufacturer.value != "") {
-          entModel.disabled = false;
-        } else {
-          entModel.disabled = true;
-        }
-        entSize.disabled = true;
-        entProtocol.disabled = true;
-        entTaste.disabled = true;
-        var manufacturerList = entManufacturer;
-        var modelList = entModel;
-        var sizeList = entSize;
-        var selManufacturer = manufacturerList.options[manufacturerList.selectedIndex].value;
-        while (modelList.options.length>1) {
-          modelList.remove(1);
-        }
-        while (sizeList.options.length > 1) {
-          sizeList.remove(1);
-        }
-        entModel.value="";
-        entSize.value="";
-        entProtocol.value="";
-        entTaste.value="";
-        entTaste.disabled = true;
-        var mdls = models[selManufacturer];
-        if (mdls) {
-          var i;
-          for (i = 1;i < mdls.length+1;i++) {
-            var mdl = new Option(mdls[i-1][1], i);
-            mdl.value = mdls[i-1][0];
-            modelList.options.add(mdl);
-          }
-        }
-      }
       var sizes = {};
       sizes["szOC"] = [
         ["Other/Custom"]
@@ -825,6 +706,125 @@
       sizes["sz13"] = [
         ["Low Profile"]
       ];
+      function fitRecords() {
+        document.getElementById("app").hidden = true;
+        document.getElementById("mbr").hidden = true;
+        document.getElementById("res").hidden = true;
+        document.getElementById("fit").hidden = false;
+      }
+      function member() {
+        btnApp.onclick = "";
+        btnApp.value = ("00" + app.t).slice(-2);
+        lblExc.innerHTML = app.exercises[app.i];
+        btnMbr.onclick = addMember;
+        var d = new Date();
+        var yyyy = d.getFullYear();
+        var mm = d.getMonth()+1;
+        mm = ("00" + mm).slice(-2);
+        var dd = d.getDate();
+        dd = ("00" + dd).slice(-2);
+        entTestDate.value = yyyy + "/" + mm + "/" + dd;
+        entDueDate.value = (yyyy + 1) + "/" + mm + "/" + dd;
+        var hh = d.getHours();
+        hh = ("00" + hh).slice(-2);
+        var mm = d.getMinutes();
+        mm = ("00" + mm).slice(-2);
+        entTestTime.value = hh + ":" + mm;
+        document.getElementById("app").hidden = true;
+        document.getElementById("mbr").hidden = false;
+        document.getElementById("res").hidden = true;
+        document.getElementById("fit").hidden = true;
+      }
+      function fName() {
+        var fn = entFirstName.value;
+        if (fn.length > 1) {
+          entFirstName.value = fn[0].toUpperCase() + fn.slice(-(fn.length-1)).toLowerCase();
+        } else {
+          entFirstName.value = fn[0].toUpperCase();
+        }
+      }
+      function lName() {
+        var ln = entLastName.value;
+        if (ln.length > 1) {
+          entLastName.value = ln[0].toUpperCase() + ln.slice(-(ln.length-1)).toLowerCase();
+        } else {
+          entLastName.value = ln[0].toUpperCase();
+        }
+      }
+      function changeManufacturerList() {
+        if (entStyle.value != "") {
+          entManufacturer.disabled = false;
+        } else {
+          entManufacturer.disabled = true;
+        }
+        entModel.disabled = true;
+        entSize.disabled = true;
+        entProtocol.disabled = true;
+        entTaste.disabled = true;
+        var styleList = entStyle;
+        var manufacturerList = entManufacturer;
+        var modelList = entModel;
+        var sizeList = entSize;
+        var selStyle = styleList.options[styleList.selectedIndex].value;
+        while (manufacturerList.options.length > 1) {
+          manufacturerList.remove(1);
+        }
+        while (modelList.options.length > 1) {
+          modelList.remove(1);
+        }
+        while (sizeList.options.length > 1) {
+          sizeList.remove(1);
+        }
+        entManufacturer.value="";
+        entModel.value="";
+        entSize.value="";
+        entProtocol.value="";
+        entTaste.value="";
+        entTaste.disabled = true;
+        var mfrs = manufacturers[selStyle];
+        if (mfrs) {
+          var i;
+          for (i = 1;i < mfrs.length+1;i++) {
+            var mfr = new Option(mfrs[i-1][1], i);
+            mfr.value = mfrs[i-1][0];
+            manufacturerList.options.add(mfr);
+          }
+        }
+      }
+      function changeModelList() {
+        if (entManufacturer.value != "") {
+          entModel.disabled = false;
+        } else {
+          entModel.disabled = true;
+        }
+        entSize.disabled = true;
+        entProtocol.disabled = true;
+        entTaste.disabled = true;
+        var manufacturerList = entManufacturer;
+        var modelList = entModel;
+        var sizeList = entSize;
+        var selManufacturer = manufacturerList.options[manufacturerList.selectedIndex].value;
+        while (modelList.options.length>1) {
+          modelList.remove(1);
+        }
+        while (sizeList.options.length > 1) {
+          sizeList.remove(1);
+        }
+        entModel.value="";
+        entSize.value="";
+        entProtocol.value="";
+        entTaste.value="";
+        entTaste.disabled = true;
+        var mdls = models[selManufacturer];
+        if (mdls) {
+          var i;
+          for (i = 1;i < mdls.length+1;i++) {
+            var mdl = new Option(mdls[i-1][1], i);
+            mdl.value = mdls[i-1][0];
+            modelList.options.add(mdl);
+          }
+        }
+      }
       function changeSizeList() {
         if (entModel.value != "") {
           entSize.disabled = false;
