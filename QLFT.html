@@ -379,7 +379,7 @@
           </tr>
           <tr>
             <td class="m"><label id="lblManufacturer" for="entManufacturer">Manufacturer:</label></td>
-            <td class="m">
+            <td id="cellManufacturer" class="m">
               <select id="entManufacturer" class="m" onchange="changeModelList()" disabled>
                 <option value="">--Select--</option>
               </select>
@@ -387,7 +387,7 @@
           </tr>
           <tr>
             <td class="m"><label id="lblModel" for="entModel"></label>Model #:</td>
-            <td class="m">
+            <td id="cellModel" class="m">
               <select id="entModel" class="m" onchange="changeSizeList()" disabled>
                 <option value="">--Select--</option>
               </select>
@@ -395,7 +395,7 @@
           </tr>
           <tr>
             <td class="m"><label id="lblSize" for="entSize">Mask Size:</label></td>
-            <td class="m">
+            <td id="cellSize" class="m">
               <select id="entSize" class="m" onchange="enableProtocol()" disabled>
                 <option value="">--Select--</option>
               </select>
@@ -482,10 +482,10 @@
       try {
         var fitTableContents = localStorage.getItem("fitTableContents",fitTableContents);
         if (fitTableContents == null) {
-          fitTableContents = document.getElementById("fitTable").innerHTML;
+          fitTableContents = fitTable.innerHTML;
           localStorage.setItem("fitTableContents",fitTableContents);
         } else {
-          document.getElementById("fitTable").innerHTML = fitTableContents;
+          fitTable.innerHTML = fitTableContents;
         }
       }
       catch(err) {
@@ -528,46 +528,47 @@
         document.getElementById("fit").hidden = false;
       }
       function member() {
-        document.getElementById("btnApp").onclick = "";
-        document.getElementById("btnApp").value = ("00" + app.t).slice(-2);
-        document.getElementById("lblExc").innerHTML = app.exercises[app.i];
-        document.getElementById("btnMbr").onclick = addMember;
+        btnApp.onclick = "";
+        btnApp.value = ("00" + app.t).slice(-2);
+        lblExc.innerHTML = app.exercises[app.i];
+        btnMbr.onclick = addMember;
         var d = new Date();
         var yyyy = d.getFullYear();
         var mm = d.getMonth()+1;
         mm = ("00" + mm).slice(-2);
         var dd = d.getDate();
         dd = ("00" + dd).slice(-2);
-        document.getElementById("entTestDate").value = yyyy + "/" + mm + "/" + dd;
-        document.getElementById("entDueDate").value = (yyyy + 1) + "/" + mm + "/" + dd;
+        entTestDate.value = yyyy + "/" + mm + "/" + dd;
+        entDueDate.value = (yyyy + 1) + "/" + mm + "/" + dd;
         var hh = d.getHours();
         hh = ("00" + hh).slice(-2);
         var mm = d.getMinutes();
         mm = ("00" + mm).slice(-2);
-        document.getElementById("entTestTime").value = hh + ":" + mm;
+        entTestTime.value = hh + ":" + mm;
         document.getElementById("app").hidden = true;
         document.getElementById("mbr").hidden = false;
         document.getElementById("res").hidden = true;
         document.getElementById("fit").hidden = true;
       }
       function fName() {
-        var fn = document.getElementById("entFirstName").value;
+        var fn = entFirstName.value;
         if (fn.length > 1) {
-          document.getElementById("entFirstName").value = fn[0].toUpperCase() + fn.slice(-(fn.length-1)).toLowerCase();
+          entFirstName.value = fn[0].toUpperCase() + fn.slice(-(fn.length-1)).toLowerCase();
         } else {
-          document.getElementById("entFirstName").value = fn[0].toUpperCase();
+          entFirstName.value = fn[0].toUpperCase();
         }
       }
       function lName() {
-        var ln = document.getElementById("entLastName").value;
+        var ln = entLastName.value;
         if (ln.length > 1) {
-          document.getElementById("entLastName").value = ln[0].toUpperCase() + ln.slice(-(ln.length-1)).toLowerCase();
+          entLastName.value = ln[0].toUpperCase() + ln.slice(-(ln.length-1)).toLowerCase();
         } else {
-          document.getElementById("entLastName").value = ln[0].toUpperCase();
+          entLastName.value = ln[0].toUpperCase();
         }
       }
       var manufacturers = {};
       manufacturers["FF"] = [
+        ["ffOC","Other/Custom"],
         ["ff3M","3M Company"],
         ["ffDR","Drager"],
         ["ffGR","Gerson"],
@@ -580,6 +581,7 @@
         ["ffUL","Uline"]
       ];
       manufacturers["HM"] = [
+        ["hmOC","Other/Custom"],
         ["hm3M","3M Company"],
         ["hmAS","Allegro"],
         ["hmDR","Drager"],
@@ -597,10 +599,10 @@
         entSize.disabled = true;
         entProtocol.disabled = true;
         entTaste.disabled = true;
-        var styleList = document.getElementById("entStyle");
-        var manufacturerList = document.getElementById("entManufacturer");
-        var modelList = document.getElementById("entModel");
-        var sizeList = document.getElementById("entSize");
+        var styleList = entStyle;
+        var manufacturerList = entManufacturer;
+        var modelList = entModel;
+        var sizeList = entSize;
         var selStyle = styleList.options[styleList.selectedIndex].value;
         while (manufacturerList.options.length > 1) {
           manufacturerList.remove(1);
@@ -611,9 +613,12 @@
         while (sizeList.options.length > 1) {
           sizeList.remove(1);
         }
-        document.getElementById("entProtocol").value="";
-        document.getElementById("entTaste").value="";
-        document.getElementById("entTaste").disabled = true;
+        entManufacturer.value="";
+        entModel.value="";
+        entSize.value="";
+        entProtocol.value="";
+        entTaste.value="";
+        entTaste.disabled = true;
         var mfrs = manufacturers[selStyle];
         if (mfrs) {
           var i;
@@ -625,7 +630,11 @@
         }
       }
       var models = {};
+      models["ffOC"] = [
+        ["szOC","Other/Custom"]
+      ];
       models["ff3M"]= [
+        ["szOC","Other/Custom"],
         ["sz10","1804/1804S"],["sz10","1805/1805S"],
         ["sz10","1860/1860S"],["sz12","1870"],
         ["sz12","1870+"],["sz12","8000"],
@@ -647,25 +656,30 @@
         ["sz12","9926"]
       ];
       models["ffDR"]= [
+        ["szOC","Other/Custom"],
         ["sz12","Piccola"],
         ["sz12","X-Plore 1350"],
         ["sz12","X-Plore 1730"]
       ];
       models["ffGR"]= [
+        ["szOC","Other/Custom"],
         ["sz12","1730"],["sz12","1740"]
       ];
       models["ffHH"]= [
+        ["szOC","Other/Custom"],
         ["sz04","Fluidshield N95 46727"],
         ["sz04","Fluidshield N95 46767"],
         ["sz05","Fluidshield N95 46827"],
         ["sz05","Fluidshield N95 46867"]
       ];
       models["ffHW"]= [
+        ["szOC","Other/Custom"],
         ["sz12","NBW95V"],
         ["sz08","Saf-T-Fit"],
         ["sz03","Saf-T-Fit Plus P1135"]
       ];
       models["ffKC"]= [
+        ["szOC","Other/Custom"],
         ["sz09","Fluidshield PFR95"],
         ["sz04","Fluidshield N95 46727"],
         ["sz04","Fluidshield N95 46767"],
@@ -673,6 +687,7 @@
         ["sz05","Fluidshield N95 46867"]
       ];
       models["ffMX"]= [
+        ["szOC","Other/Custom"],
         ["sz01","1500 Series"],
         ["sz07","2200"],
         ["sz02","2300"],
@@ -686,31 +701,42 @@
         ["sz05","4201"]
       ];
       models["ffPC"]= [
+        ["szOC","Other/Custom"],
         ["sz12","65-3395"]
       ];
       models["ffSL"]= [
+        ["szOC","Other/Custom"],
         ["sz11","B130/B150"]
       ];
       models["ffUL"]= [
+        ["szOC","Other/Custom"],
         ["sz12","S-9632"]
       ];
+      models["hmOC"] = [
+        ["szOC","Other/Custom"]
+      ];
       models["hm3M"] = [
+        ["szOC","Other/Custom"],
         ["sz06","5000 Series"],
         ["sz06","6000 Series - HF"],
         ["sz06","7500 Series"]
       ];
       models["hmAS"] = [
+        ["szOC","Other/Custom"],
         ["sz04","9920"]
       ];
       models["hmDR"] = [
+        ["szOC","Other/Custom"],
         ["sz11","X-Plore 4740"]
       ];
       models["hmHW"] = [
+        ["szOC","Other/Custom"],
         ["sz06","Survivair 2000"],
         ["sz06","Survivair Blue 1"],
         ["sz06","Survivair Premier"]
       ];
       models["hmMS"] = [
+        ["szOC","Other/Custom"],
         ["sz06","Advantage 200 LS"],
         ["sz06","Advantage 290"],
         ["sz06","Comfo II"],
@@ -718,6 +744,7 @@
         ["sz06","Comfo Elite"]
       ];
       models["hmNS"] = [
+        ["szOC","Other/Custom"],
         ["sz06","7700"]
       ];
       function changeModelList() {
@@ -729,9 +756,9 @@
         entSize.disabled = true;
         entProtocol.disabled = true;
         entTaste.disabled = true;
-        var manufacturerList = document.getElementById("entManufacturer");
-        var modelList = document.getElementById("entModel");
-        var sizeList = document.getElementById("entSize");
+        var manufacturerList = entManufacturer;
+        var modelList = entModel;
+        var sizeList = entSize;
         var selManufacturer = manufacturerList.options[manufacturerList.selectedIndex].value;
         while (modelList.options.length>1) {
           modelList.remove(1);
@@ -739,9 +766,11 @@
         while (sizeList.options.length > 1) {
           sizeList.remove(1);
         }
-        document.getElementById("entProtocol").value="";
-        document.getElementById("entTaste").value="";
-        document.getElementById("entTaste").disabled = true;
+        entModel.value="";
+        entSize.value="";
+        entProtocol.value="";
+        entTaste.value="";
+        entTaste.disabled = true;
         var mdls = models[selManufacturer];
         if (mdls) {
           var i;
@@ -753,6 +782,9 @@
         }
       }
       var sizes = {};
+      sizes["szOC"] = [
+        ["Other/Custom"]
+      ];
       sizes["sz01"] = [
         ["Extra Small"],["Small"],
         ["Medium"],["Large"]
@@ -801,15 +833,16 @@
         }
         entProtocol.disabled = true;
         entTaste.disabled = true;
-        var modelList = document.getElementById("entModel");
-        var sizeList = document.getElementById("entSize");
+        var modelList = entModel;
+        var sizeList = entSize;
         var selModel = modelList.options[modelList.selectedIndex].value;
         while (sizeList.options.length > 1) {
           sizeList.remove(1);
         }
-        document.getElementById("entProtocol").value="";
-        document.getElementById("entTaste").value="";
-        document.getElementById("entTaste").disabled = true;
+        entSize.value="";
+        entProtocol.value="";
+        entTaste.value="";
+        entTaste.disabled = true;
         var szes = sizes[selModel];
         if (szes) {
           var i;
@@ -825,77 +858,72 @@
         } else {
           entProtocol.disabled = true;
         }
-        document.getElementById("entProtocol").value="";
-        document.getElementById("entTaste").value="";
+        entProtocol.value="";
+        entTaste.value="";
         entTaste.disabled = true;
       }
       function enableTaste() {
-        var p = document.getElementById("entProtocol").value;
-        document.getElementById("entTaste").value = "";
+        var p = entProtocol.value;
+        entTaste.value = "";
         if (p == "Saccharin Solution Aerosol" || p =="BitrexTM (Denatonium Benzoate) Solution Aerosol") {
-          document.getElementById("entTaste").disabled = false;
+          entTaste.disabled = false;
         } else {
-          document.getElementById("entTaste").disabled = true;
+          entTaste.disabled = true;
         }
       }
       function addMember() {
-        var p = document.getElementById("entProtocol").value;
+        var p = entProtocol.value;
         if (p == "Saccharin Solution Aerosol" || p =="BitrexTM (Denatonium Benzoate) Solution Aerosol") {
           app.neb = true;
         }
-        if (document.getElementById("lblMembers").innerHTML.length>0) {
-          document.getElementById("lblMembers").innerHTML = 
-            document.getElementById("lblMembers").innerHTML + " | " + 
-            document.getElementById("entFirstName").value + " " + 
-            document.getElementById("entLastName").value;
+        if (lblMembers.innerHTML.length>0) {
+          lblMembers.innerHTML = lblMembers.innerHTML + " | " + entFirstName.value + " " + entLastName.value;
         } else {
-          document.getElementById("lblMembers").innerHTML = 
-            document.getElementById("entFirstName").value + " " + 
-            document.getElementById("entLastName").value;
+          lblMembers.innerHTML = entFirstName.value + " " + entLastName.value;
         }
         app.fitTests.push({
-          "First Name":document.getElementById("entFirstName").value,
-          "Last Name":document.getElementById("entLastName").value,
-          "SSN":document.getElementById("entSSN").value,
-          "Test Date":document.getElementById("entTestDate").value,
-          "Test Time":document.getElementById("entTestTime").value,
-          "Due Date":document.getElementById("entDueDate").value,
-          "Mask Style":document.getElementById("entStyle").options[document.getElementById("entStyle").selectedIndex].innerHTML,
-          "Manufacturer":document.getElementById("entManufacturer").options[document.getElementById("entManufacturer").selectedIndex].innerHTML,
-          "Model #":document.getElementById("entModel").options[document.getElementById("entModel").selectedIndex].innerHTML,
-          "Mask Size":document.getElementById("entSize").options[document.getElementById("entSize").selectedIndex].innerHTML,
-          "QLFT Type":document.getElementById("entProtocol").value,
-          "Taste Threshold":document.getElementById("entTaste").value
+          "First Name":entFirstName.value,
+          "Last Name":entLastName.value,
+          "SSN":entSSN.value,
+          "Test Date":entTestDate.value,
+          "Test Time":entTestTime.value,
+          "Due Date":entDueDate.value,
+          "Mask Style":entStyle.options[entStyle.selectedIndex].innerHTML,
+          "Manufacturer":entManufacturer.options[entManufacturer.selectedIndex].innerHTML,
+          "Model #":entModel.options[entModel.selectedIndex].innerHTML,
+          "Mask Size":entSize.options[entSize.selectedIndex].innerHTML,
+          "QLFT Type":entProtocol.value,
+          "Taste Threshold":entTaste.value
         });
-        document.getElementById("entFirstName").value = "";
-        document.getElementById("entLastName").value = "";
-        document.getElementById("entSSN").value = "";
-        document.getElementById("entStyle").value = "";
-        document.getElementById("entManufacturer").value = "";
-        while (document.getElementById("entManufacturer").options.length > 1) {
-          document.getElementById("entManufacturer").remove(1);
+        entFirstName.value = "";
+        entLastName.value = "";
+        entSSN.value = "";
+        entStyle.value = "";
+        entManufacturer.value = "";
+        while (entManufacturer.options.length > 1) {
+          entManufacturer.remove(1);
         }
         entManufacturer.disabled = true;
-        document.getElementById("entModel").value = "";
-        while (document.getElementById("entModel").options.length > 1) {
-          document.getElementById("entModel").remove(1);
+        entModel.value = "";
+        while (entModel.options.length > 1) {
+          entModel.remove(1);
         }
         entModel.disabled = true;
-        document.getElementById("entSize").value = "";
-        while (document.getElementById("entSize").options.length > 1) {
-          document.getElementById("entSize").remove(1);
+        entSize.value = "";
+        while (entSize.options.length > 1) {
+          entSize.remove(1);
         }
         entSize.disabled = true;
-        document.getElementById("entProtocol").value = "";
+        entProtocol.value = "";
         entProtocol.disabled = true;
-        document.getElementById("entTaste").value = "";
-        document.getElementById("entTaste").disabled = true;
-        document.getElementById("btnStart").onclick = openQLFT;
+        entTaste.value = "";
+        entTaste.disabled = true;
+        btnStart.onclick = openQLFT;
       }
       function openQLFT() {
-        document.getElementById("lblMembers").innerHTML = "";
-        document.getElementById("btnStart").onclick = "";
-        document.getElementById("btnMbr").onclick = "";
+        lblMembers.innerHTML = "";
+        btnStart.onclick = "";
+        btnMbr.onclick = "";
         document.getElementById("app").hidden = false;
         document.getElementById("mbr").hidden = true;
         document.getElementById("res").hidden = true;
@@ -905,18 +933,18 @@
       }
       function QLFT() {
         if (app.i < app.exercises.length) {
-          document.getElementById("lblExc").innerHTML = app.exercises[app.i];
+          lblExc.innerHTML = app.exercises[app.i];
           if (((app.t <= 2) || (app.t >= 28 && app.t <= 32) || (app.t >=58)) && app.neb) {
-            document.getElementById("lblNeb").style.padding = "0px";
-            document.getElementById("lblNeb").style.textAlign = "center";
-            document.getElementById("lblNeb").style.fontSize = "9vh";
-            document.getElementById("lblNeb").innerHTML = "SPRAY NEBULIZER";
+            lblNeb.style.padding = "0px";
+            lblNeb.style.textAlign = "center";
+            lblNeb.style.fontSize = "9vh";
+            lblNeb.innerHTML = "SPRAY NEBULIZER";
           } else {
             if (app.i == 4) {
-              document.getElementById("lblNeb").style.padding = "0px 25px";
-              document.getElementById("lblNeb").style.textAlign = "justify";
-              document.getElementById("lblNeb").style.fontSize = "5vh";
-              document.getElementById("lblNeb").innerHTML = "When the sunlight \
+              lblNeb.style.padding = "0px 25px";
+              lblNeb.style.textAlign = "justify";
+              lblNeb.style.fontSize = "5vh";
+              lblNeb.innerHTML = "When the sunlight \
               strikes raindrops in the air, they act like a prism and form a \
               rainbow. The rainbow is a division of white light into many beautiful \
               colors. These take the shape of a long round arch, with its path high \
@@ -925,10 +953,10 @@
               but no one ever finds it. When a man looks for something beyond reach, \
               his friends say he is looking for the pot of gold at the end of the rainbow.";
             } else {
-              document.getElementById("lblNeb").innerHTML = "";
+              lblNeb.innerHTML = "";
             }
           }
-          document.getElementById("btnApp").value = ("00" + app.t).slice(-2);
+          btnApp.value = ("00" + app.t).slice(-2);
           if (app.t == 59) {
             app.i += 1;
             app.t = 0;
@@ -943,30 +971,30 @@
       function result() {
         timeDrift -= new Date().getTime();
         var f0 = app.fitTests[app.r];
-        document.getElementById("lblResult").innerHTML = f0["First Name"] + " " + f0["Last Name"];
-        document.getElementById("chkPass").checked = false;
-        document.getElementById("chkFail").checked = false;
-        document.getElementById("chkPass").onclick = resultClicked;
-        document.getElementById("chkFail").onclick = resultClicked;
+        lblResult.innerHTML = f0["First Name"] + " " + f0["Last Name"];
+        chkPass.checked = false;
+        chkFail.checked = false;
+        chkPass.onclick = resultClicked;
+        chkFail.onclick = resultClicked;
         document.getElementById("app").hidden = true;
         document.getElementById("mbr").hidden = true;
         document.getElementById("res").hidden = false;
         document.getElementById("fit").hidden = true;
       }
       function resultClicked() {
-        document.getElementById("btnResult").onclick = record;
+        btnResult.onclick = record;
       }
       function record() {
-        document.getElementById("chkPass").onclick = "";
-        document.getElementById("chkFail").onclick = "";
-        document.getElementById("btnResult").onclick = "";
+        chkPass.onclick = "";
+        chkFail.onclick = "";
+        btnResult.onclick = "";
         var fc = app.fitTests[app.r];
-        if (document.getElementById("chkPass").checked) {
+        if (chkPass.checked) {
           fc["Pass"] = "Yes";
         } else {
           fc["Pass"] = "No";
         }
-        var table = document.getElementById("fitTable");
+        var table = fitTable;
         var r = table.rows.length;
         var row = table.insertRow(r);
         var cell = {};
@@ -978,14 +1006,14 @@
         app.r += 1;
         if (app.r < app.fitTests.length) {
           var fn = app.fitTests[app.r];
-          document.getElementById("lblResult").innerHTML = fn["First Name"] + " " + fn["Last Name"];
-          document.getElementById("chkPass").checked = false;
-          document.getElementById("chkFail").checked = false;
-          document.getElementById("chkPass").onclick = resultClicked;
-          document.getElementById("chkFail").onclick = resultClicked;
+          lblResult.innerHTML = fn["First Name"] + " " + fn["Last Name"];
+          chkPass.checked = false;
+          chkFail.checked = false;
+          chkPass.onclick = resultClicked;
+          chkFail.onclick = resultClicked;
         } else {
           try {
-            fitTableContents = document.getElementById("fitTable").innerHTML;
+            fitTableContents = fitTable.innerHTML;
             localStorage.removeItem("fitTableContents");
             localStorage.setItem("fitTableContents",fitTableContents);
           }
@@ -996,10 +1024,10 @@
           app.i=0;
           app.t=0;
           app.r=0;
-          document.getElementById("lblExc").innerHTML = "PRESS TO START";
-          document.getElementById("lblNeb").innerHTML = "";
-          document.getElementById("btnApp").value = "QLFT";
-          document.getElementById("btnApp").onclick = member;
+          lblExc.innerHTML = "PRESS TO START";
+          lblNeb.innerHTML = "";
+          btnApp.value = "QLFT";
+          btnApp.onclick = member;
           document.getElementById("app").hidden = true;
           document.getElementById("mbr").hidden = true;
           document.getElementById("res").hidden = true;
@@ -1020,7 +1048,7 @@
         mm = ("00" + mm).slice(-2);
         fileName += hh + mm + ".csv";
         var CSV = [];
-        var rows = document.getElementById("fitTable").rows;
+        var rows = fitTable.rows;
         var iTr = 0;
         for (iTr = 0;iTr < rows.length;iTr++) {
           var sTr = '';
@@ -1034,15 +1062,15 @@
         }
         CSV = CSV.join("\n");
         var csvFile = new Blob([CSV],{type:'text/csv'});
-        var a = document.getElementById("sl");
+        var a = sl;
         a.href = URL.createObjectURL(csvFile);
         a.download = fileName;
       }
       function application() {
-          document.getElementById("app").hidden = false;
-          document.getElementById("mbr").hidden = true;
-          document.getElementById("res").hidden = true;
-          document.getElementById("fit").hidden = true;
+        document.getElementById("app").hidden = false;
+        document.getElementById("mbr").hidden = true;
+        document.getElementById("res").hidden = true;
+        document.getElementById("fit").hidden = true;
       }
     </script>
   </body>
