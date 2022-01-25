@@ -12,7 +12,7 @@
         padding:0;
         background-color:lightgray;
       }
-      #app {
+      #exc {
         width:100%;
         height:100%;
         margin:0;
@@ -320,7 +320,7 @@
     </style>
   </head>
   <body>
-    <div id="app">
+    <div id="exc">
       <div id="a1">
         <p id="lblExc">PRESS TO START</p>
       </div>
@@ -379,7 +379,7 @@
           </tr>
           <tr>
             <td class="m"><label id="lblManufacturer" for="entManufacturer">Manufacturer:</label></td>
-            <td id="cellManufacturer" class="m">
+            <td id="cellMfr" class="m">
               <select id="entManufacturer" class="m" onchange="changeModelList()" disabled>
                 <option value="">--Select--</option>
               </select>
@@ -387,7 +387,7 @@
           </tr>
           <tr>
             <td class="m"><label id="lblModel" for="entModel"></label>Model #:</td>
-            <td id="cellModel" class="m">
+            <td id="cellMdl" class="m">
               <select id="entModel" class="m" onchange="changeSizeList()" disabled>
                 <option value="">--Select--</option>
               </select>
@@ -395,7 +395,7 @@
           </tr>
           <tr>
             <td class="m"><label id="lblSize" for="entSize">Mask Size:</label></td>
-            <td id="cellSize" class="m">
+            <td id="cellSze" class="m">
               <select id="entSize" class="m" onchange="enableProtocol()" disabled>
                 <option value="">--Select--</option>
               </select>
@@ -498,7 +498,7 @@
         "SIDE TO SIDE",
         "UP AND DOWN",
         "TALKING",
-        "BENDING OVER",
+        "JOGGING IN PLACE",
         "NORMAL BREATHING"
       ];
       app.fieldNames = [
@@ -518,10 +518,16 @@
       ];
       app.fitTests = [];
       app.neb = false;
+      app.c = 0;
       app.i = 0;
       app.t = 0;
       app.r = 0;
       var manufacturers = {};
+      var optManufacturer = entManufacturer;
+      var inpManufacturer = document.createElement("INPUT");
+      inpManufacturer.id = "txtManufacturer";
+      inpManufacturer.className = "m";
+      inpManufacturer.value = "Other/Custom";
       manufacturers["FF"] = [
         ["ffOC","Other/Custom"],
         ["ff3M","3M Company"],
@@ -545,6 +551,11 @@
         ["hmNS","North Safety Products"]
       ];
       var models = {};
+      var optModel = entModel;
+      var inpModel = document.createElement("INPUT");
+      inpModel.id = "txtModel";
+      inpModel.className = "m";
+      inpModel.value = "Other/Custom";
       models["ffOC"] = [
         ["szOC","Other/Custom"]
       ];
@@ -663,6 +674,11 @@
         ["sz06","7700"]
       ];
       var sizes = {};
+      var optSize = entSize;
+      var inpSize = document.createElement("INPUT");
+      inpSize.id = "txtSize";
+      inpSize.className = "m";
+      inpSize.value = "Other/Custom";
       sizes["szOC"] = [
         ["Other/Custom"]
       ];
@@ -707,10 +723,10 @@
         ["Low Profile"]
       ];
       function fitRecords() {
-        document.getElementById("app").hidden = true;
-        document.getElementById("mbr").hidden = true;
-        document.getElementById("res").hidden = true;
-        document.getElementById("fit").hidden = false;
+        exc.hidden = true;
+        mbr.hidden = true;
+        res.hidden = true;
+        fit.hidden = false;
       }
       function member() {
         btnApp.onclick = "";
@@ -730,10 +746,10 @@
         var mm = d.getMinutes();
         mm = ("00" + mm).slice(-2);
         entTestTime.value = hh + ":" + mm;
-        document.getElementById("app").hidden = true;
-        document.getElementById("mbr").hidden = false;
-        document.getElementById("res").hidden = true;
-        document.getElementById("fit").hidden = true;
+        exc.hidden = true;
+        mbr.hidden = false;
+        res.hidden = true;
+        fit.hidden = true;
       }
       function fName() {
         var fn = entFirstName.value;
@@ -815,6 +831,13 @@
         entProtocol.value="";
         entTaste.value="";
         entTaste.disabled = true;
+        // Logic test last two selManufacturer.value characters equaling "OC"
+        // Set app.c equal to 0 if logic test returns false, 3 if logic test returns true
+        // Logic test app.c being greater than 0
+        // If true, replace entManufacturer, entModel, and entSize HTML elements with
+        // inpManufacturer, inpModel, inpSize--element.replaceChild(new,old)--and
+        // re-initialize optManufacturer--remove all options except for one
+        // If false, update entModel options same as below
         var mdls = models[selManufacturer];
         if (mdls) {
           var i;
@@ -843,6 +866,12 @@
         entProtocol.value="";
         entTaste.value="";
         entTaste.disabled = true;
+        // Logic test selModel.value equaling "szOC"
+        // Set app.c equal to 0 if logic test returns false, 2 if logic test returns true
+        // Logic test app.c being greater than 0
+        // If true, replace entModel and entSize HTML elements with inpModel and
+        // inpSize and re-initialize optModel
+        // If false, update entSize options same as below
         var szes = sizes[selModel];
         if (szes) {
           var i;
@@ -881,6 +910,13 @@
         } else {
           lblMembers.innerHTML = entFirstName.value + " " + entLastName.value;
         }
+        // Switch on app.c for cases of 0, 2, and 3
+        // Case for app.c == 0 is same as below
+        // Case for app.c == 2 replaces the value pair for "Model #"
+        // and "Mask Size" with txtModel.value and txtSize.value
+        // Case for app.c == 3 replaces the value pairs for "Manufacturer",
+        // "Model #" and "Mask Size" with txtManufacturer.value,
+        // txtModel.value and txtSize.value
         app.fitTests.push({
           "First Name":entFirstName.value,
           "Last Name":entLastName.value,
@@ -895,6 +931,10 @@
           "QLFT Type":entProtocol.value,
           "Taste Threshold":entTaste.value
         });
+        // Handle re-initializing form fields in each case--applies to:
+        // entManufacturer/optManufacturer, txtManufacturer/inpManufacturer,
+        // entModel/optModel, txtModel/inpModel, entSize/optSize, and
+        // txtSize/inpSize--other form outside of switch
         entFirstName.value = "";
         entLastName.value = "";
         entSSN.value = "";
@@ -924,10 +964,10 @@
         lblMembers.innerHTML = "";
         btnStart.onclick = "";
         btnMbr.onclick = "";
-        document.getElementById("app").hidden = false;
-        document.getElementById("mbr").hidden = true;
-        document.getElementById("res").hidden = true;
-        document.getElementById("fit").hidden = true;
+        exc.hidden = false;
+        mbr.hidden = true;
+        res.hidden = true;
+        fit.hidden = true;
         timeDrift = new Date().getTime();
         QLFT();
       }
@@ -963,7 +1003,7 @@
           } else {
             app.t += 1;
           }
-          setTimeout(QLFT,1000);
+          setTimeout(QLFT,100);
         } else {
           result();
         }
@@ -976,10 +1016,10 @@
         chkFail.checked = false;
         chkPass.onclick = resultClicked;
         chkFail.onclick = resultClicked;
-        document.getElementById("app").hidden = true;
-        document.getElementById("mbr").hidden = true;
-        document.getElementById("res").hidden = false;
-        document.getElementById("fit").hidden = true;
+        exc.hidden = true;
+        mbr.hidden = true;
+        res.hidden = false;
+        fit.hidden = true;
       }
       function resultClicked() {
         btnResult.onclick = record;
@@ -1028,10 +1068,10 @@
           lblNeb.innerHTML = "";
           btnApp.value = "QLFT";
           btnApp.onclick = member;
-          document.getElementById("app").hidden = true;
-          document.getElementById("mbr").hidden = true;
-          document.getElementById("res").hidden = true;
-          document.getElementById("fit").hidden = false;
+          exc.hidden = true;
+          mbr.hidden = true;
+          res.hidden = true;
+          fit.hidden = false;
         }
       }
       function csvSave() {
@@ -1067,10 +1107,10 @@
         a.download = fileName;
       }
       function application() {
-        document.getElementById("app").hidden = false;
-        document.getElementById("mbr").hidden = true;
-        document.getElementById("res").hidden = true;
-        document.getElementById("fit").hidden = true;
+        exc.hidden = false;
+        mbr.hidden = true;
+        res.hidden = true;
+        fit.hidden = true;
       }
     </script>
   </body>

@@ -523,6 +523,11 @@
       app.t = 0;
       app.r = 0;
       var manufacturers = {};
+      var optManufacturer = entManufacturer;
+      var inpManufacturer = document.createElement("INPUT");
+      inpManufacturer.id = "txtManufacturer";
+      inpManufacturer.className = "m";
+      inpManufacturer.value = "Other/Custom";
       manufacturers["FF"] = [
         ["ffOC","Other/Custom"],
         ["ff3M","3M Company"],
@@ -546,6 +551,11 @@
         ["hmNS","North Safety Products"]
       ];
       var models = {};
+      var optModel = entModel;
+      var inpModel = document.createElement("INPUT");
+      inpModel.id = "txtModel";
+      inpModel.className = "m";
+      inpModel.value = "Other/Custom";
       models["ffOC"] = [
         ["szOC","Other/Custom"]
       ];
@@ -664,6 +674,11 @@
         ["sz06","7700"]
       ];
       var sizes = {};
+      var optSize = entSize;
+      var inpSize = document.createElement("INPUT");
+      inpSize.id = "txtSize";
+      inpSize.className = "m";
+      inpSize.value = "Other/Custom";
       sizes["szOC"] = [
         ["Other/Custom"]
       ];
@@ -816,13 +831,31 @@
         entProtocol.value="";
         entTaste.value="";
         entTaste.disabled = true;
-        var mdls = models[selManufacturer];
-        if (mdls) {
-          var i;
-          for (i = 1;i < mdls.length+1;i++) {
-            var mdl = new Option(mdls[i-1][1], i);
-            mdl.value = mdls[i-1][0];
-            modelList.options.add(mdl);
+        // Logic test last two selManufacturer.value characters equaling "OC"
+        // Set app.c equal to 0 if logic test returns false, 3 if logic test returns true
+        // Logic test app.c being greater than 0
+        // If true, replace entManufacturer, entModel, and entSize HTML elements with
+        // inpManufacturer, inpModel, inpSize--element.replaceChild(new,old)--and
+        // re-initialize optManufacturer--remove all options except for one
+        // If false, update entModel options same as below
+        // Need logic for resetting form fields before adding member for fit test
+        if (selManufacturer.slice(-2) == "OC") {
+          app.c=3;
+          while (manufacturerList.options.length > 1) {
+            manufacturerList.remove(1);
+          }
+          cellMfr.replaceChild(inpManufacturer,entManufacturer);
+          cellMdl.replaceChild(inpModel,entModel);
+          cellSze.replaceChild(inpSize,entSize);
+        } else {
+          var mdls = models[selManufacturer];
+          if (mdls) {
+            var i;
+            for (i = 1;i < mdls.length+1;i++) {
+              var mdl = new Option(mdls[i-1][1], i);
+              mdl.value = mdls[i-1][0];
+              modelList.options.add(mdl);
+            }
           }
         }
       }
@@ -844,12 +877,28 @@
         entProtocol.value="";
         entTaste.value="";
         entTaste.disabled = true;
-        var szes = sizes[selModel];
-        if (szes) {
-          var i;
-          for (i = 1;i < szes.length+1;i++) {
-            var sze = new Option(szes[i-1][0], i);
-            sizeList.options.add(sze);
+        // Logic test selModel.value equaling "szOC"
+        // Set app.c equal to 0 if logic test returns false, 2 if logic test returns true
+        // Logic test app.c being greater than 0
+        // If true, replace entModel and entSize HTML elements with inpModel and
+        // inpSize and re-initialize optModel
+        // If false, update entSize options same as below
+        // Need logic for resetting form fields before adding member for fit test
+        if (selModel.slice(-2) == "OC") {
+          app.c=2;
+          while (modelList.options.length > 1) {
+            modelList.remove(1);
+          }
+          cellMdl.replaceChild(inpModel,entModel);
+          cellSze.replaceChild(inpSize,entSize);
+        } else {
+          var szes = sizes[selModel];
+          if (szes) {
+            var i;
+            for (i = 1;i < szes.length+1;i++) {
+              var sze = new Option(szes[i-1][0], i);
+              sizeList.options.add(sze);
+            }
           }
         }
       }
@@ -882,6 +931,13 @@
         } else {
           lblMembers.innerHTML = entFirstName.value + " " + entLastName.value;
         }
+        // Switch on app.c for cases of 0, 2, and 3
+        // Case for app.c == 0 is same as below
+        // Case for app.c == 2 replaces the value pair for "Model #"
+        // and "Mask Size" with txtModel.value and txtSize.value
+        // Case for app.c == 3 replaces the value pairs for "Manufacturer",
+        // "Model #" and "Mask Size" with txtManufacturer.value,
+        // txtModel.value and txtSize.value
         app.fitTests.push({
           "First Name":entFirstName.value,
           "Last Name":entLastName.value,
@@ -896,6 +952,10 @@
           "QLFT Type":entProtocol.value,
           "Taste Threshold":entTaste.value
         });
+        // Handle re-initializing form fields in each case--applies to:
+        // entManufacturer/optManufacturer, txtManufacturer/inpManufacturer,
+        // entModel/optModel, txtModel/inpModel, entSize/optSize, and
+        // txtSize/inpSize--other form outside of switch
         entFirstName.value = "";
         entLastName.value = "";
         entSSN.value = "";
@@ -964,7 +1024,7 @@
           } else {
             app.t += 1;
           }
-          setTimeout(QLFT,1000);
+          setTimeout(QLFT,100);
         } else {
           result();
         }
