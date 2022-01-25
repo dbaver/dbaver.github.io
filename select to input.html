@@ -15,10 +15,17 @@
 <p>Click the button to create an OPTION element.</p>
 
 <button onclick="myFunction()">Try it</button>
+<br>
+<br>
+<button onclick="switchBack()">Switch</button>
 
 <p id="demo">No Custom</p>
 
 <script>
+var s = mySelect;
+var t = document.createElement("INPUT");
+t.id = "myInput";
+t.value = "Enter Custom";
 function myFunction() {
   var x = document.createElement("OPTION");
   x.value = "volvocar";
@@ -32,12 +39,15 @@ function myFunction() {
 }
 function addCustom(){
   if (mySelect.options[mySelect.selectedIndex].value == "custom"){
-    var t = document.createElement("INPUT");
-    t.id = "entInput";
-    t.value = "Enter Custom";
+    s.value = "";
     ent.replaceChild(t,mySelect);
     demo.innerHTML = ent.children[0].id;
   }
+}
+function switchBack() {
+  ent.replaceChild(s,myInput);
+  demo.innerHTML = ent.children[0].id;
+  
 }
 </script>
 
