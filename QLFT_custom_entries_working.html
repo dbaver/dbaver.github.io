@@ -528,6 +528,7 @@
       inpManufacturer.id = "txtManufacturer";
       inpManufacturer.className = "m";
       inpManufacturer.value = "Other/Custom";
+      inpManufacturer.onchange = changeModelList;
       manufacturers["FF"] = [
         ["ffOC","Other/Custom"],
         ["ff3M","3M Company"],
@@ -556,6 +557,7 @@
       inpModel.id = "txtModel";
       inpModel.className = "m";
       inpModel.value = "Other/Custom";
+      inpModel.onchange = changeSizeList;
       models["ffOC"] = [
         ["szOC","Other/Custom"]
       ];
@@ -679,6 +681,7 @@
       inpSize.id = "txtSize";
       inpSize.className = "m";
       inpSize.value = "Other/Custom";
+      inpSize.onchange = enableProtocol;
       sizes["szOC"] = [
         ["Other/Custom"]
       ];
@@ -768,20 +771,26 @@
         }
       }
       function changeManufacturerList() {
+        inpManufacturer.value = "Other/Custom";
+        cellMfr.replaceChild(optManufacturer,cellMfr.children[0]);
+        inpModel.value = "Other/Custom";
+        cellMdl.replaceChild(optModel,cellMdl.children[0]);
+        inpSize.value = "Other/Custom";
+        cellSze.replaceChild(optSize,cellSze.children[0]);
         if (entStyle.value != "") {
-          entManufacturer.disabled = false;
+          cellMfr.children[0].disabled = false;
         } else {
-          entManufacturer.disabled = true;
+          cellMfr.children[0].disabled = true;
         }
-        entModel.disabled = true;
-        entSize.disabled = true;
+        cellMdl.children[0].disabled=true;
+        cellSze.children[0].disabled=true;
         entProtocol.disabled = true;
         entTaste.disabled = true;
         var styleList = entStyle;
-        var manufacturerList = entManufacturer;
-        var modelList = entModel;
-        var sizeList = entSize;
         var selStyle = styleList.options[styleList.selectedIndex].value;
+        var manufacturerList = cellMfr.children[0];
+        var modelList = cellMdl.children[0];
+        var sizeList = cellSze.children[0];
         while (manufacturerList.options.length > 1) {
           manufacturerList.remove(1);
         }
@@ -808,17 +817,20 @@
         }
       }
       function changeModelList() {
-        if (entManufacturer.value != "") {
-          entModel.disabled = false;
+        if (cellMfr.children[0].value != "" || cellMfr.children[0].value != "Other/Custom") {
+          //entModel.disabled = false;
+          cellMdl.children[0].disabled = false;
         } else {
-          entModel.disabled = true;
+          //entModel.disabled = true;
+          cellMdl.children[0].disabled = true;
         }
-        entSize.disabled = true;
+        //entSize.disabled = true;
+        cellSze.children[0].disabled = true;
         entProtocol.disabled = true;
         entTaste.disabled = true;
-        var manufacturerList = entManufacturer;
-        var modelList = entModel;
-        var sizeList = entSize;
+        var manufacturerList = cellMfr.children[0];
+        var modelList = cellMdl.children[0];
+        var sizeList = cellSze.children[0];
         var selManufacturer = manufacturerList.options[manufacturerList.selectedIndex].value;
         while (modelList.options.length>1) {
           modelList.remove(1);
@@ -846,7 +858,9 @@
           }
           cellMfr.replaceChild(inpManufacturer,entManufacturer);
           cellMdl.replaceChild(inpModel,entModel);
+          txtModel.disabled = true;
           cellSze.replaceChild(inpSize,entSize);
+          txtSize.disabled = true;
         } else {
           var mdls = models[selManufacturer];
           if (mdls) {
