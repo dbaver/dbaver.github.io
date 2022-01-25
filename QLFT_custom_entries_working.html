@@ -786,6 +786,11 @@
         cellSze.children[0].disabled=true;
         entProtocol.disabled = true;
         entTaste.disabled = true;
+        entManufacturer.value="";
+        entModel.value="";
+        entSize.value="";
+        entProtocol.value="";
+        entTaste.value="";
         var styleList = entStyle;
         var selStyle = styleList.options[styleList.selectedIndex].value;
         var manufacturerList = cellMfr.children[0];
@@ -800,12 +805,6 @@
         while (sizeList.options.length > 1) {
           sizeList.remove(1);
         }
-        entManufacturer.value="";
-        entModel.value="";
-        entSize.value="";
-        entProtocol.value="";
-        entTaste.value="";
-        entTaste.disabled = true;
         var mfrs = manufacturers[selStyle];
         if (mfrs) {
           var i;
@@ -817,7 +816,7 @@
         }
       }
       function changeModelList() {
-        if (cellMfr.children[0].value != "" || cellMfr.children[0].value != "Other/Custom") {
+        if (cellMfr.children[0].value != "" && cellMfr.children[0].value != "Other/Custom") {
           //entModel.disabled = false;
           cellMdl.children[0].disabled = false;
         } else {
@@ -828,9 +827,15 @@
         cellSze.children[0].disabled = true;
         entProtocol.disabled = true;
         entTaste.disabled = true;
+        entProtocol.value="";
+        entTaste.value="";
         var manufacturerList = cellMfr.children[0];
         var modelList = cellMdl.children[0];
         var sizeList = cellSze.children[0];
+        // Need logic to get Mfr value and clear/reset Model and Size fields
+        // differently depending on the app.c value
+        entModel.value = "";
+        entSize.value = "";
         var selManufacturer = manufacturerList.options[manufacturerList.selectedIndex].value;
         while (modelList.options.length>1) {
           modelList.remove(1);
@@ -838,11 +843,6 @@
         while (sizeList.options.length > 1) {
           sizeList.remove(1);
         }
-        entModel.value="";
-        entSize.value="";
-        entProtocol.value="";
-        entTaste.value="";
-        entTaste.disabled = true;
         // Logic test last two selManufacturer.value characters equaling "OC"
         // Set app.c equal to 0 if logic test returns false, 3 if logic test returns true
         // Logic test app.c being greater than 0
