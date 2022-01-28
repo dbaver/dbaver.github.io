@@ -994,38 +994,18 @@
         } else {
           lblMembers.innerHTML = entFirstName.value + " " + entLastName.value;
         }
+        var mfr, mdl, sze;
         switch (app.c) {
           case 0:
-            app.fitTests.push({
-              "First Name":entFirstName.value,
-              "Last Name":entLastName.value,
-              "SSN":entSSN.value,
-              "Test Date":entTestDate.value,
-              "Test Time":entTestTime.value,
-              "Due Date":entDueDate.value,
-              "Mask Style":entStyle.options[entStyle.selectedIndex].innerHTML,
-              "Manufacturer":entManufacturer.options[entManufacturer.selectedIndex].innerHTML,
-              "Model #":entModel.options[entModel.selectedIndex].innerHTML,
-              "Mask Size":entSize.options[entSize.selectedIndex].innerHTML,
-              "QLFT Type":entProtocol.value,
-              "Taste Threshold":entTaste.value
-            });
+            mfr = entManufacturer.options[entManufacturer.selectedIndex].innerHTML;
+            mdl = entModel.options[entModel.selectedIndex].innerHTML;
+            sze = entSize.options[entSize.selectedIndex].innerHTML;
+
             break;
           case 2:
-            app.fitTests.push({
-              "First Name":entFirstName.value,
-              "Last Name":entLastName.value,
-              "SSN":entSSN.value,
-              "Test Date":entTestDate.value,
-              "Test Time":entTestTime.value,
-              "Due Date":entDueDate.value,
-              "Mask Style":entStyle.options[entStyle.selectedIndex].innerHTML,
-              "Manufacturer":entManufacturer.options[entManufacturer.selectedIndex].innerHTML,
-              "Model #":txtModel.value,
-              "Mask Size":txtSize.value,
-              "QLFT Type":entProtocol.value,
-              "Taste Threshold":entTaste.value
-            });
+            mfr = entManufacturer.options[entManufacturer.selectedIndex].innerHTML;
+            mdl = txtModel.value;
+            sze = txtSize.value;
             cellMdl.children[0].value = "Other/Custom";
             cellMdl.children[0].disabled = false;
             cellMdl.replaceChild(optModel,cellMdl.children[0]);
@@ -1034,20 +1014,9 @@
             cellSze.replaceChild(optSize,cellSze.children[0]);
             break;
           case 3:
-            app.fitTests.push({
-              "First Name":entFirstName.value,
-              "Last Name":entLastName.value,
-              "SSN":entSSN.value,
-              "Test Date":entTestDate.value,
-              "Test Time":entTestTime.value,
-              "Due Date":entDueDate.value,
-              "Mask Style":entStyle.options[entStyle.selectedIndex].innerHTML,
-              "Manufacturer":txtManufacturer.value,
-              "Model #":txtModel.value,
-              "Mask Size":txtSize.value,
-              "QLFT Type":entProtocol.value,
-              "Taste Threshold":entTaste.value
-            });
+            mfr = txtManufacturer.value;
+            mdl = txtModel.value;
+            sze = txtSize.value;
             cellMfr.children[0].value = "Other/Custom";
             cellMfr.children[0].disabled = false;
             cellMfr.replaceChild(optManufacturer,cellMfr.children[0]);
@@ -1059,6 +1028,20 @@
             cellSze.replaceChild(optSize,cellSze.children[0]);
             break;
         }
+        app.fitTests.push({
+          "First Name":entFirstName.value,
+          "Last Name":entLastName.value,
+          "SSN":entSSN.value,
+          "Test Date":entTestDate.value,
+          "Test Time":entTestTime.value,
+          "Due Date":entDueDate.value,
+          "Mask Style":entStyle.options[entStyle.selectedIndex].innerHTML,
+          "Manufacturer":mfr,
+          "Model #":mdl,
+          "Mask Size":sze,
+          "QLFT Type":entProtocol.value,
+          "Taste Threshold":entTaste.value
+        });
         entFirstName.value = "";
         entLastName.value = "";
         entSSN.value = "";
