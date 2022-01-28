@@ -528,6 +528,7 @@
       inpManufacturer.id = "txtManufacturer";
       inpManufacturer.className = "m";
       inpManufacturer.value = "Other/Custom";
+      inpManufacturer.onchange = changeModelList;
       manufacturers["FF"] = [
         ["ffOC","Other/Custom"],
         ["ff3M","3M Company"],
@@ -556,6 +557,7 @@
       inpModel.id = "txtModel";
       inpModel.className = "m";
       inpModel.value = "Other/Custom";
+      inpModel.onchange = changeSizeList;
       models["ffOC"] = [
         ["szOC","Other/Custom"]
       ];
@@ -679,6 +681,7 @@
       inpSize.id = "txtSize";
       inpSize.className = "m";
       inpSize.value = "Other/Custom";
+      inpSize.onchange = enableProtocol;
       sizes["szOC"] = [
         ["Other/Custom"]
       ];
@@ -768,20 +771,34 @@
         }
       }
       function changeManufacturerList() {
+        app.c=0;
+        optManufacturer.value = ""
+        optModel.value = "";
+        optSize.value = "";
+        inpManufacturer.value = "Other/Custom";
+        inpModel.value = "Other/Custom";
+        inpSize.value = "Other/Custom";
+        cellMfr.children[0].disabled = false;
+        cellMdl.children[0].disabled = false;
+        cellSze.children[0].disabled = false;
+        cellMfr.replaceChild(optManufacturer,cellMfr.children[0]);
+        cellMdl.replaceChild(optModel,cellMdl.children[0]);
+        cellSze.replaceChild(optSize,cellSze.children[0]);
         if (entStyle.value != "") {
-          entManufacturer.disabled = false;
+          cellMfr.children[0].disabled = false;
         } else {
-          entManufacturer.disabled = true;
+          cellMfr.children[0].disabled = true;
         }
-        entModel.disabled = true;
-        entSize.disabled = true;
+        cellMdl.children[0].disabled = true;
+        cellSze.children[0].disabled = true;
         entProtocol.disabled = true;
         entTaste.disabled = true;
+        entProtocol.value = "";
+        entTaste.value = "";
         var styleList = entStyle;
-        var manufacturerList = entManufacturer;
-        var modelList = entModel;
-        var sizeList = entSize;
-        var selStyle = styleList.options[styleList.selectedIndex].value;
+        var manufacturerList = cellMfr.children[0];
+        var modelList = cellMdl.children[0];
+        var sizeList = cellSze.children[0];
         while (manufacturerList.options.length > 1) {
           manufacturerList.remove(1);
         }
@@ -791,12 +808,7 @@
         while (sizeList.options.length > 1) {
           sizeList.remove(1);
         }
-        entManufacturer.value="";
-        entModel.value="";
-        entSize.value="";
-        entProtocol.value="";
-        entTaste.value="";
-        entTaste.disabled = true;
+        var selStyle = styleList.options[styleList.selectedIndex].value;
         var mfrs = manufacturers[selStyle];
         if (mfrs) {
           var i;
@@ -808,87 +820,159 @@
         }
       }
       function changeModelList() {
-        if (entManufacturer.value != "") {
-          entModel.disabled = false;
+        if (cellMfr.children[0].value != "" && cellMfr.children[0].value != "Other/Custom") {
+          cellMdl.children[0].disabled = false;
         } else {
-          entModel.disabled = true;
+          cellMdl.children[0].disabled = true;
         }
-        entSize.disabled = true;
+        cellSze.children[0].disabled = true;
         entProtocol.disabled = true;
         entTaste.disabled = true;
-        var manufacturerList = entManufacturer;
-        var modelList = entModel;
-        var sizeList = entSize;
-        var selManufacturer = manufacturerList.options[manufacturerList.selectedIndex].value;
-        while (modelList.options.length>1) {
-          modelList.remove(1);
-        }
-        while (sizeList.options.length > 1) {
-          sizeList.remove(1);
-        }
-        entModel.value="";
-        entSize.value="";
-        entProtocol.value="";
-        entTaste.value="";
-        entTaste.disabled = true;
-        // Logic test last two selManufacturer.value characters equaling "OC"
-        // Set app.c equal to 0 if logic test returns false, 3 if logic test returns true
-        // Logic test app.c being greater than 0
-        // If true, replace entManufacturer, entModel, and entSize HTML elements with
-        // inpManufacturer, inpModel, inpSize--element.replaceChild(new,old)--and
-        // re-initialize optManufacturer--remove all options except for one
-        // If false, update entModel options same as below
-        var mdls = models[selManufacturer];
-        if (mdls) {
-          var i;
-          for (i = 1;i < mdls.length+1;i++) {
-            var mdl = new Option(mdls[i-1][1], i);
-            mdl.value = mdls[i-1][0];
-            modelList.options.add(mdl);
-          }
+        entProtocol.value = "";
+        entTaste.value = "";
+        switch (app.c) {
+          case 0:
+            var manufacturerList = cellMfr.children[0];
+            var modelList = cellMdl.children[0];
+            var sizeList = cellSze.children[0];
+            modelList.value = "";
+            sizeList.value = "";
+            while (modelList.options.length>1) {
+              modelList.remove(1);
+            }
+            while (sizeList.options.length > 1) {
+              sizeList.remove(1);
+            }
+            var selManufacturer = manufacturerList.options[manufacturerList.selectedIndex].value;
+            if (selManufacturer.slice(-2) == "OC") {
+              app.c = 3;
+              manufacturerList.value = "";
+              while (manufacturerList.options.length > 1) {
+                manufacturerList.remove(1);
+              }
+              cellMfr.children[0].disabled = false;
+              cellMdl.children[0].disabled = false;
+              cellSze.children[0].disabled = false;
+              cellMfr.replaceChild(inpManufacturer,cellMfr.children[0]);
+              cellMdl.replaceChild(inpModel,cellMdl.children[0]);
+              cellSze.replaceChild(inpSize,cellSze.children[0]);
+              cellMdl.children[0].disabled = true;
+              cellSze.children[0].disabled = true;
+            } else {
+              var mdls = models[selManufacturer];
+              if (mdls) {
+                var i;
+                for (i = 1;i < mdls.length+1;i++) {
+                  var mdl = new Option(mdls[i-1][1], i);
+                  mdl.value = mdls[i-1][0];
+                  modelList.options.add(mdl);
+                }
+              }
+            }
+            break;
+          case 2:
+            var manufacturerList = cellMfr.children[0];
+            var modelList = cellMdl.children[0];
+            var sizeList = cellSze.children[0];
+            modelList.value = "Other/Custom";
+            sizeList.value = "Other/Custom";
+            var selManufacturer = manufacturerList.options[manufacturerList.selectedIndex].value;
+            if (selManufacturer.slice(-2) == "OC") {
+              app.c = 3;
+              manufacturerList.value = "";
+              while (manufacturerList.options.length > 1) {
+                manufacturerList.remove(1);
+              }
+              cellMfr.children[0].disabled = false;
+              cellMfr.replaceChild(inpManufacturer,cellMfr.children[0]);
+              cellMdl.children[0].disabled = true;
+              cellSze.children[0].disabled = true;
+            } else {
+              app.c = 0;
+              cellMdl.children[0].disabled = false;
+              cellSze.children[0].disabled = false;
+              cellMdl.replaceChild(optModel,cellMdl.children[0]);
+              cellSze.replaceChild(optSize,cellSze.children[0]);
+              if (cellMfr.children[0].value != "") {
+                cellMdl.children[0].disabled = false;
+              } else {
+                cellMdl.children[0].disabled = true;
+              }
+              cellSze.children[0].disabled = true;
+              modelList = cellMdl.children[0];
+              var mdls = models[selManufacturer];
+              if (mdls) {
+                var i;
+                for (i = 1;i < mdls.length+1;i++) {
+                  var mdl = new Option(mdls[i-1][1], i);
+                  mdl.value = mdls[i-1][0];
+                  modelList.options.add(mdl);
+                }
+              }
+            }
+            break;
+          case 3:
+            cellMdl.children[0].value = "Other/Custom";
+            cellSze.children[0].value = "Other/Custom";
+            break;
         }
       }
       function changeSizeList() {
-        if (entModel.value != "") {
-          entSize.disabled = false;
+        if (cellMdl.children[0].value != "" && cellMdl.children[0].value != "Other/Custom") {
+          cellSze.children[0].disabled = false;
         } else {
-          entSize.disabled = true;
+          cellSze.children[0].disabled = true;
         }
         entProtocol.disabled = true;
         entTaste.disabled = true;
-        var modelList = entModel;
-        var sizeList = entSize;
-        var selModel = modelList.options[modelList.selectedIndex].value;
-        while (sizeList.options.length > 1) {
-          sizeList.remove(1);
-        }
-        entSize.value="";
-        entProtocol.value="";
-        entTaste.value="";
-        entTaste.disabled = true;
-        // Logic test selModel.value equaling "szOC"
-        // Set app.c equal to 0 if logic test returns false, 2 if logic test returns true
-        // Logic test app.c being greater than 0
-        // If true, replace entModel and entSize HTML elements with inpModel and
-        // inpSize and re-initialize optModel
-        // If false, update entSize options same as below
-        var szes = sizes[selModel];
-        if (szes) {
-          var i;
-          for (i = 1;i < szes.length+1;i++) {
-            var sze = new Option(szes[i-1][0], i);
-            sizeList.options.add(sze);
-          }
+        entProtocol.value = "";
+        entTaste.value = "";
+        switch (app.c) {
+          case 0:
+            var modelList = cellMdl.children[0];
+            var sizeList = cellSze.children[0];
+            sizeList.value = "";
+            while (sizeList.options.length > 1) {
+              sizeList.remove(1);
+            }
+            var selModel = modelList.options[modelList.selectedIndex].value;
+            if (selModel.slice(-2) == "OC") {
+              app.c = 2;
+              while (modelList.options.length > 1) {
+                modelList.remove(1);
+              }
+              cellMdl.children[0].disabled = false;
+              cellSze.children[0].disabled = false;
+              cellMdl.replaceChild(inpModel,cellMdl.children[0]);
+              cellSze.replaceChild(inpSize,cellSze.children[0]);
+              cellSze.children[0].disabled = true;
+            } else {
+              var szes = sizes[selModel];
+              if (szes) {
+                var i;
+                for (i = 1;i < szes.length+1;i++) {
+                  var sze = new Option(szes[i-1][0], i);
+                  sizeList.options.add(sze);
+                }
+              }
+            }
+            break;
+          case 2:
+            cellSze.children[0].value = "Other/Custom";
+            break;
+          case 3:
+            cellSze.children[0].value = "Other/Custom";
+            break;
         }
       }
       function enableProtocol() {
-        if (entSize.value != "") {
+        if (cellSze.children[0].value != "" && cellSze.children[0].value != "Other/Custom") {
           entProtocol.disabled = false;
         } else {
           entProtocol.disabled = true;
         }
-        entProtocol.value="";
-        entTaste.value="";
+        entProtocol.value = "";
+        entTaste.value = "";
         entTaste.disabled = true;
       }
       function enableTaste() {
@@ -910,54 +994,94 @@
         } else {
           lblMembers.innerHTML = entFirstName.value + " " + entLastName.value;
         }
-        // Switch on app.c for cases of 0, 2, and 3
-        // Case for app.c == 0 is same as below
-        // Case for app.c == 2 replaces the value pair for "Model #"
-        // and "Mask Size" with txtModel.value and txtSize.value
-        // Case for app.c == 3 replaces the value pairs for "Manufacturer",
-        // "Model #" and "Mask Size" with txtManufacturer.value,
-        // txtModel.value and txtSize.value
-        app.fitTests.push({
-          "First Name":entFirstName.value,
-          "Last Name":entLastName.value,
-          "SSN":entSSN.value,
-          "Test Date":entTestDate.value,
-          "Test Time":entTestTime.value,
-          "Due Date":entDueDate.value,
-          "Mask Style":entStyle.options[entStyle.selectedIndex].innerHTML,
-          "Manufacturer":entManufacturer.options[entManufacturer.selectedIndex].innerHTML,
-          "Model #":entModel.options[entModel.selectedIndex].innerHTML,
-          "Mask Size":entSize.options[entSize.selectedIndex].innerHTML,
-          "QLFT Type":entProtocol.value,
-          "Taste Threshold":entTaste.value
-        });
-        // Handle re-initializing form fields in each case--applies to:
-        // entManufacturer/optManufacturer, txtManufacturer/inpManufacturer,
-        // entModel/optModel, txtModel/inpModel, entSize/optSize, and
-        // txtSize/inpSize--other form outside of switch
+        switch (app.c) {
+          case 0:
+            app.fitTests.push({
+              "First Name":entFirstName.value,
+              "Last Name":entLastName.value,
+              "SSN":entSSN.value,
+              "Test Date":entTestDate.value,
+              "Test Time":entTestTime.value,
+              "Due Date":entDueDate.value,
+              "Mask Style":entStyle.options[entStyle.selectedIndex].innerHTML,
+              "Manufacturer":entManufacturer.options[entManufacturer.selectedIndex].innerHTML,
+              "Model #":entModel.options[entModel.selectedIndex].innerHTML,
+              "Mask Size":entSize.options[entSize.selectedIndex].innerHTML,
+              "QLFT Type":entProtocol.value,
+              "Taste Threshold":entTaste.value
+            });
+            break;
+          case 2:
+            app.fitTests.push({
+              "First Name":entFirstName.value,
+              "Last Name":entLastName.value,
+              "SSN":entSSN.value,
+              "Test Date":entTestDate.value,
+              "Test Time":entTestTime.value,
+              "Due Date":entDueDate.value,
+              "Mask Style":entStyle.options[entStyle.selectedIndex].innerHTML,
+              "Manufacturer":entManufacturer.options[entManufacturer.selectedIndex].innerHTML,
+              "Model #":txtModel.value,
+              "Mask Size":txtSize.value,
+              "QLFT Type":entProtocol.value,
+              "Taste Threshold":entTaste.value
+            });
+            cellMdl.children[0].value = "Other/Custom";
+            cellMdl.children[0].disabled = false;
+            cellMdl.replaceChild(optModel,cellMdl.children[0]);
+            cellSze.children[0].value = "Other/Custom";
+            cellSze.children[0].disabled = false;
+            cellSze.replaceChild(optSize,cellSze.children[0]);
+            break;
+          case 3:
+            app.fitTests.push({
+              "First Name":entFirstName.value,
+              "Last Name":entLastName.value,
+              "SSN":entSSN.value,
+              "Test Date":entTestDate.value,
+              "Test Time":entTestTime.value,
+              "Due Date":entDueDate.value,
+              "Mask Style":entStyle.options[entStyle.selectedIndex].innerHTML,
+              "Manufacturer":txtManufacturer.value,
+              "Model #":txtModel.value,
+              "Mask Size":txtSize.value,
+              "QLFT Type":entProtocol.value,
+              "Taste Threshold":entTaste.value
+            });
+            cellMfr.children[0].value = "Other/Custom";
+            cellMfr.children[0].disabled = false;
+            cellMfr.replaceChild(optManufacturer,cellMfr.children[0]);
+            cellMdl.children[0].value = "Other/Custom";
+            cellMdl.children[0].disabled = false;
+            cellMdl.replaceChild(optModel,cellMdl.children[0]);
+            cellSze.children[0].value = "Other/Custom";
+            cellSze.children[0].disabled = false;
+            cellSze.replaceChild(optSize,cellSze.children[0]);
+            break;
+        }
         entFirstName.value = "";
         entLastName.value = "";
         entSSN.value = "";
         entStyle.value = "";
-        entManufacturer.value = "";
-        while (entManufacturer.options.length > 1) {
-          entManufacturer.remove(1);
+        cellMfr.children[0].disabled = true;
+        cellMfr.children[0].value = "";
+        while (cellMfr.children[0].options.length > 1) {
+          cellMfr.children[0].remove(1);
         }
-        entManufacturer.disabled = true;
-        entModel.value = "";
-        while (entModel.options.length > 1) {
-          entModel.remove(1);
+        cellMdl.children[0].disabled = true;
+        cellMdl.children[0].value = "";
+        while (cellMdl.children[0].options.length > 1) {
+          cellMdl.children[0].remove(1);
         }
-        entModel.disabled = true;
-        entSize.value = "";
-        while (entSize.options.length > 1) {
-          entSize.remove(1);
+        cellSze.children[0].disabled = true;
+        cellSze.children[0].value = "";
+        while (cellSze.children[0].options.length > 1) {
+          cellSze.children[0].remove(1);
         }
-        entSize.disabled = true;
-        entProtocol.value = "";
         entProtocol.disabled = true;
-        entTaste.value = "";
+        entProtocol.value = "";
         entTaste.disabled = true;
+        entTaste.value = "";
         btnStart.onclick = openQLFT;
       }
       function openQLFT() {
@@ -1061,6 +1185,7 @@
           }
           app.fitTests = [];
           app.neb = false;
+          app.c = 0;
           app.i=0;
           app.t=0;
           app.r=0;
