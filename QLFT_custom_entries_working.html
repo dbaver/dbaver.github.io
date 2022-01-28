@@ -793,9 +793,6 @@
         cellSze.children[0].disabled = true;
         entProtocol.disabled = true;
         entTaste.disabled = true;
-        cellMfr.children[0].value = "";
-        cellMdl.children[0].value = "";
-        cellSze.children[0].value = "";
         entProtocol.value = "";
         entTaste.value = "";
         var styleList = entStyle;
@@ -997,54 +994,94 @@
         } else {
           lblMembers.innerHTML = entFirstName.value + " " + entLastName.value;
         }
-        // Switch on app.c for cases of 0, 2, and 3
-        // Case for app.c == 0 is same as below
-        // Case for app.c == 2 replaces the value pair for "Model #"
-        // and "Mask Size" with txtModel.value and txtSize.value
-        // Case for app.c == 3 replaces the value pairs for "Manufacturer",
-        // "Model #" and "Mask Size" with txtManufacturer.value,
-        // txtModel.value and txtSize.value
-        app.fitTests.push({
-          "First Name":entFirstName.value,
-          "Last Name":entLastName.value,
-          "SSN":entSSN.value,
-          "Test Date":entTestDate.value,
-          "Test Time":entTestTime.value,
-          "Due Date":entDueDate.value,
-          "Mask Style":entStyle.options[entStyle.selectedIndex].innerHTML,
-          "Manufacturer":entManufacturer.options[entManufacturer.selectedIndex].innerHTML,
-          "Model #":entModel.options[entModel.selectedIndex].innerHTML,
-          "Mask Size":entSize.options[entSize.selectedIndex].innerHTML,
-          "QLFT Type":entProtocol.value,
-          "Taste Threshold":entTaste.value
-        });
-        // Handle re-initializing form fields in each case--applies to:
-        // entManufacturer/optManufacturer, txtManufacturer/inpManufacturer,
-        // entModel/optModel, txtModel/inpModel, entSize/optSize, and
-        // txtSize/inpSize--other form outside of switch
+        switch (app.c) {
+          case 0:
+            app.fitTests.push({
+              "First Name":entFirstName.value,
+              "Last Name":entLastName.value,
+              "SSN":entSSN.value,
+              "Test Date":entTestDate.value,
+              "Test Time":entTestTime.value,
+              "Due Date":entDueDate.value,
+              "Mask Style":entStyle.options[entStyle.selectedIndex].innerHTML,
+              "Manufacturer":entManufacturer.options[entManufacturer.selectedIndex].innerHTML,
+              "Model #":entModel.options[entModel.selectedIndex].innerHTML,
+              "Mask Size":entSize.options[entSize.selectedIndex].innerHTML,
+              "QLFT Type":entProtocol.value,
+              "Taste Threshold":entTaste.value
+            });
+            break;
+          case 2:
+            app.fitTests.push({
+              "First Name":entFirstName.value,
+              "Last Name":entLastName.value,
+              "SSN":entSSN.value,
+              "Test Date":entTestDate.value,
+              "Test Time":entTestTime.value,
+              "Due Date":entDueDate.value,
+              "Mask Style":entStyle.options[entStyle.selectedIndex].innerHTML,
+              "Manufacturer":entManufacturer.options[entManufacturer.selectedIndex].innerHTML,
+              "Model #":txtModel.value,
+              "Mask Size":txtSize.value,
+              "QLFT Type":entProtocol.value,
+              "Taste Threshold":entTaste.value
+            });
+            cellMdl.children[0].value = "Other/Custom";
+            cellMdl.children[0].disabled = false;
+            cellMdl.replaceChild(optModel,cellMdl.children[0]);
+            cellSze.children[0].value = "Other/Custom";
+            cellSze.children[0].disabled = false;
+            cellSze.replaceChild(optSize,cellSze.children[0]);
+            break;
+          case 3:
+            app.fitTests.push({
+              "First Name":entFirstName.value,
+              "Last Name":entLastName.value,
+              "SSN":entSSN.value,
+              "Test Date":entTestDate.value,
+              "Test Time":entTestTime.value,
+              "Due Date":entDueDate.value,
+              "Mask Style":entStyle.options[entStyle.selectedIndex].innerHTML,
+              "Manufacturer":txtManufacturer.value,
+              "Model #":txtModel.value,
+              "Mask Size":txtSize.value,
+              "QLFT Type":entProtocol.value,
+              "Taste Threshold":entTaste.value
+            });
+            cellMfr.children[0].value = "Other/Custom";
+            cellMfr.children[0].disabled = false;
+            cellMfr.replaceChild(optManufacturer,cellMfr.children[0]);
+            cellMdl.children[0].value = "Other/Custom";
+            cellMdl.children[0].disabled = false;
+            cellMdl.replaceChild(optModel,cellMdl.children[0]);
+            cellSze.children[0].value = "Other/Custom";
+            cellSze.children[0].disabled = false;
+            cellSze.replaceChild(optSize,cellSze.children[0]);
+            break;
+        }
         entFirstName.value = "";
         entLastName.value = "";
         entSSN.value = "";
         entStyle.value = "";
-        entManufacturer.value = "";
-        while (entManufacturer.options.length > 1) {
-          entManufacturer.remove(1);
+        cellMfr.children[0].disabled = true;
+        cellMfr.children[0].value = "";
+        while (cellMfr.children[0].options.length > 1) {
+          cellMfr.children[0].remove(1);
         }
-        entManufacturer.disabled = true;
-        entModel.value = "";
-        while (entModel.options.length > 1) {
-          entModel.remove(1);
+        cellMdl.children[0].disabled = true;
+        cellMdl.children[0].value = "";
+        while (cellMdl.children[0].options.length > 1) {
+          cellMdl.children[0].remove(1);
         }
-        entModel.disabled = true;
-        entSize.value = "";
-        while (entSize.options.length > 1) {
-          entSize.remove(1);
+        cellSze.children[0].disabled = true;
+        cellSze.children[0].value = "";
+        while (cellSze.children[0].options.length > 1) {
+          cellSze.children[0].remove(1);
         }
-        entSize.disabled = true;
-        entProtocol.value = "";
         entProtocol.disabled = true;
-        entTaste.value = "";
+        entProtocol.value = "";
         entTaste.disabled = true;
+        entTaste.value = "";
         btnStart.onclick = openQLFT;
       }
       function openQLFT() {
@@ -1148,6 +1185,7 @@
           }
           app.fitTests = [];
           app.neb = false;
+          app.c = 0;
           app.i=0;
           app.t=0;
           app.r=0;
