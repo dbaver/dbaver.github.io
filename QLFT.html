@@ -490,7 +490,7 @@
       }
       catch(err) {
       }
-      var timeDrift = {};
+      //var timeDrift = {};
       var app = {};
       app.exercises = [
         "NORMAL BREATHING",
@@ -1075,7 +1075,7 @@
         mbr.hidden = true;
         res.hidden = true;
         fit.hidden = true;
-        timeDrift = new Date().getTime();
+        //timeDrift = new Date().getTime();
         QLFT();
       }
       function QLFT() {
@@ -1116,8 +1116,8 @@
         }
       }
       function result() {
-        timeDrift -= new Date().getTime();
-        alert(-timeDrift/1000/60);
+        //timeDrift -= new Date().getTime();
+        //alert(-timeDrift/1000/60);
         var f0 = app.fitTests[app.r];
         lblResult.innerHTML = f0["First Name"] + " " + f0["Last Name"];
         chkPass.checked = false;
