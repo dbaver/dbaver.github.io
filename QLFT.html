@@ -34,7 +34,8 @@
         transform:translateY(-50%);
         text-align:center;
         font-family:monospace;
-        font-size:18vh;
+        /*font-size:18vh;*/
+        font-size:9vw;
       }
       #a2 {
         width:100%;
@@ -52,7 +53,8 @@
         transform:translateY(-50%);
         text-align:center;
         font-family:monospace;
-        font-size:9vh;
+        /*font-size:9vh;*/
+        font-size:4.5vw;
       }
       #a3 {
         width:100%;
@@ -71,7 +73,8 @@
         -ms-transform:translateY(-50%);
         transform:translateY(-50%);
         font-family:monospace;
-        font-size:10vh;
+        /*font-size:10vh;*/
+        font-size:5vw;
       }
       #a4 {
         width:100%;
@@ -175,7 +178,8 @@
         transform:translateY(-50%);
         text-align:center;
         font-family:monospace;
-        font-size:6vh;
+        /*font-size:6vh;*/
+        font-size:3vw;
       }
       #r2 {
         width:100%;
@@ -211,7 +215,8 @@
         transform:translateY(-50%);
         text-align:center;
         font-family:monospace;
-        font-size:5vh;
+        /*font-size:5vh;*/
+        font-size:2.5vw;
       }
       div.gapI {
         width:16%;
@@ -230,7 +235,8 @@
         transform:translateY(-50%);
         text-align:center;
         font-family:monospace;
-        font-size:5vh;
+        /*font-size:5vh;*/
+        font-size:2.5vw;
       }
       #chkFail {
         width:4%;
@@ -258,7 +264,8 @@
         -ms-transform:translateY(-50%);
         transform:translateY(-50%);
         font-family:monospace;
-        font-size:3vh;
+        /*font-size:3vh;*/
+        font-size:1.5vw;
       }
       #fit {
         width:100%;
@@ -1084,13 +1091,15 @@
           if (((app.t <= 2) || (app.t >= 28 && app.t <= 32) || (app.t >=58)) && app.neb) {
             lblNeb.style.padding = "0px";
             lblNeb.style.textAlign = "center";
-            lblNeb.style.fontSize = "9vh";
+            //lblNeb.style.fontSize = "9vh";
+            lblNeb.style.fontSize = "4.5vw";
             lblNeb.innerHTML = "SPRAY NEBULIZER";
           } else {
             if (app.i == 4) {
               lblNeb.style.padding = "0px 25px";
               lblNeb.style.textAlign = "justify";
-              lblNeb.style.fontSize = "5vh";
+              //lblNeb.style.fontSize = "5vh";
+              lblNeb.style.fontSize = "2.5vw";
               lblNeb.innerHTML = "When the sunlight \
               strikes raindrops in the air, they act like a prism and form a \
               rainbow. The rainbow is a division of white light into many beautiful \
@@ -1110,7 +1119,7 @@
           } else {
             app.t += 1;
           }
-          setTimeout(QLFT,992);
+          setTimeout(QLFT,1000);
         } else {
           result();
         }
