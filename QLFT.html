@@ -189,7 +189,7 @@
         padding:0;
       }
       div.gapO {
-        width:26%;
+        width:25%;
         float:left;
         margin:0;
         padding:0;
@@ -203,6 +203,12 @@
         top:50%;
         -ms-transform:translateY(-50%);
         transform:translateY(-50%);
+      }
+      div.gapChk {
+        width:2%;
+        float:left;
+        margin:0;
+        padding:0;
       }
       #lblPass {
         width:12%;
@@ -219,7 +225,7 @@
         font-size:2.6vw;
       }
       div.gapI {
-        width:16%;
+        width:14%;
         float:left;
         margin:0;
         padding:0;
@@ -265,7 +271,7 @@
         transform:translateY(-50%);
         font-family:monospace;
         /*font-size:3vh;*/
-        font-size:1.6vw;
+        font-size:1.25vw;
       }
       #fit {
         width:100%;
@@ -446,9 +452,11 @@
         <div id="r2">
           <div class="gapO">&nbsp</div>
           <input id="chkPass" type="radio" name="results" value="pass">
+          <div class="gapChk">&nbsp</div>
           <label id="lblPass" for="chkPass">Pass</label>
           <div class="gapI">&nbsp</div>
           <label id="lblFail" for="chkFail">Fail</label>
+          <div class="gapChk">&nbsp</div>
           <input id="chkFail" type="radio" name="results" value="fail">
           <div class="gapO">&nbsp</div>
         </div>
@@ -1099,7 +1107,7 @@
               lblNeb.style.padding = "0px 25px";
               lblNeb.style.textAlign = "justify";
               //lblNeb.style.fontSize = "5vh";
-              lblNeb.style.fontSize = "2.7vw";
+              lblNeb.style.fontSize = "2.45vw";
               lblNeb.innerHTML = "When the sunlight \
               strikes raindrops in the air, they act like a prism and form a \
               rainbow. The rainbow is a division of white light into many beautiful \
@@ -1119,7 +1127,7 @@
           } else {
             app.t += 1;
           }
-          setTimeout(QLFT,1000);
+          setTimeout(QLFT,100);
         } else {
           result();
         }
