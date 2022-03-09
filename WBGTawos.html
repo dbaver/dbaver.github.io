@@ -605,7 +605,7 @@ function wbgt_calculator(rDtTm, Ta, Tw, RH, Ws, Pa, Cl, Lt, Ln) {
 	return;
     }
 
-    var tmStr = rDtTm.slice(14);
+    var tmStr = rDtTm.slice(14,19);
     if (tmStr.length == 4) {
       tmStr = "0" + tmStr;
     }
@@ -628,6 +628,7 @@ function wbgt_calculator(rDtTm, Ta, Tw, RH, Ws, Pa, Cl, Lt, Ln) {
 	return;
     }
     
+    //var gmt = rDtTm.slice(20,22);
     var gmt = -5;
     if (isNaN(gmt) | gmt < -10 | gmt > -5) {
 	alert("Error: Invalid time zone. Must be between -5 and -10.");
