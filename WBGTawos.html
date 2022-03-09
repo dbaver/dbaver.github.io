@@ -629,7 +629,6 @@ function wbgt_calculator(rDtTm, Ta, Tw, RH, Ws, Pa, Cl, Lt, Ln) {
     }
     
     var gmt = -parseInt(rDtTm.slice(20,22));
-    alert(gmt);
     //var gmt = -5;
     if (isNaN(gmt) | gmt < -10 | gmt > -5) {
 	alert("Error: Invalid time zone. Must be between -5 and -10.");
@@ -637,17 +636,17 @@ function wbgt_calculator(rDtTm, Ta, Tw, RH, Ws, Pa, Cl, Lt, Ln) {
     }
 
     // change to dst = "N" after fall back
-    var dst = "N";
+    //var dst = "N";
 
-    if (dst != "Y" & dst != "N") {
-	alert("Error: Invalid DST answer (must be Y or N): " + dst);
-	return;
-    }
+    //if (dst != "Y" & dst != "N") {
+	//alert("Error: Invalid DST answer (must be Y or N): " + dst);
+	//return;
+    //}
 
     // Now adjust the GMT offset for possible Daylight Savings Time.
-    if (dst == "Y") {
-	gmt += 1;
-    }
+    //if (dst == "Y") {
+	//gmt += 1;
+    //}
 
     // Get the latitude. The number must be between 0 and 90. Then,
     // the calculator turns the latitude into a negative number if
