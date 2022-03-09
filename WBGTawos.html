@@ -321,7 +321,7 @@ function selectAWOS() {
     Pa = myObj.STATION[0]["OBSERVATIONS"]["pressure_value_1d"]["value"];
     Cl = myObj.STATION[0]["OBSERVATIONS"]["cloud_layer_1_value_1d"]["value"]["sky_condition"];
     Tw = decideConvert(Ta, RH, Pa);
-    wbgtTime.innerHTML = stID.slice(1) + " Reading: " + rDtTm;
+    wbgtTime.innerHTML = stID.slice(1) + " Reading: " + rDtTm.slice(0,19);
     wbgt = wbgt_calculator(rDtTm, Ta, Tw, RH, Ws, Pa, Cl, Lt, Ln);
     wbgtRange.value = wbgt*10;
     wbgtRead.innerHTML = "WBGT<sub>O</sub> (<small><sup>o</sup></small>F): " + wbgt.toFixed(1);
