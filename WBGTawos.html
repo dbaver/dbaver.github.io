@@ -630,10 +630,10 @@ function wbgt_calculator(rDtTm, Ta, Tw, RH, Ws, Pa, Cl, Lt, Ln) {
     
     var gmt = -parseInt(rDtTm.slice(20,22));
     //var gmt = -5;
-    if (isNaN(gmt) | gmt < -10 | gmt > -5) {
-	alert("Error: Invalid time zone. Must be between -5 and -10.");
-	return;
-    }
+    //if (isNaN(gmt) | gmt < -10 | gmt > -5) {
+	//alert("Error: Invalid time zone. Must be between -5 and -10.");
+	//return;
+    //}
 
     // change to dst = "N" after fall back
     //var dst = "N";
