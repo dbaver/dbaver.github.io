@@ -141,6 +141,7 @@ p {
     <div id="awosDiv">
       <select id="awosSel" onchange="selectAWOS()">
         <option value="" id="selDef">----Select AWOS----</option>
+	<option value="KBKF">KBKF - Buckley AFB</option>
 	<option value="KCRW">KCRW - Charleston ANGB</option>
         <option value="KFFO">KFFO - Wright-Patterson AFB</option>
         <option value="KINS">KINS - Creech AFB</option>
@@ -151,6 +152,7 @@ p {
         <option value="KMTC">KMTC - Selfridge ANGB</option>
         <option value="KSGH">KSGH - Springfield ANGB</option>
 	<option value="KTOL">KTOL - Toledo ANGB</option>
+	<option value="KTPH">KTPH - Tonopah Airport</option>
         <option value="KTUL">KTUL - Tulsa ANGB</option>
         <option value="KZZV">KZZV - Zanesville ANGB</option>
       </select>
@@ -572,31 +574,31 @@ function wbgt_calculator(rDtTm, Ta, Tw, RH, Ws, Pa, Cl, Lt, Ln) {
 
     var dateStr = rDtTm.slice(0,10);
     var n = dateStr.indexOf("/"); // returns -1 if the value does not exist in the string.
-    if (n == -1) {
-	alert("Error: Invalid date. Please enter date in MM/DD/YYYY format.");
-	return;
-    }
+    //if (n == -1) {
+	//alert("Error: Invalid date. Please enter date in MM/DD/YYYY format.");
+	//return;
+    //}
     
     var n2 = dateStr.indexOf("/", n+1);
-    if (n2 == -1) {
-	alert("Error: Invalid date. Please enter date in MM/DD/YYYY format.");
-	return;
-    }
+    //if (n2 == -1) {
+	//alert("Error: Invalid date. Please enter date in MM/DD/YYYY format.");
+	//return;
+    //}
     
     var month = parseInt(dateStr.substring(0, n)),
 	day = parseInt(dateStr.substring(n+1, n2)),
 	year = parseInt(dateStr.substring(n2+1));
 
-    if (isNaN(month) | month < 1 | month > 12) {
-	alert("Error: Invalid month. Please enter month in 2-digit format (MM). Month must be between 01 and 12.");
-	return;
-    }
+    //if (isNaN(month) | month < 1 | month > 12) {
+	//alert("Error: Invalid month. Please enter month in 2-digit format (MM). Month must be between 01 and 12.");
+	//return;
+    //}
 
     // Next check the year.
-    if (isNaN(year) | year < 1900 | year > 2050) {
-	alert("Error: Invalid year. Please enter year in 4-digit format (YYYY). This calculator only handles years between 1900 and 2050.");
-	return;
-    }
+    //if (isNaN(year) | year < 1900 | year > 2050) {
+	//alert("Error: Invalid year. Please enter year in 4-digit format (YYYY). This calculator only handles years between 1900 and 2050.");
+	//return;
+    //}
 
     // Get the number of days in each month, accounting for leap years:
     var monthDays = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
@@ -606,10 +608,10 @@ function wbgt_calculator(rDtTm, Ta, Tw, RH, Ws, Pa, Cl, Lt, Ln) {
 	monthDays[1] = 29;
     }
     
-    if (isNaN(day) | day < 1 | day > monthDays[month-1]) {
-	alert("Error: Invalid day. Please enter day in 2-digit format (DD). Day must be between 1 and the number of days in the given month.");
-	return;
-    }
+    //if (isNaN(day) | day < 1 | day > monthDays[month-1]) {
+	//alert("Error: Invalid day. Please enter day in 2-digit format (DD). Day must be between 1 and the number of days in the given month.");
+	//return;
+    //}
 
     var tmStr = rDtTm.slice(14,19);
     if (tmStr.length == 4) {
@@ -618,21 +620,21 @@ function wbgt_calculator(rDtTm, Ta, Tw, RH, Ws, Pa, Cl, Lt, Ln) {
     // The time should be in the format "HH:MM" with a colon as
     // the third character.
     var ndd = tmStr.indexOf(":"); // returns -1 if not found
-    if (ndd != 2 | tmStr.length != 5) {
-	alert("Error: Invalid time. Please enter time in HH:MM format with a colon separating the hours from the minutes. Do not use AM/PM. The hour should be in 24-hour format (e.g., from 00 to 23) and the hour should be two digits (i.e., write '07:30' instead of '7:30').");
-	return;
-    }
+    //if (ndd != 2 | tmStr.length != 5) {
+	//alert("Error: Invalid time. Please enter time in HH:MM format with a colon separating the hours from the minutes. Do not use AM/PM. The hour should be in 24-hour format (e.g., from 00 to 23) and the hour should be two digits (i.e., write '07:30' instead of '7:30').");
+	//return;
+    //}
     var hour = parseInt(tmStr.substring(0, 2)),
 	minute = parseInt(tmStr.substring(3));
-    if (isNaN(hour) | hour < 0 | hour > 23) {
-	alert("Error: Invalid time. Please enter time in HH:MM format (no AM/PM -- hour should be from 00 to 23).");
-	return;
-    }
+    //if (isNaN(hour) | hour < 0 | hour > 23) {
+	//alert("Error: Invalid time. Please enter time in HH:MM format (no AM/PM -- hour should be from 00 to 23).");
+	//return;
+    //}
 
-    if (isNaN(minute) | minute < 0 | minute > 59) {
-	alert("Error: Invalid time. Please enter time in HH:MM format (MM should be minutes, from 00 to 59).");
-	return;
-    }
+    //if (isNaN(minute) | minute < 0 | minute > 59) {
+	//alert("Error: Invalid time. Please enter time in HH:MM format (MM should be minutes, from 00 to 59).");
+	//return;
+    //}
     
     var gmt = -parseInt(rDtTm.slice(20,22));
     //var gmt = -5;
@@ -701,20 +703,20 @@ function wbgt_calculator(rDtTm, Ta, Tw, RH, Ws, Pa, Cl, Lt, Ln) {
 	rh = parseFloat(RH),
 	ws = parseFloat(Ws)*1.15078;
     
-    if (isNaN(temp_f) | temp_f < -40 | temp_f > 130) {
-	alert("Error: Dry bulb temperature must be between -40 and 130 degrees F.");
-	return;
-    }
+    //if (isNaN(temp_f) | temp_f < -40 | temp_f > 130) {
+	//alert("Error: Dry bulb temperature must be between -40 and 130 degrees F.");
+	//return;
+    //}
 
-    if (isNaN(rh) | rh < 0 | rh > 100) {
-	alert("Error: Relative humidity must be between 0 and 100%.");
-	return;
-    }
+    //if (isNaN(rh) | rh < 0 | rh > 100) {
+	//alert("Error: Relative humidity must be between 0 and 100%.");
+	//return;
+    //}
 
-    if (isNaN(ws) | ws < 0 | ws > 100) {
-        alert("Error: Wind speed must be between 0 and 100 mph.");
-	return;
-    }
+    //if (isNaN(ws) | ws < 0 | ws > 100) {
+        //alert("Error: Wind speed must be between 0 and 100 mph.");
+	//return;
+    //}
 
     var pres = parseFloat(Pa)*0.0295;
     if (pres == "") {
@@ -724,10 +726,10 @@ function wbgt_calculator(rDtTm, Ta, Tw, RH, Ws, Pa, Cl, Lt, Ln) {
     }
     else {
 	pres = parseFloat(pres);
-	if (isNaN(pres) | pres < 25 | pres > 32) {
-	    alert("Error: Barometric pressure must be between 25 and 32 inches Hg");
-	    return;
-	}
+	//if (isNaN(pres) | pres < 25 | pres > 32) {
+	    //alert("Error: Barometric pressure must be between 25 and 32 inches Hg");
+	    //return;
+	//}
     }
 
     // Check whether wet bulb temperature is known.
@@ -736,19 +738,19 @@ function wbgt_calculator(rDtTm, Ta, Tw, RH, Ws, Pa, Cl, Lt, Ln) {
     // are psychrometric wet bulb temps then the calculations below
     // might need to change slightly.
     var wbKnown = "Y";
-    if (wbKnown != "Y" & wbKnown != "N") {
-	alert("Error: Invalid answer to whether wet bulb temperature is known (must be Y or N)");
-	return;
-    }
+    //if (wbKnown != "Y" & wbKnown != "N") {
+	//alert("Error: Invalid answer to whether wet bulb temperature is known (must be Y or N)");
+	//return;
+    //}
     var wb_user = parseFloat(Tw);
     if (wbKnown == "Y") {
 	// The user wants to provide the wet bulb temperature. Make sure
 	// it is valid. If wbKnown is N, we don't care if this value
 	// is valid or not because we won't use it.
-	if (isNaN(wb_user) | wb_user < -40 | wb_user > 130) {
-	    alert("Error: Wet bulb temperature must be between -40 and 130 degrees F");
-	    return;
-	}
+	//if (isNaN(wb_user) | wb_user < -40 | wb_user > 130) {
+	    //alert("Error: Wet bulb temperature must be between -40 and 130 degrees F");
+	    //return;
+	//}
     }
     
     // Check whether solar irradiance is known.
@@ -756,20 +758,20 @@ function wbgt_calculator(rDtTm, Ta, Tw, RH, Ws, Pa, Cl, Lt, Ln) {
     // check each element to see if it is checked.
     var solarKnown = "N";
     
-    if (solarKnown != "Y" & solarKnown != "N") {
-	alert("Error: Invalid answer to whether solar irradiance is known (must be Y or N)");
-	return;
-    }
+    //if (solarKnown != "Y" & solarKnown != "N") {
+	//alert("Error: Invalid answer to whether solar irradiance is known (must be Y or N)");
+	//return;
+    //}
 
     var solar = parseFloat("");
     if (solarKnown == "Y") {
 	// The user wants to provide the solar irradiance. Make sure
 	// it is valid. If solarKnown is N, we don't care if this value
 	// is valid or not because we won't use it.
-	if (isNaN(solar) | solar < 0 | solar > 1400) {
-	    alert("Error: Solar irradiance must be between 0 and 1400 W/m^2");
-	    return;
-	}
+	//if (isNaN(solar) | solar < 0 | solar > 1400) {
+	    //alert("Error: Solar irradiance must be between 0 and 1400 W/m^2");
+	    //return;
+	//}
     }
     
     // If we made it here, the inputs are OK.
