@@ -870,10 +870,10 @@ function clearSkyIrradiance(cza) {
     // in the Sandia global horizontal irradiance paper. This algorithm
     // produces negative numbers as the zenith angle approaches 90 degrees,
     // so enforce a minimum irradiance of zero:
-    //var ghi = 910*cza - 30;
+    var ghi = 910*cza - 30;
 
     // Haurwitz model (1945)
-    var ghi = 1098*cza*Math.exp(-0.057/cza);
+    //var ghi = 1098*cza*Math.exp(-0.057/cza);
 
     // Berger-Duffie (BD) model (1979)
     //var ghi = 1380*0.70*cza;
