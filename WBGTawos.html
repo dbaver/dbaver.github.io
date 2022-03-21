@@ -863,12 +863,27 @@ function ctof(Cels) {
 // given the cosine of the solar zenith angle.
 function clearSkyIrradiance(cza) {
 
+    // Daneshyar-Paltridge-Proctor (DPP) model (1978)
+    // pass z to function or back out from cza
+
     // Use the "very simple" Kasten-Czeplak (1980) algorithm cited
     // in the Sandia global horizontal irradiance paper. This algorithm
     // produces negative numbers as the zenith angle approaches 90 degrees,
     // so enforce a minimum irradiance of zero:
+    //var ghi = 910*cza - 30;
 
-    var ghi = 910*cza - 30;
+    // Haurwitz model (1945)
+    var ghi = 1098*cza*Math.exp(-0.057/cza);
+
+    // Berger-Duffie (BD) model (1979)
+    //var ghi = 1380*0.70*cza;
+	
+    // Adnot-Bourges-Campana-Gicquel (ABCG) model (1979)
+    //var ghi = 951.39*Math.pow(cza,1.15);
+
+    // Robledo-Soler (RS) model (2000)
+    // pass z to function or back out from cza
+
     return(Math.max(ghi, 0));
 
 }
