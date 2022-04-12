@@ -91,7 +91,7 @@ xmlhttp.onload = function() {
     Ws = myObj.STATION[0]["OBSERVATIONS"]["wind_speed_set_1"];
     Pa = myObj.STATION[0]["OBSERVATIONS"]["pressure_set_1d"];
     wbgtTime.innerHTML = stID.slice(1) + " - " + stNM;
-    var i, nwbN, nwbA, wbgtN, wbgtA, wbgtC;
+    var i, nwbN, nwbA, wbgtN, wbgtA;
     for (i = 0; i < rDtTm.length; i++) {
       nwbN =  decideConvert(Ta[i],RH[i],Pa[i]);
       [nwbA, wbgtN, wbgtA] = wbgt_calculator(rDtTm[i],Ta[i],nwbN,RH[i],Ws[i],Pa[i],Lt,Ln);
