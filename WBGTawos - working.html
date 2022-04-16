@@ -321,19 +321,26 @@ var selAWOS = false,
     workLoad = "easy",
     addClothing = "noClothing",
     tacticalGear = "noTactical",
-    wbgt = 0,
+    awos = "",
+    utcOff = "",
     Tnwb = 0,
     Tg = 0,
     Tdb = 0,
-    utcOff = "";
+    wbgt = 0;
 function selectAWOS() {
-  var awos = awosSel.options[awosSel.selectedIndex].value;
+  selAWOS = true;
+  awos = awosSel.options[awosSel.selectedIndex].value;
   awosDiv.remove();
   workEasy.checked = true;
   clothingNone.checked = true;
   armorNo.checked = true;
+  var url = "https://api.synopticdata.com/v2/stations/latest?token=21b8403530954b0086093a47b496e954&stid=" + awos;
+  var vrs = "&vars=air_temp,relative_humidity,wind_speed,pressure,cloud_layer_1";
+  var unts = "&units=english";
+  var obtz = "&obtimezone=local";
+  var tmfmt = "&timeformat=%m/%d/%Y%20at%20%H:%M%z";
+  url += vrs + unts + obtz + tmfmt;
   var xmlhttp = new XMLHttpRequest();
-  var url = "https://api.synopticdata.com/v2/stations/latest?token=21b8403530954b0086093a47b496e954&vars=air_temp,relative_humidity,wind_speed,pressure,cloud_layer_1&units=english&obtimezone=local&timeformat=%m/%d/%Y%20at%20%H:%M%z&stid=" + awos;
   xmlhttp.open("GET", url);
   xmlhttp.send();
   xmlhttp.onload = function() {
@@ -354,7 +361,6 @@ function selectAWOS() {
     wbgtRange.value = wbgt*10;
     wbgtRead.innerHTML = "WBGT<sub>O</sub> (<small><sup>o</sup></small>F): " + wbgt.toFixed(1);
     flagColor(wbgt);
-    xmlhttp = new XMLHttpRequest();
     url = "https://api.synopticdata.com/v2/stations/timeseries?token=21b8403530954b0086093a47b496e954&stid=" + awos;
     var d = new Date();
     var yyyy = d.getFullYear();
@@ -366,11 +372,8 @@ function selectAWOS() {
     dEn = ("00" + dEn).slice(-2);
     var st = "&start=" + yyyy + mm + dSt + utcOff; // make sure utcOff is XX00 format
     var en = "&end=" + yyyy + mm + dEn + utcOff;
-    var vrs = "&vars=air_temp,relative_humidity,wind_speed,pressure,cloud_layer_1";
-    var unts = "&units=english";
-    var obtz = "&obtimezone=local";
-    var tmfmt = "&timeformat=%m/%d/%Y%20at%20%H:%M%z";
-    url = url + st + en + vrs + unts + obtz + tmfmt;
+    url += st + en + vrs + unts + obtz + tmfmt;
+    xmlhttp = new XMLHttpRequest();
     xmlhttp.open("GET", url);
     xmlhttp.send();
     xmlhttp.onload = function() {
@@ -391,15 +394,16 @@ function selectAWOS() {
         Pa = myObj.STATION[0]["OBSERVATIONS"]["pressure_set_1d"];
         Cl = myObj.STATION[0]["OBSERVATIONS"]["cloud_layer_1_set_1d"];
         var i, cl, nwbD, wbgtA;
-        for (i = 0; i < rDtTm.length; i++) {
-          nwbD =  decideConvert(Ta[i],RH[i],Pa[i]);
-          cl = Cl[i]["sky_condition"];
-          wbgtA = wbgt_calculator(rDtTm[i],Ta[i],nwbD,RH[i],Ws[i],Pa[i],cl,Lt,Ln);
+        var l = rDtTm.length;
+        for (i = 0; i < l; i++) {
+          nwbD =  decideConvert(Ta[l-1-i],RH[l-1-i],Pa[l-1-i]);
+          cl = Cl[l-1-i]["sky_condition"];
+          wbgtA = wbgt_calculator(rDtTm[l-1-i],Ta[l-1-i],nwbD,RH[l-1-i],Ws[l-1-i],Pa[l-1-i],cl,Lt,Ln);
           var table = wbgtTable;
           var r = table.rows.length;
           var row = table.insertRow(r-1);
           var cell = {};
-          var rdngs = [rDtTm[i].slice(0,19),Tnwb.toFixed(1),Tg.toFixed(1),Tdb.toFixed(1),wbgtA.toFixed(1)];
+          var rdngs = [rDtTm[l-1-i].slice(0,19),Tnwb.toFixed(1),Tg.toFixed(1),Tdb.toFixed(1),wbgtA.toFixed(1)];
           var j;
           for (j = 0; j < rdngs.length; j++) {
             cell = row.insertCell(j);
@@ -409,8 +413,23 @@ function selectAWOS() {
       }
     }
   }
-  selAWOS = true;
 }
+//======================================================================================================================
+//======================================================================================================================
+function mesoCall(url, cFunction) {
+  const xhttp = new XMLHttpRequest();
+  xhttp.onload = function() {cFunction(this);}
+  xhttp.open("GET", url);
+  xhttp.send();
+}
+function awosDivFill(xhttp) {
+  // action goes here
+}
+function awosTblFill(xhttp) {
+  // action goes here
+}
+//======================================================================================================================
+//======================================================================================================================
 function wbgtValue(sliderValue) {
   if (selAWOS == false) {
     return;
@@ -869,7 +888,7 @@ function wbgt_calculator(rDtTm, Ta, Tw, RH, Ws, Pa, Cl, Lt, Ln) {
 
     // Convert wind speed to m/s, temperature to degrees Celsius, and
     // barometric pressure to millibars.
-    var temp_c = 5/9*(temp_f - 32);
+    var temp_c = ftoc(temp_f);
     var speed_mps = ws * 0.44704;
     pres = pres * 33.8639;
 

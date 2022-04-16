@@ -299,12 +299,12 @@ p {
 </div>
 
 <script language="JavaScript" type="text/javascript">
-var selAWOS = false;
+var selAWOS = false,
     wbgtMod = 0,
     workLoad = "easy",
     addClothing = "noClothing",
     tacticalGear = "noTactical",
-    wbgt;
+    wbgt = 0;
 
 function selectAWOS() {
   var awos = awosSel.options[awosSel.selectedIndex].value;
@@ -794,7 +794,7 @@ function wbgt_calculator(rDtTm, Ta, Tw, RH, Ws, Pa, Cl, Lt, Ln) {
 
     // Convert wind speed to m/s, temperature to degrees Celsius, and
     // barometric pressure to millibars.
-    var temp_c = 5/9*(temp_f - 32);
+    var temp_c = ftoc(temp_f);
     var speed_mps = ws * 0.44704;
     pres = pres * 33.8639;
 
