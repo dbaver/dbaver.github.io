@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h2>JavaScript async / await</h2>
+
+<p id="demo"></p>
+
+<script>
+async function getFile() {
+  let myPromise = new Promise(function(resolve) {
+    let req = new XMLHttpRequest();
+    var url = "https://api.synopticdata.com/v2/stations/latest?";
+    var tkn = "token=21b8403530954b0086093a47b496e954";
+    var sid = "&stid=klck";
+    var vrs = "&vars=air_temp,relative_humidity,wind_speed,pressure,cloud_layer_1";
+    var uts = "&units=english";
+    var otz = "&obtimezone=local";
+    var tft = "&timeformat=%m/%d/%Y%20at%20%H:%M%z";
+    url += tkn + sid + vrs + uts + otz + tft;
+    req.open('GET', url);
+    req.onload = function() {
+      if (req.status == 200) {
+        const res = JSON.parse(req.responseText);
+        resolve(res);
+      } else {
+        resolve("File not Found");
+      }
+    };
+    req.send();
+  });
+  var myObj = await myPromise;
+  var stID = myObj.STATION[0]["STID"];
+  var Lt = myObj.STATION[0]["LATITUDE"];
+  var Ln = myObj.STATION[0]["LONGITUDE"];
+  var rDtTm = myObj.STATION[0]["OBSERVATIONS"]["air_temp_value_1"]["date_time"];
+  var Ta = myObj.STATION[0]["OBSERVATIONS"]["air_temp_value_1"]["value"];
+  var RH = myObj.STATION[0]["OBSERVATIONS"]["relative_humidity_value_1"]["value"];
+  var Ws = myObj.STATION[0]["OBSERVATIONS"]["wind_speed_value_1"]["value"];
+  var Pa = myObj.STATION[0]["OBSERVATIONS"]["pressure_value_1d"]["value"];
+  var Cl = myObj.STATION[0]["OBSERVATIONS"]["cloud_layer_1_value_1d"]["value"]["sky_condition"];
+  demo.innerHTML = stID;
+}
+
+getFile();
+</script>
+
+</body>
+</html>
