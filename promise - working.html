@@ -15,10 +15,8 @@ var url = "https://api.synopticdata.com/v2/stations/latest?",
     otz = "&obtimezone=local",
     tft = "&timeformat=%m/%d/%Y%20at%20%H:%M%z";
 url += tkn + sid + vrs + uts + otz + tft;
-alert('1');
-getFile(url, wbgtLatest);
-alert('4');
-async function getFile(url, mesoCall) {
+mesonet(url, wbgtLatest);
+async function mesonet(url, mesoCall) {
   let myPromise = new Promise(function(resolve) {
     let req = new XMLHttpRequest();
     req.open('GET', url);
@@ -32,12 +30,10 @@ async function getFile(url, mesoCall) {
     };
     req.send();
   });
-  alert('2');
   const myObj = await myPromise;
   mesoCall(myObj);
 }
 function wbgtLatest(myObj) {
-  alert('3');
   var stID = myObj.STATION[0]["STID"],
       Lt = myObj.STATION[0]["LATITUDE"],
       Ln = myObj.STATION[0]["LONGITUDE"],
@@ -48,6 +44,9 @@ function wbgtLatest(myObj) {
       Pa = myObj.STATION[0]["OBSERVATIONS"]["pressure_value_1d"]["value"],
       Cl = myObj.STATION[0]["OBSERVATIONS"]["cloud_layer_1_value_1d"]["value"]["sky_condition"];
   demo.innerHTML = stID;
+}
+function wbgtSeries(myObj) {
+  // action goes here
 }
 </script>
 

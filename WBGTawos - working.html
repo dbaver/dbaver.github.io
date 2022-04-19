@@ -334,77 +334,82 @@ function selectAWOS() {
   workEasy.checked = true;
   clothingNone.checked = true;
   armorNo.checked = true;
-  var url = "https://api.synopticdata.com/v2/stations/latest?token=21b8403530954b0086093a47b496e954&stid=" + awos;
-  var vrs = "&vars=air_temp,relative_humidity,wind_speed,pressure,cloud_layer_1";
-  var unts = "&units=english";
-  var obtz = "&obtimezone=local";
-  var tmfmt = "&timeformat=%m/%d/%Y%20at%20%H:%M%z";
-  url += vrs + unts + obtz + tmfmt;
+  var url = "https://api.synopticdata.com/v2/stations/",
+      dta = "latest?",
+      tkn = "token=21b8403530954b0086093a47b496e954",
+      sid = "&stid=" + awos,
+      vrs = "&vars=air_temp,relative_humidity,wind_speed,pressure,cloud_layer_1",
+      uts = "&units=english",
+      otz = "&obtimezone=local",
+      tft = "&timeformat=%m/%d/%Y%20at%20%H:%M%z";
+  url += dta + tkn + sid + vrs + uts + otz + tft;
   var xmlhttp = new XMLHttpRequest();
   xmlhttp.open("GET", url);
   xmlhttp.send();
   xmlhttp.onload = function() {
-    var stID, Lt, Ln, rDtTm, Ta, RH, Ws, Pa, Cl, Tw;
     const myObj = JSON.parse(this.responseText);
-    stID = myObj.STATION[0]["STID"];
-    Lt = myObj.STATION[0]["LATITUDE"];
-    Ln = myObj.STATION[0]["LONGITUDE"];
-    rDtTm = myObj.STATION[0]["OBSERVATIONS"]["air_temp_value_1"]["date_time"];
-    Ta = myObj.STATION[0]["OBSERVATIONS"]["air_temp_value_1"]["value"];
-    RH = myObj.STATION[0]["OBSERVATIONS"]["relative_humidity_value_1"]["value"];
-    Ws = myObj.STATION[0]["OBSERVATIONS"]["wind_speed_value_1"]["value"];
-    Pa = myObj.STATION[0]["OBSERVATIONS"]["pressure_value_1d"]["value"];
-    Cl = myObj.STATION[0]["OBSERVATIONS"]["cloud_layer_1_value_1d"]["value"]["sky_condition"];
-    Tw = decideConvert(Ta, RH, Pa);
+    var stID = myObj.STATION[0]["STID"],
+        Lt = myObj.STATION[0]["LATITUDE"],
+        Ln = myObj.STATION[0]["LONGITUDE"],
+        rDtTm = myObj.STATION[0]["OBSERVATIONS"]["air_temp_value_1"]["date_time"],
+        Ta = myObj.STATION[0]["OBSERVATIONS"]["air_temp_value_1"]["value"],
+        RH = myObj.STATION[0]["OBSERVATIONS"]["relative_humidity_value_1"]["value"],
+        Ws = myObj.STATION[0]["OBSERVATIONS"]["wind_speed_value_1"]["value"],
+        Pa = myObj.STATION[0]["OBSERVATIONS"]["pressure_value_1d"]["value"],
+        Cl = myObj.STATION[0]["OBSERVATIONS"]["cloud_layer_1_value_1d"]["value"]["sky_condition"],
+        Tw = decideConvert(Ta, RH, Pa);
     wbgtTime.innerHTML = stID.slice(1) + " Reading: " + rDtTm.slice(0,19);
     wbgt = wbgt_calculator(rDtTm, Ta, Tw, RH, Ws, Pa, Cl, Lt, Ln);
     wbgtRange.value = wbgt*10;
     wbgtRead.innerHTML = "WBGT<sub>O</sub> (<small><sup>o</sup></small>F): " + wbgt.toFixed(1);
     flagColor(wbgt);
-    url = "https://api.synopticdata.com/v2/stations/timeseries?token=21b8403530954b0086093a47b496e954&stid=" + awos;
-    var d = new Date();
-    var yyyy = d.getFullYear();
-    var mm = d.getMonth()+1;
-    mm = ("00" + mm).slice(-2);
-    var dSt = d.getDate();
-    var dEn = dSt + 1;
-    dSt = ("00" + dSt).slice(-2);
-    dEn = ("00" + dEn).slice(-2);
-    var st = "&start=" + yyyy + mm + dSt + utcOff; // make sure utcOff is XX00 format
-    var en = "&end=" + yyyy + mm + dEn + utcOff;
-    url += st + en + vrs + unts + obtz + tmfmt;
+    var url = "https://api.synopticdata.com/v2/stations/",
+        dta = "timeseries?",
+        tkn = "token=21b8403530954b0086093a47b496e954",
+        sid = "&stid=" + awos,
+        d = new Date(),
+        yyyy = d.getFullYear(),
+        mm = ("00" + (d.getMonth() + 1)).slice(-2),
+        dSt = ("00" + d.getDate()).slice(-2),
+        dEn = ("00" + (d.getDate() + 1)).slice(-2),
+        st = "&start=" + yyyy + mm + dSt + utcOff,
+        en = "&end=" + yyyy + mm + dEn + utcOff,
+        vrs = "&vars=air_temp,relative_humidity,wind_speed,pressure,cloud_layer_1",
+        uts = "&units=english",
+        otz = "&obtimezone=local",
+        tft = "&timeformat=%m/%d/%Y%20at%20%H:%M%z";
+    url += dta + tkn + sid + st + en + vrs + uts + otz + tft;
     xmlhttp = new XMLHttpRequest();
     xmlhttp.open("GET", url);
     xmlhttp.send();
     xmlhttp.onload = function() {
-      var stID, Lt, Ln, rDtTm, Ta, RH, Ws, Pa, Cl, Tw;
       const myObj = JSON.parse(this.responseText);
       if (myObj.SUMMARY["NUMBER_OF_OBJECTS"] == 0) {
         alert(url);
         return;
       }
       else {
-        stID = myObj.STATION[0]["STID"];
-        Lt = myObj.STATION[0]["LATITUDE"];
-        Ln = myObj.STATION[0]["LONGITUDE"];
-        rDtTm = myObj.STATION[0]["OBSERVATIONS"]["date_time"];
-        Ta = myObj.STATION[0]["OBSERVATIONS"]["air_temp_set_1"];
-        RH = myObj.STATION[0]["OBSERVATIONS"]["relative_humidity_set_1"];
-        Ws = myObj.STATION[0]["OBSERVATIONS"]["wind_speed_set_1"];
-        Pa = myObj.STATION[0]["OBSERVATIONS"]["pressure_set_1d"];
-        Cl = myObj.STATION[0]["OBSERVATIONS"]["cloud_layer_1_set_1d"];
-        var i, cl, nwbD, wbgtA;
-        var l = rDtTm.length;
+        var stID = myObj.STATION[0]["STID"],
+            Lt = myObj.STATION[0]["LATITUDE"],
+            Ln = myObj.STATION[0]["LONGITUDE"],
+            rDtTm = myObj.STATION[0]["OBSERVATIONS"]["date_time"],
+            Ta = myObj.STATION[0]["OBSERVATIONS"]["air_temp_set_1"],
+            RH = myObj.STATION[0]["OBSERVATIONS"]["relative_humidity_set_1"],
+            Ws = myObj.STATION[0]["OBSERVATIONS"]["wind_speed_set_1"],
+            Pa = myObj.STATION[0]["OBSERVATIONS"]["pressure_set_1d"],
+            Cl = myObj.STATION[0]["OBSERVATIONS"]["cloud_layer_1_set_1d"],
+            i, cl, nwbD, wbgtA,
+            l = rDtTm.length;
         for (i = 0; i < l; i++) {
           nwbD =  decideConvert(Ta[l-1-i],RH[l-1-i],Pa[l-1-i]);
           cl = Cl[l-1-i]["sky_condition"];
           wbgtA = wbgt_calculator(rDtTm[l-1-i],Ta[l-1-i],nwbD,RH[l-1-i],Ws[l-1-i],Pa[l-1-i],cl,Lt,Ln);
-          var table = wbgtTable;
-          var r = table.rows.length;
-          var row = table.insertRow(r-1);
-          var cell = {};
-          var rdngs = [rDtTm[l-1-i].slice(0,19),Tnwb.toFixed(1),Tg.toFixed(1),Tdb.toFixed(1),wbgtA.toFixed(1)];
-          var j;
+          var table = wbgtTable,
+              r = table.rows.length,
+              row = table.insertRow(r-1),
+              cell = {},
+              rdngs = [rDtTm[l-1-i].slice(0,19),Tnwb.toFixed(1),Tg.toFixed(1),Tdb.toFixed(1),wbgtA.toFixed(1)],
+              j;
           for (j = 0; j < rdngs.length; j++) {
             cell = row.insertCell(j);
             cell.innerHTML = rdngs[j];
@@ -417,16 +422,41 @@ function selectAWOS() {
 /*
 //======================================================================================================================
 //======================================================================================================================
-function mesoCall(url, cFunction) {
-  const xhttp = new XMLHttpRequest();
-  xhttp.onload = function() {cFunction(this);}
-  xhttp.open("GET", url);
-  xhttp.send();
+async function mesonet(url, mesoCall) {
+  let myPromise = new Promise(function(resolve) {
+    let req = new XMLHttpRequest();
+    req.open('GET', url);
+    req.onload = function() {
+      if (req.status == 200) {
+        //const res = JSON.parse(req.responseText);
+        resolve(JSON.parse(req.responseText));
+      } else {
+        resolve("File not Found");
+      }
+    };
+    req.send();
+  });
+  const myObj = await myPromise;
+  mesoCall(myObj);
 }
-function awosDivFill(xhttp) {
-  // action goes here
+function wbgtLatest(myObj) {
+  var stID = myObj.STATION[0]["STID"],
+      Lt = myObj.STATION[0]["LATITUDE"],
+      Ln = myObj.STATION[0]["LONGITUDE"],
+      rDtTm = myObj.STATION[0]["OBSERVATIONS"]["air_temp_value_1"]["date_time"],
+      Ta = myObj.STATION[0]["OBSERVATIONS"]["air_temp_value_1"]["value"],
+      RH = myObj.STATION[0]["OBSERVATIONS"]["relative_humidity_value_1"]["value"],
+      Ws = myObj.STATION[0]["OBSERVATIONS"]["wind_speed_value_1"]["value"],
+      Pa = myObj.STATION[0]["OBSERVATIONS"]["pressure_value_1d"]["value"],
+      Cl = myObj.STATION[0]["OBSERVATIONS"]["cloud_layer_1_value_1d"]["value"]["sky_condition"],
+      Tw = decideConvert(Ta, RH, Pa);
+  wbgtTime.innerHTML = stID.slice(1) + " Reading: " + rDtTm.slice(0,19);
+  wbgt = wbgt_calculator(rDtTm, Ta, Tw, RH, Ws, Pa, Cl, Lt, Ln);
+  wbgtRange.value = wbgt*10;
+  wbgtRead.innerHTML = "WBGT<sub>O</sub> (<small><sup>o</sup></small>F): " + wbgt.toFixed(1);
+  flagColor(wbgt);
 }
-function awosTblFill(xhttp) {
+function wbgtSeries(xhttp) {
   // action goes here
 }
 //======================================================================================================================
