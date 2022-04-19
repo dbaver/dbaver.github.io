@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h2>JavaScript async / await</h2>
+
+<p id="demo"></p>
+
+<script>
+mesonet(wbgtLatest);
+
+async function mesonet(mesoCall) {
+  if (mesoCall == wbgtLatest) {
+    var url = "https://api.synopticdata.com/v2/stations/latest?",
+        tkn = "token=21b8403530954b0086093a47b496e954",
+        sid = "&stid=klck",
+        vrs = "&vars=air_temp,relative_humidity,wind_speed,pressure,cloud_layer_1",
+        uts = "&units=english",
+        otz = "&obtimezone=local",
+        tft = "&timeformat=%m/%d/%Y%20at%20%H:%M%z";
+    url += tkn + sid + vrs + uts + otz + tft;
+  } else if (mesoCall == wbgtSeries) {
+    demo.innerHTML = "wbgtSeries called";
+  } else {
+    demo.innerHTML = "argument comparison didn't work";
+  }
+  let myPromise = new Promise(function(resolve) {
+    let req = new XMLHttpRequest();
+    req.open('GET', url);
+    req.onload = function() {
+      if (req.status == 200) {
+        //const res = JSON.parse(req.responseText);
+        resolve(JSON.parse(req.responseText));
+      } else {
+        resolve("File not Found");
+      }
+    };
+    req.send();
+  });
+  const myObj = await myPromise;
+  mesoCall(myObj);
+}
+function wbgtLatest(myObj) {
+  var stID = myObj.STATION[0]["STID"],
+      Lt = myObj.STATION[0]["LATITUDE"],
+      Ln = myObj.STATION[0]["LONGITUDE"],
+      rDtTm = myObj.STATION[0]["OBSERVATIONS"]["air_temp_value_1"]["date_time"],
+      Ta = myObj.STATION[0]["OBSERVATIONS"]["air_temp_value_1"]["value"],
+      RH = myObj.STATION[0]["OBSERVATIONS"]["relative_humidity_value_1"]["value"],
+      Ws = myObj.STATION[0]["OBSERVATIONS"]["wind_speed_value_1"]["value"],
+      Pa = myObj.STATION[0]["OBSERVATIONS"]["pressure_value_1d"]["value"],
+      Cl = myObj.STATION[0]["OBSERVATIONS"]["cloud_layer_1_value_1d"]["value"]["sky_condition"];
+  demo.innerHTML = stID;
+}
+function wbgtSeries(myObj) {
+  demo.innerHTML = "wbgtSeries called";
+}
+</script>
+
+</body>
+</html>
