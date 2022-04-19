@@ -17,6 +17,7 @@ var url = "https://api.synopticdata.com/v2/stations/latest?",
 url += tkn + sid + vrs + uts + otz + tft;
 mesonet(url, wbgtLatest);
 async function mesonet(url, mesoCall) {
+  alert(mesoCall==wbgtSeries);
   let myPromise = new Promise(function(resolve) {
     let req = new XMLHttpRequest();
     req.open('GET', url);
