@@ -348,8 +348,8 @@ function wbgtValue(sliderValue) {
   if (selAWOS == false) {
     return;
   } else if (selAWOS == true) {
-    var d = new Date();
-    var month = ("0" + (d.getMonth()+1)).slice(-2),
+    var d = new Date(),
+        month = ("0" + (d.getMonth()+1)).slice(-2),
         day = ("0" + d.getDate()).slice(-2),
         year = d.getFullYear().toString(),
         hour = ("0" + d.getHours()).slice(-2),
@@ -368,11 +368,11 @@ function wbgtValue(sliderValue) {
   }
 }
 function flagColor(t) {
-  var tdFlagOn;
-  var tdWorkOn;
-  var tdWorkOff1;
-  var tdWorkOff2;
-  var i;
+  var tdFlagOn,
+      tdWorkOn,
+      tdWorkOff1,
+      tdWorkOff2,
+      i;
   if (t<81.95) {
     wbgtRead.style.backgroundColor = "lightgray";
     wbgtReadDiv.style.backgroundColor = "lightgray";
