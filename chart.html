@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+
+<style>
+body {
+  margin:2vw;
+}
+#myChartDiv {
+  width:35vw;
+  position: relative;
+  left: 50%;
+  -ms-transform: translateX(-50%);
+  transform: translateX(-50%);
+}
+</style>
+
+<body>
+<div id="myChartDiv">
+<canvas id="myChart"></canvas>
+</div>
+
+<script>
+var xyNF = [
+  {x:1, y:72},
+  {x:2, y:73},
+  {x:3, y:75},
+  {x:4, y:78},
+  {x:5, y:81},
+  {x:21, y:81},
+  {x:22, y:77},
+  {x:23, y:74},
+  {x:0, y:73}
+];
+
+var xyGF = [
+  {x:6, y:82},
+  {x:7, y:82},
+  {x:8, y:83},
+  {x:9, y:84},
+  {x:10, y:84},
+  {x:19, y:83},
+  {x:20, y:82}
+];
+
+var xyYF = [
+  {x:11, y:87},
+  {x:18, y:85}
+];
+
+var xyRF = [
+  {x:12, y:88},
+  {x:13, y:88},
+  {x:14, y:89},
+  {x:16, y:89},
+  {x:17, y:88}
+];
+
+var xyBF = [
+  {x:15, y:91}
+];
+
+new Chart("myChart", {
+  type: "scatter",
+  data: {
+    datasets: [{
+      pointRadius: 5,
+      pointBackgroundColor: "#D3D3D3",
+      data: xyNF
+    },
+    {
+      pointRadius: 5,
+      pointBackgroundColor: "#228B22",
+      data: xyGF
+    },
+    {
+      pointRadius: 5,
+      pointBackgroundColor: "#FFFF00",
+      data: xyYF
+    },
+    {
+      pointRadius: 5,
+      pointBackgroundColor: "#FF0000",
+      data: xyRF
+    },
+    {
+      pointRadius: 5,
+      pointBackgroundColor: "#000000",
+      data: xyBF
+    }
+    ]
+  },
+  options: {
+    legend: {display: false},
+    scales: {
+      xAxes: [{
+        ticks: {min: 0, max:23},
+        scaleLabel: {
+          display: true,
+          labelString: "Hour"
+        }
+      }],
+      yAxes: [{
+        ticks: {min: 70, max:95},
+        scaleLabel: {
+          display: true,
+          labelString: "WBGTo"
+        }
+      }],
+    }
+  }
+});
+</script>
+
+</body>
+</html>
+
+
