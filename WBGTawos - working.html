@@ -481,7 +481,7 @@ function csvSave() {
         cells = rows[iTr].cells,
         iTd = 0;
     for (iTd = 0;iTd < cells.length;iTd++) {
-      sTr += '"' + cells[iTd].innerHTML + '"' + ',';
+      sTr += '"' + cells[iTd].firstElementChild.innerHTML + '"' + ',';
     }
     sTr = sTr.slice(0,sTr.length-1);
     CSV.push(sTr);
