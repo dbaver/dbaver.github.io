@@ -419,7 +419,7 @@ function wbgtSeries(myObj) {
         Cl = myObj.STATION[0]["OBSERVATIONS"]["cloud_layer_1_set_1d"],
         i, cl, nwbD, wbgtA,
         l = rDtTm.length;
-    wbgtDate.innerHTML = stID.slice(1) + " Readings: " + rDtTm.slice(0,10);
+    wbgtDate.innerHTML = stID.slice(1) + " Readings: " + rDtTm[0].slice(0,10);
     for (i = 0; i < l; i++) {
       nwbD =  decideConvert(Ta[l-1-i],RH[l-1-i],Pa[l-1-i]);
       cl = Cl[l-1-i]["sky_condition"];
@@ -455,7 +455,7 @@ function wbgtSeries(myObj) {
         }
         cell = row.insertCell(j);
         dv = document.createElement("DIV");
-        dv.style.margin = "1px 25%";
+        dv.style.margin = "1px 15%";
         dv.style.backgroundColor = "orange";
         dv.style.color = fc;
         dv.innerHTML = rdngs[j];
