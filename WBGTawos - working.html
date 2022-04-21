@@ -225,8 +225,8 @@ p {
     <th colspan="2">Hard Work</th>
   </tr>
   <tr style="background-color:gray">
-    <td></td>
-    <td></td>
+    <td>&nbsp</td>
+    <td>&nbsp</td>
     <td>Work/<br>Rest<br>Cycle</td>
     <td>Water<br>Intake<br>Qt/hr</td>
     <td>Work/<br>Rest<br>Cycle</td>
@@ -235,14 +235,14 @@ p {
     <td>Water<br>Intake<br>Qt/hr</td>
   </tr>
   <tr id="flag" style="background-color:lightgray">
-    <td id="fC" class="all wbgt"></td>
-    <td id="fR" class="all wbgt"></td>
-    <td id="wrE" class="all easy"></td>
-    <td id="wiE" class="all easy"></td>
-    <td id="wrM" class="all moderate"></td>
-    <td id="wiM" class="all moderate"></td>
-    <td id="wrH" class="all hard"></td>
-    <td id="wiH" class="all hard"></td>
+    <td id="fC" class="all wbgt">&nbsp</td>
+    <td id="fR" class="all wbgt">&nbsp</td>
+    <td id="wrE" class="all easy">&nbsp</td>
+    <td id="wiE" class="all easy">&nbsp</td>
+    <td id="wrM" class="all moderate">&nbsp</td>
+    <td id="wiM" class="all moderate">&nbsp</td>
+    <td id="wrH" class="all hard">&nbsp</td>
+    <td id="wiH" class="all hard">&nbsp</td>
   </tr>
 </table>
 </div>
@@ -303,7 +303,7 @@ p {
 <div style="overflow-x:auto">
 <table id="wbgtTable">
   <tr style="background-color:gray">
-    <th id="wbgtDate" colspan="5"></th>
+    <th id="wbgtDate" colspan="5">&nbsp</th>
   </tr>
   <tr style="background-color:gray">
     <th>Date/Time</th>
@@ -456,7 +456,7 @@ function wbgtSeries(myObj) {
         cell = row.insertCell(j);
         dv = document.createElement("DIV");
         dv.style.margin = "1px 15%";
-        dv.style.backgroundColor = "orange";
+        dv.style.backgroundColor = bc;
         dv.style.color = fc;
         dv.innerHTML = rdngs[j];
         cell.appendChild(dv);
