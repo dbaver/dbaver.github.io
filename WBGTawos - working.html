@@ -475,6 +475,7 @@ function csvSave() {
       CSV = [],
       rows = document.getElementById("wbgtTable").rows,
       iTr;
+  CSV.push('"' + wbgtDate.innerHTML + '"');
   CSV.push('"Date/Time","Tnwb (F)","Tg (F)","Tdb (F)","WBGTo (F)"');
   for (iTr = 2;iTr < rows.length-1;iTr++) {
     var sTr = '',
