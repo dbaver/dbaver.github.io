@@ -302,14 +302,17 @@ p {
 
 <div style="overflow-x:auto">
 <table id="wbgtTable">
-  <tr>
+  <tr style="background-color:gray">
+    <th id="wbgtDate" colspan="5"></th>
+  </tr>
+  <tr style="background-color:gray">
     <th>Date/Time</th>
     <th>T<sub>nwb</sub> (<small><sup>o</sup></small>F)</th>
     <th>T<sub>g</sub> (<small><sup>o</sup></small>F)</th>
     <th>T<sub>db</sub> (<small><sup>o</sup></small>F)</th>
     <th>WBGT<sub>O</sub> (<small><sup>o</sup></small>F)</th>
   </tr>
-  <tr>
+  <tr style="background-color:lightgray">
     <td colspan="5"><a id="sl" href="#" onclick="csvSave()">Download</a></td>
   </tr>
 </table>
@@ -416,7 +419,7 @@ function wbgtSeries(myObj) {
         Cl = myObj.STATION[0]["OBSERVATIONS"]["cloud_layer_1_set_1d"],
         i, cl, nwbD, wbgtA,
         l = rDtTm.length;
-    //wbgtDate.innerHTML = stID.slice(1) + " Readings: " + rDtTm.slice(0,10);
+    wbgtDate.innerHTML = stID.slice(1) + " Readings: " + rDtTm.slice(0,10);
     for (i = 0; i < l; i++) {
       nwbD =  decideConvert(Ta[l-1-i],RH[l-1-i],Pa[l-1-i]);
       cl = Cl[l-1-i]["sky_condition"];
@@ -427,6 +430,7 @@ function wbgtSeries(myObj) {
           cell = {},
           rdngs = [rDtTm[l-1-i].slice(14,19),Tnwb.toFixed(1),Tg.toFixed(1),Tdb.toFixed(1),wbgtA.toFixed(1)],
           j,bc,fc,dv;
+      row.style.backgroundColor = "lightgray";
       for (j = 0; j < rdngs.length; j++) {
         if (j == 4) {
           if (wbgtA<81.95) {
@@ -452,7 +456,7 @@ function wbgtSeries(myObj) {
         cell = row.insertCell(j);
         dv = document.createElement("DIV");
         dv.style.margin = "1px 25%";
-        dv.style.backgroundColor = bc;
+        dv.style.backgroundColor = "orange";
         dv.style.color = fc;
         dv.innerHTML = rdngs[j];
         cell.appendChild(dv);
@@ -472,7 +476,7 @@ function csvSave() {
       rows = document.getElementById("wbgtTable").rows,
       iTr;
   CSV.push('"Date/Time","Tnwb (F)","Tg (F)","Tdb (F)","WBGTo (F)"');
-  for (iTr = 1;iTr < rows.length-1;iTr++) {
+  for (iTr = 2;iTr < rows.length-1;iTr++) {
     var sTr = '',
         cells = rows[iTr].cells,
         iTd = 0;
