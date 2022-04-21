@@ -416,6 +416,7 @@ function wbgtSeries(myObj) {
         Cl = myObj.STATION[0]["OBSERVATIONS"]["cloud_layer_1_set_1d"],
         i, cl, nwbD, wbgtA,
         l = rDtTm.length;
+    //wbgtDate.innerHTML = stID.slice(1) + " Readings: " + rDtTm.slice(0,10);
     for (i = 0; i < l; i++) {
       nwbD =  decideConvert(Ta[l-1-i],RH[l-1-i],Pa[l-1-i]);
       cl = Cl[l-1-i]["sky_condition"];
@@ -424,7 +425,7 @@ function wbgtSeries(myObj) {
           r = table.rows.length,
           row = table.insertRow(r-1),
           cell = {},
-          rdngs = [rDtTm[l-1-i].slice(0,19),Tnwb.toFixed(1),Tg.toFixed(1),Tdb.toFixed(1),wbgtA.toFixed(1)],
+          rdngs = [rDtTm[l-1-i].slice(14,19),Tnwb.toFixed(1),Tg.toFixed(1),Tdb.toFixed(1),wbgtA.toFixed(1)],
           j,bc,fc,dv;
       for (j = 0; j < rdngs.length; j++) {
         if (j == 4) {
