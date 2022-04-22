@@ -370,6 +370,7 @@ async function mesonet(mesoCall) {
           otz = "&obtimezone=local",
           tft = "&timeformat=%m/%d/%Y%20at%20%H:%M%z";
       url += dta + tkn + sid + st + en + vrs + uts + otz + tft;
+alert(url);
   }
   let myPromise = new Promise(function(resolve) {
     let req = new XMLHttpRequest();
