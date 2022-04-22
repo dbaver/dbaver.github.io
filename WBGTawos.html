@@ -985,7 +985,8 @@ function wbgt_calculator(rDtTm, Ta, Tw, RH, Ws, Pa, Cl, Lt, Ln) {
 				    lat, lon, csi, cl, pres, temp_c, rh, speed_mps,
 				    zspeed, dT, urban); // full sun
 
-        Tnwb = ctof(wbgtOutput2.Tnwb);
+        //Tnwb = ctof(wbgtOutput2.Tnwb);
+	Tnwb = wb_user;
         Tg = ctof(wbgtOutput2.Tg);
         Tdb = temp_f;
 
@@ -1005,8 +1006,8 @@ function wbgt_calculator(rDtTm, Ta, Tw, RH, Ws, Pa, Cl, Lt, Ln) {
     // NWS web site (http://www.wpc.ncep.noaa.gov/html/heatindex.shtml)
     var hi = heat1((1.8*temp_c+32), rh);
 
-    //wbgtSun = ctof(wbgtSun);
-    wbgtSun = ctof(wbgtOutput2.Twbg);
+    wbgtSun = ctof(wbgtSun);
+    //wbgtSun = ctof(wbgtOutput2.Twbg);
     return(wbgtSun);
 }
 function ftoc(Fahr) {
