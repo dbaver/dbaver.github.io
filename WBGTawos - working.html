@@ -16,7 +16,7 @@ body {
 #wbgtReadDiv {
   height: 80px;
   width: 100%;
-  background-color: lightgray;
+  background-color: gray;
   border-top: 2px solid black;
   border-bottom: 2px solid black;
 }
@@ -50,7 +50,7 @@ body {
 
 h1 {
   text-align: center;
-  background-color: lightgray;
+  background-color: gray;
   color: lightgray;
   text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
   padding: 5px;
@@ -63,7 +63,7 @@ h1 {
 }
 
 #wbgtRangeDiv {
-  background-color: lightgray;
+  background-color: gray;
 }
 
 .slider {
@@ -75,7 +75,7 @@ h1 {
   -ms-transform: translateX(-50%);
   transform: translateX(-50%);
   margin: 0px;
-  background: lightgray;
+  background: gray;
   border-top: 0px solid black;
   border-bottom: 2px solid black;
 }
@@ -93,7 +93,7 @@ h1 {
   height: 100%;
   width: 100%;
   margin: 0px;
-  background-color: lightgray;
+  background-color: gray;
   border-bottom: 2px solid black;
 }
 
@@ -101,6 +101,8 @@ h1 {
   text-align: center;
   margin: 0px;
   padding-bottom: 4px;
+  color: lightgray;
+  text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
 }
 
 table {
@@ -455,7 +457,7 @@ function wbgtSeries(myObj) {
         }
         cell = row.insertCell(j);
         dv = document.createElement("DIV");
-        dv.style.margin = "1px 15%";
+        dv.style.margin = "0% 15%";
         dv.style.backgroundColor = bc;
         dv.style.color = fc;
         dv.innerHTML = rdngs[j];
@@ -523,8 +525,8 @@ function flagColor(t) {
       tdWorkOff2,
       i;
   if (t<81.95) {
-    wbgtRead.style.backgroundColor = "lightgray";
-    wbgtReadDiv.style.backgroundColor = "lightgray";
+    wbgtRead.style.backgroundColor = "gray";
+    wbgtReadDiv.style.backgroundColor = "gray";
     fillRow("nf", "lightgray", "black");
   } else if(t>=81.95 && t<84.95) {
     wbgtRead.style.backgroundColor = "green";
