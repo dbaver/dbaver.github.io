@@ -16,7 +16,7 @@ body {
 #wbgtReadDiv {
   height: 80px;
   width: 100%;
-  background-color: lightgray;
+  background-color: gray;
   border-top: 2px solid black;
   border-bottom: 2px solid black;
 }
@@ -50,7 +50,7 @@ body {
 
 h1 {
   text-align: center;
-  background-color: lightgray;
+  background-color: gray;
   color: lightgray;
   text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
   padding: 5px;
@@ -63,7 +63,7 @@ h1 {
 }
 
 #wbgtRangeDiv {
-  background-color: lightgray;
+  background-color: gray;
 }
 
 .slider {
@@ -75,7 +75,7 @@ h1 {
   -ms-transform: translateX(-50%);
   transform: translateX(-50%);
   margin: 0px;
-  background: lightgray;
+  background: gray;
   border-top: 0px solid black;
   border-bottom: 2px solid black;
 }
@@ -93,7 +93,7 @@ h1 {
   height: 100%;
   width: 100%;
   margin: 0px;
-  background-color: lightgray;
+  background-color: gray;
   border-bottom: 2px solid black;
 }
 
@@ -101,6 +101,8 @@ h1 {
   text-align: center;
   margin: 0px;
   padding-bottom: 4px;
+  color: lightgray;
+  text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
 }
 
 table {
@@ -225,8 +227,8 @@ p {
     <th colspan="2">Hard Work</th>
   </tr>
   <tr style="background-color:gray">
-    <td></td>
-    <td></td>
+    <td>&nbsp</td>
+    <td>&nbsp</td>
     <td>Work/<br>Rest<br>Cycle</td>
     <td>Water<br>Intake<br>Qt/hr</td>
     <td>Work/<br>Rest<br>Cycle</td>
@@ -235,14 +237,14 @@ p {
     <td>Water<br>Intake<br>Qt/hr</td>
   </tr>
   <tr id="flag" style="background-color:lightgray">
-    <td id="fC" class="all wbgt"></td>
-    <td id="fR" class="all wbgt"></td>
-    <td id="wrE" class="all easy"></td>
-    <td id="wiE" class="all easy"></td>
-    <td id="wrM" class="all moderate"></td>
-    <td id="wiM" class="all moderate"></td>
-    <td id="wrH" class="all hard"></td>
-    <td id="wiH" class="all hard"></td>
+    <td id="fC" class="all wbgt">&nbsp</td>
+    <td id="fR" class="all wbgt">&nbsp</td>
+    <td id="wrE" class="all easy">&nbsp</td>
+    <td id="wiE" class="all easy">&nbsp</td>
+    <td id="wrM" class="all moderate">&nbsp</td>
+    <td id="wiM" class="all moderate">&nbsp</td>
+    <td id="wrH" class="all hard">&nbsp</td>
+    <td id="wiH" class="all hard">&nbsp</td>
   </tr>
 </table>
 </div>
@@ -298,51 +300,200 @@ p {
 </table>
 </div>
 
+<br>
+
+<div style="overflow-x:auto">
+<table id="wbgtTable">
+  <tr style="background-color:gray">
+    <th id="wbgtDate" colspan="5">&nbsp</th>
+  </tr>
+  <tr style="background-color:gray">
+    <th style="width:20%">Time</th>
+    <th style="width:20%">T<sub>nwb</sub> (<small><sup>o</sup></small>F)</th>
+    <th style="width:20%">T<sub>g</sub> (<small><sup>o</sup></small>F)</th>
+    <th style="width:20%">T<sub>db</sub> (<small><sup>o</sup></small>F)</th>
+    <th style="width:20%">WBGT<sub>O</sub> (<small><sup>o</sup></small>F)</th>
+  </tr>
+  <tr style="background-color:lightgray">
+    <td colspan="5"><a id="sl" href="#" onclick="csvSave()">Download</a></td>
+  </tr>
+</table>
+</div>
+
 <script language="JavaScript" type="text/javascript">
 var selAWOS = false,
     wbgtMod = 0,
     workLoad = "easy",
     addClothing = "noClothing",
     tacticalGear = "noTactical",
+    awos = "",
+    utcOff = "",
+    Tnwb = 0,
+    Tg = 0,
+    Tdb = 0,
     wbgt = 0;
-
 function selectAWOS() {
   selAWOS = true;
-  var awos = awosSel.options[awosSel.selectedIndex].value;
+  awos = awosSel.options[awosSel.selectedIndex].value;
   awosDiv.remove();
   workEasy.checked = true;
   clothingNone.checked = true;
   armorNo.checked = true;
-  var url = "https://api.synopticdata.com/v2/stations/",
-      dta = "latest?",
-      tkn = "token=21b8403530954b0086093a47b496e954",
-      sid = "&stid=" + awos,
-      vrs = "&vars=air_temp,relative_humidity,wind_speed,pressure,cloud_layer_1",
-      uts = "&units=english",
-      otz = "&obtimezone=local",
-      tft = "&timeformat=%m/%d/%Y%20at%20%H:%M%z";
-  url += dta + tkn + sid + vrs + uts + otz + tft;
-  const xmlhttp = new XMLHttpRequest();
-  xmlhttp.open("GET", url);
-  xmlhttp.send();
-  xmlhttp.onload = function() {
-    const myObj = JSON.parse(this.responseText);
+  mesonet(wbgtLatest);
+}
+async function mesonet(mesoCall) {
+  if (mesoCall == wbgtLatest) {
+    var url = "https://api.synopticdata.com/v2/stations/",
+        dta = "latest?",
+        tkn = "token=21b8403530954b0086093a47b496e954",
+        sid = "&stid=" + awos,
+        vrs = "&vars=air_temp,relative_humidity,wind_speed,pressure,cloud_layer_1",
+        uts = "&units=english",
+        otz = "&obtimezone=local",
+        tft = "&timeformat=%m/%d/%Y%20at%20%H:%M%z";
+    url += dta + tkn + sid + vrs + uts + otz + tft;
+  } else if (mesoCall == wbgtSeries) {
+      var url = "https://api.synopticdata.com/v2/stations/",
+          dta = "timeseries?",
+          tkn = "token=21b8403530954b0086093a47b496e954",
+          sid = "&stid=" + awos,
+          d = new Date(),
+          yyyy = d.getFullYear(),
+          mm = ("00" + (d.getMonth() + 1)).slice(-2),
+          dSt = ("00" + d.getDate()).slice(-2),
+          dEn = ("00" + (d.getDate() + 1)).slice(-2),
+          st = "&start=" + yyyy + mm + dSt + utcOff,
+          en = "&end=" + yyyy + mm + dEn + utcOff,
+          vrs = "&vars=air_temp,relative_humidity,wind_speed,pressure,cloud_layer_1",
+          uts = "&units=english",
+          otz = "&obtimezone=local",
+          tft = "&timeformat=%m/%d/%Y%20at%20%H:%M%z";
+      url += dta + tkn + sid + st + en + vrs + uts + otz + tft;
+  }
+  let myPromise = new Promise(function(resolve) {
+    let req = new XMLHttpRequest();
+    req.open('GET', url);
+    req.onload = function() {
+      if (req.status == 200) {
+        //const res = JSON.parse(req.responseText);
+        resolve(JSON.parse(req.responseText));
+      } else {
+        resolve("File not Found");
+      }
+    };
+    req.send();
+  });
+  const myObj = await myPromise;
+  mesoCall(myObj);
+}
+function wbgtLatest(myObj) {
+  var stID = myObj.STATION[0]["STID"],
+      Lt = myObj.STATION[0]["LATITUDE"],
+      Ln = myObj.STATION[0]["LONGITUDE"],
+      rDtTm = myObj.STATION[0]["OBSERVATIONS"]["air_temp_value_1"]["date_time"],
+      Ta = myObj.STATION[0]["OBSERVATIONS"]["air_temp_value_1"]["value"],
+      RH = myObj.STATION[0]["OBSERVATIONS"]["relative_humidity_value_1"]["value"],
+      Ws = myObj.STATION[0]["OBSERVATIONS"]["wind_speed_value_1"]["value"],
+      Pa = myObj.STATION[0]["OBSERVATIONS"]["pressure_value_1d"]["value"],
+      Cl = myObj.STATION[0]["OBSERVATIONS"]["cloud_layer_1_value_1d"]["value"]["sky_condition"],
+      Tw = decideConvert(Ta, RH, Pa);
+  wbgtTime.innerHTML = stID.slice(1) + " Reading: " + rDtTm.slice(0,19);
+  wbgt = wbgt_calculator(rDtTm, Ta, Tw, RH, Ws, Pa, Cl, Lt, Ln);
+  wbgtRange.value = wbgt*10;
+  wbgtRead.innerHTML = "WBGT<sub>O</sub> (<small><sup>o</sup></small>F): " + wbgt.toFixed(1);
+  flagColor(wbgt);
+  mesonet(wbgtSeries);
+}
+function wbgtSeries(myObj) {
+  if (myObj.SUMMARY["NUMBER_OF_OBJECTS"] == 0) {
+    alert(url);
+    return;
+  }
+  else {
     var stID = myObj.STATION[0]["STID"],
         Lt = myObj.STATION[0]["LATITUDE"],
         Ln = myObj.STATION[0]["LONGITUDE"],
-        rDtTm = myObj.STATION[0]["OBSERVATIONS"]["air_temp_value_1"]["date_time"],
-        Ta = myObj.STATION[0]["OBSERVATIONS"]["air_temp_value_1"]["value"],
-        RH = myObj.STATION[0]["OBSERVATIONS"]["relative_humidity_value_1"]["value"],
-        Ws = myObj.STATION[0]["OBSERVATIONS"]["wind_speed_value_1"]["value"],
-        Pa = myObj.STATION[0]["OBSERVATIONS"]["pressure_value_1d"]["value"],
-        Cl = myObj.STATION[0]["OBSERVATIONS"]["cloud_layer_1_value_1d"]["value"]["sky_condition"],
-        Tw = decideConvert(Ta, RH, Pa);
-    wbgtTime.innerHTML = stID.slice(1) + " Reading: " + rDtTm.slice(0,19);
-    wbgt = wbgt_calculator(rDtTm, Ta, Tw, RH, Ws, Pa, Cl, Lt, Ln);
-    wbgtRange.value = wbgt*10;
-    wbgtRead.innerHTML = "WBGT<sub>O</sub> (<small><sup>o</sup></small>F): " + wbgt.toFixed(1);
-    flagColor(wbgt);
+        rDtTm = myObj.STATION[0]["OBSERVATIONS"]["date_time"],
+        Ta = myObj.STATION[0]["OBSERVATIONS"]["air_temp_set_1"],
+        RH = myObj.STATION[0]["OBSERVATIONS"]["relative_humidity_set_1"],
+        Ws = myObj.STATION[0]["OBSERVATIONS"]["wind_speed_set_1"],
+        Pa = myObj.STATION[0]["OBSERVATIONS"]["pressure_set_1d"],
+        Cl = myObj.STATION[0]["OBSERVATIONS"]["cloud_layer_1_set_1d"],
+        i, cl, nwbD, wbgtA,
+        l = rDtTm.length;
+    wbgtDate.innerHTML = stID.slice(1) + " Readings: " + rDtTm[0].slice(0,10);
+    for (i = 0; i < l; i++) {
+      nwbD =  decideConvert(Ta[l-1-i],RH[l-1-i],Pa[l-1-i]);
+      cl = Cl[l-1-i]["sky_condition"];
+      wbgtA = wbgt_calculator(rDtTm[l-1-i],Ta[l-1-i],nwbD,RH[l-1-i],Ws[l-1-i],Pa[l-1-i],cl,Lt,Ln);
+      var table = wbgtTable,
+          r = table.rows.length,
+          row = table.insertRow(r-1),
+          cell = {},
+          rdngs = [rDtTm[l-1-i].slice(14,19),Tnwb.toFixed(1),Tg.toFixed(1),Tdb.toFixed(1),wbgtA.toFixed(1)],
+          j,bc,fc,dv;
+      row.style.backgroundColor = "lightgray";
+      for (j = 0; j < rdngs.length; j++) {
+        if (j == 4) {
+          if (wbgtA<81.95) {
+            bc = "lightgray";
+            fc = "black";
+          } else if(wbgtA>=81.95 && wbgtA<84.95) {
+            bc = "green";
+            fc = "black";
+          } else if (wbgtA>=84.95 && wbgtA<87.95) {
+            bc = "yellow";
+            fc = "black";
+          } else if (wbgtA>=87.95 && wbgtA<89.95) {
+            bc = "red";
+            fc = "black";
+          } else if (wbgtA>=89.95) {
+            bc = "black";
+            fc = "white";
+          }
+        } else {
+          bc = "lightgray";
+          fc = "black";
+        }
+        cell = row.insertCell(j);
+        dv = document.createElement("DIV");
+        dv.style.margin = "0% 15%";
+        dv.style.backgroundColor = bc;
+        dv.style.color = fc;
+        dv.innerHTML = rdngs[j];
+        cell.appendChild(dv);
+      }
+    }
   }
+}
+function csvSave() {
+  var d = new Date(),
+      yyyy = d.getFullYear(),
+      mm = ("00" + (d.getMonth() + 1)).slice(-2),
+      dd = ("00" + d.getDate()).slice(-2),
+      hh = ("00" + d.getHours()).slice(-2),
+      mn = ("00" + d.getMinutes()).slice(-2),
+      fileName = "wbgt_" + yyyy + mm + dd + "_" + hh + mn + ".csv",
+      CSV = [],
+      rows = document.getElementById("wbgtTable").rows,
+      iTr;
+  CSV.push('"' + wbgtDate.innerHTML + '"');
+  CSV.push('"Date/Time","Tnwb (F)","Tg (F)","Tdb (F)","WBGTo (F)"');
+  for (iTr = 2;iTr < rows.length-1;iTr++) {
+    var sTr = '',
+        cells = rows[iTr].cells,
+        iTd = 0;
+    for (iTd = 0;iTd < cells.length;iTd++) {
+      sTr += '"' + cells[iTd].firstElementChild.innerHTML + '"' + ',';
+    }
+    sTr = sTr.slice(0,sTr.length-1);
+    CSV.push(sTr);
+  }
+  CSV = CSV.join("\n");
+  var csvFile = new Blob([CSV],{type:'text/csv'}),
+      a = document.getElementById("sl");
+  a.href = URL.createObjectURL(csvFile);
+  a.download = fileName;
 }
 function wbgtValue(sliderValue) {
   if (selAWOS == false) {
@@ -374,29 +525,24 @@ function flagColor(t) {
       tdWorkOff2,
       i;
   if (t<81.95) {
-    wbgtRead.style.backgroundColor = "lightgray";
-    wbgtReadDiv.style.backgroundColor = "lightgray";
-    //wbgtRange.style.backgroundColor = "lightgray";
+    wbgtRead.style.backgroundColor = "gray";
+    wbgtReadDiv.style.backgroundColor = "gray";
     fillRow("nf", "lightgray", "black");
   } else if(t>=81.95 && t<84.95) {
     wbgtRead.style.backgroundColor = "green";
     wbgtReadDiv.style.backgroundColor = "green";
-    //wbgtRange.style.backgroundColor = "green";
     fillRow("gf", "green", "black");
   } else if (t>=84.95 && t<87.95) {
     wbgtRead.style.backgroundColor = "yellow";
     wbgtReadDiv.style.backgroundColor = "yellow";
-    //wbgtRange.style.backgroundColor = "yellow";
     fillRow("yf", "yellow", "black");
   } else if (t>=87.95 && t<89.95) {
     wbgtRead.style.backgroundColor = "red";
     wbgtReadDiv.style.backgroundColor = "red";
-    //wbgtRange.style.backgroundColor = "red";
     fillRow("rf", "red", "black");
   } else if (t>=89.95) {
     wbgtRead.style.backgroundColor = "black";
     wbgtReadDiv.style.backgroundColor = "black";
-    //wbgtRange.style.backgroundColor = "black";
     fillRow("bf", "black", "white");
   }
 }
@@ -644,6 +790,7 @@ function wbgt_calculator(rDtTm, Ta, Tw, RH, Ws, Pa, Cl, Lt, Ln) {
     //}
     
     var gmt = -parseInt(rDtTm.slice(20,22));
+    utcOff = ("00" + -gmt).slice(-2) + "00";
     //var gmt = -5;
     //if (isNaN(gmt) | gmt < -10 | gmt > -5) {
 	//alert("Error: Invalid time zone. Must be between -5 and -10.");
@@ -835,6 +982,10 @@ function wbgt_calculator(rDtTm, Ta, Tw, RH, Ws, Pa, Cl, Lt, Ln) {
 	var wbgtOutput2 = calc_wbgt(year, month, day, hour, minute, gmt, avg,
 				    lat, lon, csi, cl, pres, temp_c, rh, speed_mps,
 				    zspeed, dT, urban); // full sun
+
+        Tnwb = ctof(wbgtOutput2.Tnwb);
+        Tg = ctof(wbgtOutput2.Tg);
+        Tdb = temp_f;
 
 	// Use the WBGT values calculated by the Liljegren function,
 	// unless the user supplied the wet bulb temperature, in which
