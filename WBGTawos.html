@@ -358,7 +358,7 @@ async function mesonet(mesoCall) {
           dta = "timeseries?",
           tkn = "token=21b8403530954b0086093a47b496e954",
           sid = "&stid=" + awos,
-          d = new Date(rdgDte.slice(6,10),rdgDte.slice(0,2),rdgDte.slice(3,5)),
+          d = new Date(parseInt(rdgDte.slice(6,10)),parseInt(rdgDte.slice(0,2))-1,parseInt(rdgDte.slice(3,5))),
           yyyy = d.getFullYear(),
           mm = ("00" + (d.getMonth() + 1)).slice(-2),
           dSt = ("00" + d.getDate()).slice(-2),
@@ -370,7 +370,6 @@ async function mesonet(mesoCall) {
           otz = "&obtimezone=local",
           tft = "&timeformat=%m/%d/%Y%20at%20%H:%M%z";
       url += dta + tkn + sid + st + en + vrs + uts + otz + tft;
-alert(url);
   }
   let myPromise = new Promise(function(resolve) {
     let req = new XMLHttpRequest();
