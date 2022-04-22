@@ -327,6 +327,7 @@ var selAWOS = false,
     addClothing = "noClothing",
     tacticalGear = "noTactical",
     awos = "",
+    rdgDte = "",
     utcOff = "",
     Tnwb = 0,
     Tg = 0,
@@ -357,7 +358,7 @@ async function mesonet(mesoCall) {
           dta = "timeseries?",
           tkn = "token=21b8403530954b0086093a47b496e954",
           sid = "&stid=" + awos,
-          d = new Date(),
+          d = new Date(rdgDte.slice(6,10),rdgDte.slice(0,2),rdgDte.slice(3,5)),
           yyyy = d.getFullYear(),
           mm = ("00" + (d.getMonth() + 1)).slice(-2),
           dSt = ("00" + d.getDate()).slice(-2),
@@ -398,6 +399,7 @@ function wbgtLatest(myObj) {
       Cl = myObj.STATION[0]["OBSERVATIONS"]["cloud_layer_1_value_1d"]["value"]["sky_condition"],
       Tw = decideConvert(Ta, RH, Pa);
   wbgtTime.innerHTML = stID.slice(1) + " Reading: " + rDtTm.slice(0,19);
+  rdgDte = rDtTm.slice(0,10);
   wbgt = wbgt_calculator(rDtTm, Ta, Tw, RH, Ws, Pa, Cl, Lt, Ln);
   wbgtRange.value = wbgt*10;
   wbgtRead.innerHTML = "WBGT<sub>O</sub> (<small><sup>o</sup></small>F): " + wbgt.toFixed(1);
