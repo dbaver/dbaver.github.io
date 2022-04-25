@@ -504,10 +504,8 @@ function wbgtNearest(myObj) {
       rDtTm = myObj.STATION[0]["OBSERVATIONS"]["air_temp_value_1"]["date_time"];
   rdgDte = rDtTm.slice(0,10);
   utcOff = ("00" + parseInt(rDtTm.slice(20,22))).slice(-2) + "00";
-  // delete all rows from wbgtTable except first two and last
-  var rows = wbgtTable.rows;
-  for (let iR = 2;iR < rows.length-1;iR++) {
-    rows[iR].remove();
+  while (wbgtTable.rows.length > 3) {
+    wbgtTable.deleteRow(2);
   }
   mesonet(wbgtSeries);
 }
