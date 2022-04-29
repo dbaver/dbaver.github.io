@@ -378,7 +378,7 @@ async function mesonet(mesoCall) {
           dSt = ("00" + d.getDate()).slice(-2),
           dEn = ("00" + (d.getDate() + 1)).slice(-2),
           st = "&start=" + yyyy + mm + dSt + utcOff,
-          en = "&end=" + yyyy + mm + dEn + utcOff,
+          en = "&end=" + yyyy + mm + dEn + ("00" + (parseInt(utcOff.slice(0,2)) - 1)).slice(-2) + "59",
           vrs = "&vars=air_temp,relative_humidity,wind_speed,pressure,cloud_layer_1",
           uts = "&units=english",
           otz = "&obtimezone=local",
