@@ -441,8 +441,6 @@ function wbgtLatest(myObj) {
       mm = ("00" + (d.getMonth() + 1)).slice(-2),
       dd = ("00" + d.getDate()).slice(-2);
   rdgDte = mm + "/" + dd + "/" + yyyy;
-  lblWbgtDate.innerHTML = stID.slice(1) + " Readings: ";
-  wbgtDate.value = rdgDte.slice(6,10) + "-" + rdgDte.slice(0,2) + "-" + rdgDte.slice(3,5);
   mesonet(wbgtSeries);
 }
 function wbgtSeries(myObj) {
