@@ -907,26 +907,26 @@ function wbgt_calculator(rDtTm, Ta, Tw, RH, Ws, Pa, Cl, Lt, Ln) {
     
     if (isNaN(temp_f) | temp_f < -40 | temp_f > 130) {
 	alert("Error: Dry bulb temperature must be between -40 and 130 degrees F.");
-        Tnwb = "-";
-        Tg = "-";
-        Tdb = "-";
-	return ("-");
+        Tnwb = 9999;
+        Tg = 9999;
+        Tdb = 9999;
+	return (9999);
     }
 
     if (isNaN(rh) | rh < 0 | rh > 100) {
 	alert("Error: Relative humidity must be between 0 and 100%.");
-        Tnwb = "-";
-        Tg = "-";
-        Tdb = "-";
-	return ("-");
+        Tnwb = 9999;
+        Tg = 9999;
+        Tdb = 9999;
+	return (9999);
     }
 
     if (isNaN(ws) | ws < 0 | ws > 100) {
         alert("Error: Wind speed must be between 0 and 100 mph.");
-        Tnwb = "-";
-        Tg = "-";
-        Tdb = "-";
-	return ("-");
+        Tnwb = 9999;
+        Tg = 9999;
+        Tdb = 9999;
+	return (9999);
     }
 
     var pres = parseFloat(Pa)*0.0295;
@@ -939,10 +939,10 @@ function wbgt_calculator(rDtTm, Ta, Tw, RH, Ws, Pa, Cl, Lt, Ln) {
 	pres = parseFloat(pres);
 	if (isNaN(pres) | pres < 25 | pres > 32) {
 	    alert("Error: Barometric pressure must be between 25 and 32 inches Hg");
-            Tnwb = "-";
-            Tg = "-";
-            Tdb = "-";
-	    return ("-");
+            Tnwb = 9999;
+            Tg = 9999;
+            Tdb = 9999;
+	    return (9999);
 	}
     }
 
@@ -963,10 +963,10 @@ function wbgt_calculator(rDtTm, Ta, Tw, RH, Ws, Pa, Cl, Lt, Ln) {
 	// is valid or not because we won't use it.
 	if (isNaN(wb_user) | wb_user < -40 | wb_user > 130) {
 	    alert("Error: Wet bulb temperature must be between -40 and 130 degrees F");
-	    Tnwb = "-";
-            Tg = "-";
-            Tdb = "-";
-	    return ("-");
+	    Tnwb = 9999;
+            Tg = 9999;
+            Tdb = 9999;
+	    return (9999);
 	}
     }
     
