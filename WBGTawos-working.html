@@ -461,12 +461,13 @@ function wbgtSeries(myObj) {
         Pa = myObj.STATION[0]["OBSERVATIONS"]["pressure_set_1d"],
         Cl = myObj.STATION[0]["OBSERVATIONS"]["cloud_layer_1_set_1d"],
         badObs = false,
-        obs, cl, Tw, wbgtA, i,
+        obs, cl, Tw, wbgtS, i,
         l = rDtTm.length;
     for (i = 0; i < l; i++) {
-      obs = [Ta[l-1-i], RH[l-1-i], Ws[l-1-i], Pa[l-1-i], Cl[l-1-i]];
+      obs = [rDtTm[l-1-i], Ta[l-1-i], RH[l-1-i], Ws[l-1-i], Pa[l-1-i], Cl[l-1-i]];
       obs.forEach(function(currentValue, index, arr) {
         if (currentValue == null) {
+          rDtTm[l-1-i] = "---";
           Ta[l-1-i] = "---";
           RH[l-1-i] = "---";
           Ws[l-1-i] = "---";
@@ -481,37 +482,39 @@ function wbgtSeries(myObj) {
       }
       Tw =  decideConvert(Ta[l-1-i],RH[l-1-i],Pa[l-1-i]);
       cl = Cl[l-1-i]["sky_condition"];
-      wbgtA = wbgt_calculator(rDtTm[l-1-i],Ta[l-1-i],Tw,RH[l-1-i],Ws[l-1-i],Pa[l-1-i],cl,Lt,Ln);
+      wbgtS = wbgt_calculator(rDtTm[l-1-i],Ta[l-1-i],Tw,RH[l-1-i],Ws[l-1-i],Pa[l-1-i],cl,Lt,Ln);
       if (!wbgtHead) {
-        wbgt = wbgtA;
-        wbgtTime.innerHTML = stID.slice(1) + " Reading: " + rDtTm[l-1-i].slice(0,19);
+        wbgt = wbgtS;
         wbgtRead.innerHTML = "WBGT<sub>O</sub> (<small><sup>o</sup></small>F): " + wbgt.toFixed(1);
         wbgtRange.value = wbgt*10;
+        wbgtTime.innerHTML = stID.slice(1) + " Reading: " + rDtTm[l-1-i].slice(0,19);
         flagColor(wbgt);
+        lblWbgtDate.innerHTML = stID.slice(1) + " Readings: ";
+        wbgtDate.value = rdgDte.slice(6,10) + "-" + rdgDte.slice(0,2) + "-" + rdgDte.slice(3,5);
         wbgtHead = true;
       }
       var table = wbgtTable,
           r = table.rows.length,
           row = table.insertRow(r-1),
           cell = {},
-          rdngs = [rDtTm[l-1-i].slice(14,19),Tnwb.toFixed(1),Tg.toFixed(1),Tdb.toFixed(1),wbgtA.toFixed(1)],
+          rdngs = [rDtTm[l-1-i].slice(14,19),Tnwb.toFixed(1),Tg.toFixed(1),Tdb.toFixed(1),wbgtS.toFixed(1)],
           j,bc,fc,dv;
       row.style.backgroundColor = "lightgray";
       for (j = 0; j < rdngs.length; j++) {
         if (j == 4) {
-          if (wbgtA<81.95) {
+          if (wbgtS<81.95) {
             bc = "lightgray";
             fc = "black";
-          } else if(wbgtA>=81.95 && wbgtA<84.95) {
+          } else if(wbgtS>=81.95 && wbgtS<84.95) {
             bc = "green";
             fc = "black";
-          } else if (wbgtA>=84.95 && wbgtA<87.95) {
+          } else if (wbgtS>=84.95 && wbgtS<87.95) {
             bc = "yellow";
             fc = "black";
-          } else if (wbgtA>=87.95 && wbgtA<89.95) {
+          } else if (wbgtS>=87.95 && wbgtS<89.95) {
             bc = "red";
             fc = "black";
-          } else if (wbgtA>=89.95) {
+          } else if (wbgtS>=89.95) {
             bc = "black";
             fc = "white";
           }
