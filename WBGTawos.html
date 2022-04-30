@@ -377,9 +377,8 @@ async function mesonet(mesoCall) {
           mSt = ("00" + (ds.getMonth() + 1)).slice(-2),
           dSt = ("00" + ds.getDate()).slice(-2),
           st = "&start=" + ySt + mSt + dSt + utcOff,
-          de = new Date(ySt,mSt-1,dSt);
-      de.setDate(de.getDate() + 1);
-      var yEn = ("00" + de.getFullYear()).slice(-4),
+          de = new Date(ds.getTime()+(24*60*60*1000)),
+          yEn = ("00" + de.getFullYear()).slice(-4),
           mEn = ("00" + (de.getMonth() + 1)).slice(-2),
           dEn = ("00" + de.getDate()).slice(-2),
           en = "&end=" + yEn + mEn + dEn + ("00" + (parseInt(utcOff.slice(0,2)) - 1)).slice(-2) + "59",
