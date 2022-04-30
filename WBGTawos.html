@@ -372,13 +372,17 @@ async function mesonet(mesoCall) {
           dta = "timeseries?",
           tkn = "token=21b8403530954b0086093a47b496e954",
           sid = "&stid=" + awos,
-          d = new Date(parseInt(rdgDte.slice(6,10)),parseInt(rdgDte.slice(0,2))-1,parseInt(rdgDte.slice(3,5))),
-          yyyy = d.getFullYear(),
-          mm = ("00" + (d.getMonth() + 1)).slice(-2),
-          dSt = ("00" + d.getDate()).slice(-2),
-          dEn = ("00" + (d.getDate() + 1)).slice(-2),
-          st = "&start=" + yyyy + mm + dSt + utcOff,
-          en = "&end=" + yyyy + mm + dEn + ("00" + (parseInt(utcOff.slice(0,2)) - 1)).slice(-2) + "59",
+          ds = new Date(parseInt(rdgDte.slice(6,10)),parseInt(rdgDte.slice(0,2))-1,parseInt(rdgDte.slice(3,5))),
+          ySt = ("00" + ds.getFullYear()).slice(-4),
+          mSt = ("00" + (ds.getMonth() + 1)).slice(-2),
+          dSt = ("00" + ds.getDate()).slice(-2),
+          st = "&start=" + ySt + mSt + dSt + utcOff,
+          de = new Date(ySt,mSt-1,dSt);
+      de.setDate(de.getDate() + 1);
+      var yEn = ("00" + de.getFullYear()).slice(-4),
+          mEn = ("00" + (de.getMonth() + 1)).slice(-2),
+          dEn = ("00" + de.getDate()).slice(-2),
+          en = "&end=" + yEn + mEn + dEn + ("00" + (parseInt(utcOff.slice(0,2)) - 1)).slice(-2) + "59",
           vrs = "&vars=air_temp,relative_humidity,wind_speed,pressure,cloud_layer_1",
           uts = "&units=english",
           otz = "&obtimezone=local",
@@ -391,7 +395,7 @@ async function mesonet(mesoCall) {
           tkn = "token=21b8403530954b0086093a47b496e954",
           sid = "&stid=" + awos,
           d = new Date(parseInt(rdgDte.slice(0,4)),parseInt(rdgDte.slice(5,7))-1,parseInt(rdgDte.slice(8,10))),
-          yyyy = d.getFullYear(),
+          yyyy = ("00" + d.getFullYear()).slice(-4),
           mm = ("00" + (d.getMonth() + 1)).slice(-2),
           dd = ("00" + d.getDate()).slice(-2),
           atm = "&attime=" + yyyy + mm + dd + "1200",
@@ -445,7 +449,7 @@ function wbgtLatest(myObj) {
 }
 function wbgtSeries(myObj) {
   if (myObj.SUMMARY["NUMBER_OF_OBJECTS"] == 0) {
-    alert(url);
+    alert("Mesonet JSON return contains no results");
     return;
   }
   else {
