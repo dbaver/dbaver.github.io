@@ -105,6 +105,13 @@ h1 {
   text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
 }
 
+#wbgtDate {
+  display: inline-block;
+  padding: 0 0 0 0;
+  text-align: center;
+  background-color: lightgray;
+}
+
 table {
   text-align: center;
   border: 2px solid black;
@@ -144,8 +151,11 @@ p {
       <select id="awosSel" onchange="selectAWOS()">
         <option value="" id="selDef">----Select AWOS----</option>
 	<option value="KBKF">KBKF - Buckley AFB</option>
+	<option value="KCNW">KCNW - Waco 645 AESS Det 1</option>
 	<option value="KCRW">KCRW - Charleston ANGB</option>
+	<option value="KDMA">KDMA - Davis-Monthan AFB</option>
         <option value="KFFO">KFFO - Wright-Patterson AFB</option>
+	<option value="KFHU">KFHU - Fort Huachuca EPG</option>
         <option value="KINS">KINS - Creech AFB</option>
         <option value="KLCK">KLCK - Rickenbacker ANGB</option>
         <option value="KLSV">KLSV - Nellis AFB</option>
@@ -305,7 +315,10 @@ p {
 <div style="overflow-x:auto">
 <table id="wbgtTable">
   <tr style="background-color:gray">
-    <th id="wbgtDate" colspan="5">&nbsp</th>
+    <th colspan="5">
+      <label id="lblWbgtDate" for="wbgtDate">--- Readings: </label>
+      <input type="date" id="wbgtDate" disabled="true"></input>
+    </th>
   </tr>
   <tr style="background-color:gray">
     <th style="width:20%">Time</th>
@@ -322,6 +335,7 @@ p {
 
 <script language="JavaScript" type="text/javascript">
 var selAWOS = false,
+    wbgtHead = false,
     wbgtMod = 0,
     workLoad = "easy",
     addClothing = "noClothing",
@@ -364,12 +378,29 @@ async function mesonet(mesoCall) {
           dSt = ("00" + d.getDate()).slice(-2),
           dEn = ("00" + (d.getDate() + 1)).slice(-2),
           st = "&start=" + yyyy + mm + dSt + utcOff,
-          en = "&end=" + yyyy + mm + dEn + utcOff,
+          en = "&end=" + yyyy + mm + dEn + ("00" + (parseInt(utcOff.slice(0,2)) - 1)).slice(-2) + "59",
           vrs = "&vars=air_temp,relative_humidity,wind_speed,pressure,cloud_layer_1",
           uts = "&units=english",
           otz = "&obtimezone=local",
           tft = "&timeformat=%m/%d/%Y%20at%20%H:%M%z";
       url += dta + tkn + sid + st + en + vrs + uts + otz + tft;
+  } else if (mesoCall == wbgtNearest) {
+      rdgDte = wbgtDate.value;
+      var url = "https://api.synopticdata.com/v2/stations/",
+          dta = "nearesttime?",
+          tkn = "token=21b8403530954b0086093a47b496e954",
+          sid = "&stid=" + awos,
+          d = new Date(parseInt(rdgDte.slice(0,4)),parseInt(rdgDte.slice(5,7))-1,parseInt(rdgDte.slice(8,10))),
+          yyyy = d.getFullYear(),
+          mm = ("00" + (d.getMonth() + 1)).slice(-2),
+          dd = ("00" + d.getDate()).slice(-2),
+          atm = "&attime=" + yyyy + mm + dd + "1200",
+          wtn = "&within=150",
+          vrs = "&vars=air_temp",
+          uts = "&units=english",
+          otz = "&obtimezone=local",
+          tft = "&timeformat=%m/%d/%Y%20at%20%H:%M%z";
+      url += dta + tkn + sid + atm + wtn + vrs + uts + otz + tft;
   }
   let myPromise = new Promise(function(resolve) {
     let req = new XMLHttpRequest();
@@ -391,19 +422,25 @@ function wbgtLatest(myObj) {
   var stID = myObj.STATION[0]["STID"],
       Lt = myObj.STATION[0]["LATITUDE"],
       Ln = myObj.STATION[0]["LONGITUDE"],
-      rDtTm = myObj.STATION[0]["OBSERVATIONS"]["air_temp_value_1"]["date_time"],
-      Ta = myObj.STATION[0]["OBSERVATIONS"]["air_temp_value_1"]["value"],
-      RH = myObj.STATION[0]["OBSERVATIONS"]["relative_humidity_value_1"]["value"],
-      Ws = myObj.STATION[0]["OBSERVATIONS"]["wind_speed_value_1"]["value"],
-      Pa = myObj.STATION[0]["OBSERVATIONS"]["pressure_value_1d"]["value"],
-      Cl = myObj.STATION[0]["OBSERVATIONS"]["cloud_layer_1_value_1d"]["value"]["sky_condition"],
-      Tw = decideConvert(Ta, RH, Pa);
-  wbgtTime.innerHTML = stID.slice(1) + " Reading: " + rDtTm.slice(0,19);
-  rdgDte = rDtTm.slice(0,10);
-  wbgt = wbgt_calculator(rDtTm, Ta, Tw, RH, Ws, Pa, Cl, Lt, Ln);
-  wbgtRange.value = wbgt*10;
-  wbgtRead.innerHTML = "WBGT<sub>O</sub> (<small><sup>o</sup></small>F): " + wbgt.toFixed(1);
-  flagColor(wbgt);
+      dTa = myObj.STATION[0]["OBSERVATIONS"]["air_temp_value_1"]["date_time"],
+      dRH = myObj.STATION[0]["OBSERVATIONS"]["relative_humidity_value_1"]["date_time"],
+      dWs = myObj.STATION[0]["OBSERVATIONS"]["wind_speed_value_1"]["date_time"],
+      dPa = myObj.STATION[0]["OBSERVATIONS"]["pressure_value_1d"]["date_time"],
+      dCl = myObj.STATION[0]["OBSERVATIONS"]["cloud_layer_1_value_1d"]["date_time"],
+      obs = [dTa, dRH, dWs, dPa, dCl],
+      lstObs = 0;
+  obs.forEach( function(currentValue, index, arr) {
+    arr[index] = new Date(parseInt(currentValue.slice(6,10)),parseInt(currentValue.slice(0,2))-1,parseInt(currentValue.slice(3,5)),parseInt(currentValue.slice(14,16)),parseInt(currentValue.slice(17,19)));
+    if (arr[index].getTime() > lstObs) {
+      lstObs = arr[index].getTime();
+      utcOff = ("00" + parseInt(currentValue.slice(20,22))).slice(-2) + "00";
+    }
+  });
+  var d = new Date(lstObs),
+      yyyy = d.getFullYear(),
+      mm = ("00" + (d.getMonth() + 1)).slice(-2),
+      dd = ("00" + d.getDate()).slice(-2);
+  rdgDte = mm + "/" + dd + "/" + yyyy;
   mesonet(wbgtSeries);
 }
 function wbgtSeries(myObj) {
@@ -421,35 +458,61 @@ function wbgtSeries(myObj) {
         Ws = myObj.STATION[0]["OBSERVATIONS"]["wind_speed_set_1"],
         Pa = myObj.STATION[0]["OBSERVATIONS"]["pressure_set_1d"],
         Cl = myObj.STATION[0]["OBSERVATIONS"]["cloud_layer_1_set_1d"],
-        i, cl, nwbD, wbgtA,
+        badObs = false,
+        obs, cl, Tw, wbgtS, i,
         l = rDtTm.length;
-    wbgtDate.innerHTML = stID.slice(1) + " Readings: " + rDtTm[0].slice(0,10);
     for (i = 0; i < l; i++) {
-      nwbD =  decideConvert(Ta[l-1-i],RH[l-1-i],Pa[l-1-i]);
+      obs = [rDtTm[l-1-i], Ta[l-1-i], RH[l-1-i], Ws[l-1-i], Pa[l-1-i], Cl[l-1-i]];
+      obs.forEach(function(currentValue, index, arr) {
+        if (currentValue == null) {
+          rDtTm[l-1-i] = "---";
+          Ta[l-1-i] = "---";
+          RH[l-1-i] = "---";
+          Ws[l-1-i] = "---";
+          Pa[l-1-i] = "---";
+          Cl[l-1-i] = {"sky_condition":"---"};
+          badObs = true;
+        }
+      });
+      if (badObs) {
+        badObs = false;
+        continue;
+      }
+      Tw =  decideConvert(Ta[l-1-i],RH[l-1-i],Pa[l-1-i]);
       cl = Cl[l-1-i]["sky_condition"];
-      wbgtA = wbgt_calculator(rDtTm[l-1-i],Ta[l-1-i],nwbD,RH[l-1-i],Ws[l-1-i],Pa[l-1-i],cl,Lt,Ln);
+      wbgtS = wbgt_calculator(rDtTm[l-1-i],Ta[l-1-i],Tw,RH[l-1-i],Ws[l-1-i],Pa[l-1-i],cl,Lt,Ln);
+      if (!wbgtHead) {
+        wbgt = wbgtS;
+        wbgtRead.innerHTML = "WBGT<sub>O</sub> (<small><sup>o</sup></small>F): " + wbgt.toFixed(1);
+        wbgtRange.value = wbgt*10;
+        wbgtTime.innerHTML = stID.slice(1) + " Reading: " + rDtTm[l-1-i].slice(0,19);
+        flagColor(wbgt);
+        lblWbgtDate.innerHTML = stID.slice(1) + " Readings: ";
+        wbgtDate.value = rdgDte.slice(6,10) + "-" + rdgDte.slice(0,2) + "-" + rdgDte.slice(3,5);
+        wbgtHead = true;
+      }
       var table = wbgtTable,
           r = table.rows.length,
           row = table.insertRow(r-1),
           cell = {},
-          rdngs = [rDtTm[l-1-i].slice(14,19),Tnwb.toFixed(1),Tg.toFixed(1),Tdb.toFixed(1),wbgtA.toFixed(1)],
+          rdngs = [rDtTm[l-1-i].slice(14,19),Tnwb.toFixed(1),Tg.toFixed(1),Tdb.toFixed(1),wbgtS.toFixed(1)],
           j,bc,fc,dv;
       row.style.backgroundColor = "lightgray";
       for (j = 0; j < rdngs.length; j++) {
         if (j == 4) {
-          if (wbgtA<81.95) {
+          if (wbgtS<81.95) {
             bc = "lightgray";
             fc = "black";
-          } else if(wbgtA>=81.95 && wbgtA<84.95) {
+          } else if(wbgtS>=81.95 && wbgtS<84.95) {
             bc = "green";
             fc = "black";
-          } else if (wbgtA>=84.95 && wbgtA<87.95) {
+          } else if (wbgtS>=84.95 && wbgtS<87.95) {
             bc = "yellow";
             fc = "black";
-          } else if (wbgtA>=87.95 && wbgtA<89.95) {
+          } else if (wbgtS>=87.95 && wbgtS<89.95) {
             bc = "red";
             fc = "black";
-          } else if (wbgtA>=89.95) {
+          } else if (wbgtS>=89.95) {
             bc = "black";
             fc = "white";
           }
@@ -467,6 +530,20 @@ function wbgtSeries(myObj) {
       }
     }
   }
+  wbgtDate.onchange = function() {mesonet(wbgtNearest);};
+  wbgtDate.disabled = false;
+}
+function wbgtNearest(myObj) {
+  var stID = myObj.STATION[0]["STID"],
+      Lt = myObj.STATION[0]["LATITUDE"],
+      Ln = myObj.STATION[0]["LONGITUDE"],
+      rDtTm = myObj.STATION[0]["OBSERVATIONS"]["air_temp_value_1"]["date_time"];
+  rdgDte = rDtTm.slice(0,10);
+  utcOff = ("00" + parseInt(rDtTm.slice(20,22))).slice(-2) + "00";
+  while (wbgtTable.rows.length > 3) {
+    wbgtTable.deleteRow(2);
+  }
+  mesonet(wbgtSeries);
 }
 function csvSave() {
   var d = new Date(),
@@ -479,7 +556,7 @@ function csvSave() {
       CSV = [],
       rows = document.getElementById("wbgtTable").rows,
       iTr;
-  CSV.push('"' + wbgtDate.innerHTML + '"');
+  CSV.push('"' + lblWbgtDate.innerHTML + rdgDte + '"');
   CSV.push('"Date/Time","Tnwb (F)","Tg (F)","Tdb (F)","WBGTo (F)"');
   for (iTr = 2;iTr < rows.length-1;iTr++) {
     var sTr = '',
@@ -859,20 +936,29 @@ function wbgt_calculator(rDtTm, Ta, Tw, RH, Ws, Pa, Cl, Lt, Ln) {
 	rh = parseFloat(RH),
 	ws = parseFloat(Ws)*1.15078;
     
-    //if (isNaN(temp_f) | temp_f < -40 | temp_f > 130) {
-	//alert("Error: Dry bulb temperature must be between -40 and 130 degrees F.");
-	//return;
-    //}
+    if (isNaN(temp_f) | temp_f < -40 | temp_f > 130) {
+	alert("Error: Dry bulb temperature must be between -40 and 130 degrees F.");
+        Tnwb = 9999;
+        Tg = 9999;
+        Tdb = 9999;
+	return (9999);
+    }
 
-    //if (isNaN(rh) | rh < 0 | rh > 100) {
-	//alert("Error: Relative humidity must be between 0 and 100%.");
-	//return;
-    //}
+    if (isNaN(rh) | rh < 0 | rh > 100) {
+	alert("Error: Relative humidity must be between 0 and 100%.");
+        Tnwb = 9999;
+        Tg = 9999;
+        Tdb = 9999;
+	return (9999);
+    }
 
-    //if (isNaN(ws) | ws < 0 | ws > 100) {
-        //alert("Error: Wind speed must be between 0 and 100 mph.");
-	//return;
-    //}
+    if (isNaN(ws) | ws < 0 | ws > 100) {
+        alert("Error: Wind speed must be between 0 and 100 mph.");
+        Tnwb = 9999;
+        Tg = 9999;
+        Tdb = 9999;
+	return (9999);
+    }
 
     var pres = parseFloat(Pa)*0.0295;
     if (pres == "") {
@@ -882,10 +968,13 @@ function wbgt_calculator(rDtTm, Ta, Tw, RH, Ws, Pa, Cl, Lt, Ln) {
     }
     else {
 	pres = parseFloat(pres);
-	//if (isNaN(pres) | pres < 25 | pres > 32) {
-	    //alert("Error: Barometric pressure must be between 25 and 32 inches Hg");
-	    //return;
-	//}
+	if (isNaN(pres) | pres < 25 | pres > 32) {
+	    alert("Error: Barometric pressure must be between 25 and 32 inches Hg");
+            Tnwb = 9999;
+            Tg = 9999;
+            Tdb = 9999;
+	    return (9999);
+	}
     }
 
     // Check whether wet bulb temperature is known.
@@ -903,10 +992,13 @@ function wbgt_calculator(rDtTm, Ta, Tw, RH, Ws, Pa, Cl, Lt, Ln) {
 	// The user wants to provide the wet bulb temperature. Make sure
 	// it is valid. If wbKnown is N, we don't care if this value
 	// is valid or not because we won't use it.
-	//if (isNaN(wb_user) | wb_user < -40 | wb_user > 130) {
-	    //alert("Error: Wet bulb temperature must be between -40 and 130 degrees F");
-	    //return;
-	//}
+	if (isNaN(wb_user) | wb_user < -40 | wb_user > 130) {
+	    alert("Error: Wet bulb temperature must be between -40 and 130 degrees F");
+	    Tnwb = 9999;
+            Tg = 9999;
+            Tdb = 9999;
+	    return (9999);
+	}
     }
     
     // Check whether solar irradiance is known.
