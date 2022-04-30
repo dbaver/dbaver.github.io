@@ -394,11 +394,11 @@ async function mesonet(mesoCall) {
           dta = "nearesttime?",
           tkn = "token=21b8403530954b0086093a47b496e954",
           sid = "&stid=" + awos,
-          d = new Date(parseInt(rdgDte.slice(0,4)),parseInt(rdgDte.slice(5,7))-1,parseInt(rdgDte.slice(8,10))),
-          yyyy = ("00" + d.getFullYear()).slice(-4),
-          mm = ("00" + (d.getMonth() + 1)).slice(-2),
-          dd = ("00" + d.getDate()).slice(-2),
-          atm = "&attime=" + yyyy + mm + dd + "1200",
+          da = new Date(parseInt(rdgDte.slice(0,4)),parseInt(rdgDte.slice(5,7))-1,parseInt(rdgDte.slice(8,10))),
+          yAt = ("00" + da.getFullYear()).slice(-4),
+          mAt = ("00" + (da.getMonth() + 1)).slice(-2),
+          dAt = ("00" + da.getDate()).slice(-2),
+          atm = "&attime=" + yAt + mAt + dAt + "1200",
           wtn = "&within=150",
           vrs = "&vars=air_temp",
           uts = "&units=english",
@@ -440,11 +440,11 @@ function wbgtLatest(myObj) {
       utcOff = ("00" + parseInt(currentValue.slice(20,22))).slice(-2) + "00";
     }
   });
-  var d = new Date(lstObs),
-      yyyy = d.getFullYear(),
-      mm = ("00" + (d.getMonth() + 1)).slice(-2),
-      dd = ("00" + d.getDate()).slice(-2);
-  rdgDte = mm + "/" + dd + "/" + yyyy;
+  var dl = new Date(lstObs),
+      yLt = ("00" + dl.getFullYear()).slice(-4),
+      mLt = ("00" + (dl.getMonth() + 1)).slice(-2),
+      dLt = ("00" + dl.getDate()).slice(-2);
+  rdgDte = mLt + "/" + dLt + "/" + yLt;
   mesonet(wbgtSeries);
 }
 function wbgtSeries(myObj) {
@@ -550,13 +550,13 @@ function wbgtNearest(myObj) {
   mesonet(wbgtSeries);
 }
 function csvSave() {
-  var d = new Date(),
-      yyyy = d.getFullYear(),
-      mm = ("00" + (d.getMonth() + 1)).slice(-2),
-      dd = ("00" + d.getDate()).slice(-2),
-      hh = ("00" + d.getHours()).slice(-2),
-      mn = ("00" + d.getMinutes()).slice(-2),
-      fileName = "wbgt_" + yyyy + mm + dd + "_" + hh + mn + ".csv",
+  var ds = new Date(),
+      ySv = ("00" + ds.getFullYear()).slice(-4),
+      mSv = ("00" + (ds.getMonth() + 1)).slice(-2),
+      dSv = ("00" + ds.getDate()).slice(-2),
+      hSv = ("00" + ds.getHours()).slice(-2),
+      nSv = ("00" + ds.getMinutes()).slice(-2),
+      fileName = "wbgt_" + ySv + mSv + dSv + "_" + hSv + nSv + ".csv",
       CSV = [],
       rows = document.getElementById("wbgtTable").rows,
       iTr;
@@ -583,12 +583,12 @@ function wbgtValue(sliderValue) {
     return;
   } else if (selAWOS == true) {
     var d = new Date(),
-        month = ("0" + (d.getMonth()+1)).slice(-2),
-        day = ("0" + d.getDate()).slice(-2),
-        year = d.getFullYear().toString(),
-        hour = ("0" + d.getHours()).slice(-2),
-        minute = ("0" + d.getMinutes()).slice(-2);
-    wbgtTime.innerHTML = "BEE Reading: " + month + "/" + day + "/" + year + " at " + hour + ":" + minute;
+        mo = ("00" + (d.getMonth()+1)).slice(-2),
+        dy = ("00" + d.getDate()).slice(-2),
+        yr = ("00" + d.getFullYear()).slice(-4),
+        hr = ("00" + d.getHours()).slice(-2),
+        mn = ("00" + d.getMinutes()).slice(-2);
+    wbgtTime.innerHTML = "BEE Reading: " + mo + "/" + dy + "/" + yr + " at " + hr + ":" + mn;
     wbgt = sliderValue/10;
     wbgtRead.innerHTML = "WBGT<sub>O</sub> (<small><sup>o</sup></small>F): " + wbgt.toFixed(1);
     wbgtMod = 0;
