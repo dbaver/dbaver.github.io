@@ -329,7 +329,7 @@ p {
     <th style="width:20%">WBGT<sub>O</sub> (<small><sup>o</sup></small>F)</th>
   </tr>
   <tr style="background-color:lightgray">
-    <td colspan="5"><a id="sl" href="#" onclick="csvSave()" disabled>Download</a></td>
+    <td colspan="5"><a id="sl" href="#" onclick="csvSave()">Download</a></td>
   </tr>
 </table>
 </div>
@@ -536,7 +536,6 @@ function wbgtSeries(myObj) {
   }
   wbgtDate.onchange = function() {mesonet(wbgtNearest);};
   wbgtDate.disabled = false;
-  sl.disabled = false;
 }
 function wbgtNearest(myObj) {
   var stID = myObj.STATION[0]["STID"],
