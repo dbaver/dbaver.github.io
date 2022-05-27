@@ -552,13 +552,11 @@ function wbgtNearest(myObj) {
   mesonet(wbgtSeries);
 }
 function csvSave() {
-  var ds = new Date(),
+  var ds = new Date(parseInt(rdgDte.slice(6,10)),parseInt(rdgDte.slice(0,2))-1,parseInt(rdgDte.slice(3,5))),
       ySv = ("00" + ds.getFullYear()).slice(-4),
       mSv = ("00" + (ds.getMonth() + 1)).slice(-2),
       dSv = ("00" + ds.getDate()).slice(-2),
-      hSv = ("00" + ds.getHours()).slice(-2),
-      nSv = ("00" + ds.getMinutes()).slice(-2),
-      fileName = awos + "_WBGT_" + ySv + mSv + dSv + "_" + hSv + nSv + ".csv",
+      fileName = awos + "_WBGT_" + ySv + mSv + dSv + ".csv",
       CSV = [],
       rows = document.getElementById("wbgtTable").rows,
       iTr;
