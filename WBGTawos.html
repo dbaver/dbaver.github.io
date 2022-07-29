@@ -172,10 +172,14 @@ p {
         <option value="" id="selDef">----Select AWOS----</option>
 	<option value="KAPN">KAPN - Alpena CRTC</option>
 	<option value="KBAD">KBAD - Barksdale AFB</option>
+	<option value="KBTV">KBTV - Burlington ANGB</option>
 	<option value="KCRW">KCRW - Charleston ANGB</option>
+	<option value="KDLH">KDLH - Duluth ANGB</option>
 	<option value="KDMA">KDMA - Davis-Monthan AFB</option>
+	<option value="KFAT">KFAT - Fresno ANGB</option>
         <option value="KFFO">KFFO - Wright-Patterson AFB</option>
 	<option value="KFHU">KFHU - Fort Huachuca EPG</option>
+	<option value="KFWA">KFWA - Fort Wayne ANGB</option>
         <option value="KLCK">KLCK - Rickenbacker ANGB</option>
         <option value="KMFD">KMFD - Mansfield ANGB</option>
 	<option value="KMKE">KMKE - General Mitchell ANGB</option>
@@ -899,43 +903,39 @@ function wbgt_calculator(rDtTm, Ta, Tw, RH, Ws, Pa, Cl, Lt, Ln) {
     // the calculator turns the latitude into a negative number if
     // the user specifies the Southern hemisphere.
     var lat = parseFloat(Lt);
-    /*
-    var lat = 39.81667;
-    if (isNaN(lat) | lat < 0 | lat > 90) {
-	alert("Error: Invalid latitude. Must be between 0 and +90 degrees.");
-	return;
-    }
-    var latNS = "N";
-    if (latNS != "N" & latNS != "S") {
-	alert("Error: Invalid latitude hemisphere (must be N or S): " + latNS);
-	return;
-    }
-    if (latNS == "S") {
+    //var lat = 39.81667;
+    //if (isNaN(lat) | lat < 0 | lat > 90) {
+	//alert("Error: Invalid latitude. Must be between 0 and +90 degrees.");
+	//return;
+    //}
+    //var latNS = "N";
+    //if (latNS != "N" & latNS != "S") {
+	//alert("Error: Invalid latitude hemisphere (must be N or S): " + latNS);
+	//return;
+    //}
+    //if (latNS == "S") {
 	// Southern hemisphere, latitude is negative:
-	lat = -lat;
-    }
-    */
+	//lat = -lat;
+    //}
 
     // Get the longitude. The number must be between 0 and 180. Then,
     // the calculator turns the longitude into a negative number if
     // the user specifies the Western hemisphere (default).
     var lon = parseFloat(Ln);
-    /*
-    var lon = 82.93333;
-    if (isNaN(lon) | lon > 180 | lon < 0) {
-	alert("Error: Invalid longitude. Must be between 0 and +180 degrees.");
-	return;
-    }
-    var lonWE = "W";
-    if (lonWE != "W" & lonWE != "E") {
-	alert("Error: Invalid longitude hemisphere (must be W or E): " + lonWE);
-	return;
-    }
-    if (lonWE == "W") {
+    //var lon = 82.93333;
+    //if (isNaN(lon) | lon > 180 | lon < 0) {
+	//alert("Error: Invalid longitude. Must be between 0 and +180 degrees.");
+	//return;
+    //}
+    //var lonWE = "W";
+    //if (lonWE != "W" & lonWE != "E") {
+	//alert("Error: Invalid longitude hemisphere (must be W or E): " + lonWE);
+	//return;
+    //}
+    //if (lonWE == "W") {
 	// Western hemisphere (default): longitude is negative:
-	lon = -lon;
-    }
-    */
+	//lon = -lon;
+    //}
 
     // Validate meteorologic inputs
     var temp_f = parseFloat(Ta),
@@ -974,7 +974,7 @@ function wbgt_calculator(rDtTm, Ta, Tw, RH, Ws, Pa, Cl, Lt, Ln) {
     }
     else {
 	pres = parseFloat(pres);
-	if (isNaN(pres) | pres < 25 | pres > 32) {
+	if (isNaN(pres) | pres < 24 | pres > 32) {
 	    alert("Error: Barometric pressure must be between 25 and 32 inches Hg");
             Tnwb = 9999;
             Tg = 9999;
