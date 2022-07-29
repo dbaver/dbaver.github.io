@@ -1076,9 +1076,9 @@ function wbgt_calculator(rDtTm, Ta, Tw, RH, Ws, Pa, Cl, Lt, Ln) {
 	
 	// Call the WBGT function twice. Once for shade (irradiance = 0)
 	// and once for full sun.
-	var wbgtOutput1 = calc_wbgt(year, month, day, hour, minute, gmt, avg,
-				    lat, lon, 0, cl, pres, temp_c, rh, speed_mps,
-				    zspeed, dT, urban); // shade (solar=0)
+	//var wbgtOutput1 = calc_wbgt(year, month, day, hour, minute, gmt, avg,
+				    //lat, lon, 0, cl, pres, temp_c, rh, speed_mps,
+				    //zspeed, dT, urban); // shade (solar=0)
 	
 	var wbgtOutput2 = calc_wbgt(year, month, day, hour, minute, gmt, avg,
 				    lat, lon, csi, cl, pres, temp_c, rh, speed_mps,
@@ -1093,11 +1093,11 @@ function wbgt_calculator(rDtTm, Ta, Tw, RH, Ws, Pa, Cl, Lt, Ln) {
 	// unless the user supplied the wet bulb temperature, in which
 	// case we need to calculate the weighted average, using only
 	// the globe temperature from Liljegren.
-	var wbgtSun = wbgtOutput2.Twbg, // Celsius
-	    wbgtShade = wbgtOutput1.Twbg; // Celsius
+	var wbgtSun = wbgtOutput2.Twbg; // Celsius
+	//var wbgtShade = wbgtOutput1.Twbg; // Celsius
 	if (wbKnown == "Y") {
 	    wbgtSun = 0.7*ftoc(wb_user) + 0.2*wbgtOutput2.Tg + 0.1*ftoc(temp_f);
-	    wbgtShade = 0.7*ftoc(wb_user) + 0.2*wbgtOutput1.Tg + 0.1*ftoc(temp_f);
+	    //wbgtShade = 0.7*ftoc(wb_user) + 0.2*wbgtOutput1.Tg + 0.1*ftoc(temp_f);
 	}
     }
 	
@@ -1669,10 +1669,10 @@ function esat(tk,phase,pres) {
         es = (1.0003 + (4.18E-6 * pres)) * es; /* correction for moist air, if pressure is available */
     }
 	
-/*      es = 1.004 * es;  /* correction for moist air, if pressure is not available; for pressure > 800 mb */
-/*	es = 1.0034 * es; /* correction for moist air, if pressure is not available; for pressure down to 200 mb */
+    //es = 1.004 * es;  /* correction for moist air, if pressure is not available; for pressure > 800 mb */
+    //es = 1.0034 * es; /* correction for moist air, if pressure is not available; for pressure down to 200 mb */
 
-	return ( es );
+    return ( es );
 }
 /* ============================================================================
  *  Purpose: calculate the dew point (phase=0) or frost point (phase=1) 
