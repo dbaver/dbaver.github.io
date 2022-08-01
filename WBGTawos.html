@@ -1293,7 +1293,6 @@ function calc_wbgt(year, month, day, hour, minute, gmt, avg, lat, lon,
     var solar = retVar.solarRet; // adjusted solar irradiance if out of bounds
     //adjust solar irradiance for cloud layer
     var cl = cldlyr;
-/*
     if (cl == "clear") {
       solar = solar*(1-(0.75*Math.pow(0.000,3.4))); //0% to 5% cloud coverage
     }
@@ -1310,7 +1309,6 @@ function calc_wbgt(year, month, day, hour, minute, gmt, avg, lat, lon,
       solar = solar*(1-(0.75*Math.pow(0.880,3.4))); //88% to 100% cloud coverage
       //wbgtTime.innerHTML = solar.toFixed(1);
     }
-*/
     var cza = retVar.cza; // cosine of solar zenith angle
     var fdir = retVar.fdir; // fraction of solar irradiance due to direct beam
 
@@ -1669,15 +1667,15 @@ function esat(tk,phase,pres) {
     if ( phase == 0 ) {	/* over liquid water */
 	y = (tk - 273.15)/(tk - 32.18);
 	es = 6.1121 * Math.exp( 17.502 * y );
-	//es = (1.0007 + (3.46E-6 * pres)) * es; /* correction for moist air, if pressure is available */
+	es = (1.0007 + (3.46E-6 * pres)) * es; /* correction for moist air, if pressure is available */
     } 
     else {			/* over ice */
         y = (tk - 273.15)/(tk - 0.6);
 	es = 6.1115 * Math.exp( 22.452 * y );
-        //es = (1.0003 + (4.18E-6 * pres)) * es; /* correction for moist air, if pressure is available */
+        es = (1.0003 + (4.18E-6 * pres)) * es; /* correction for moist air, if pressure is available */
     }
 	
-    es = 1.004 * es;  /* correction for moist air, if pressure is not available; for pressure > 800 mb */
+    //es = 1.004 * es;  /* correction for moist air, if pressure is not available; for pressure > 800 mb */
     //es = 1.0034 * es; /* correction for moist air, if pressure is not available; for pressure down to 200 mb */
 
     return ( es );
