@@ -890,8 +890,8 @@ function wbgt_calculator(rDtTm, Ta, Tw, RH, Ws, Pa, Cl, Lt, Ln) {
 	//return;
     //}
     
-    var gmt = -parseInt(rDtTm.slice(20,22));
-    utcOff = ("00" + -gmt).slice(-2) + "00";
+    var gmt = parseInt(rDtTm.slice(19,22));
+    //utcOff = ("00" + -gmt).slice(-2) + "00";
     //var gmt = -5;
     //if (isNaN(gmt) | gmt < -10 | gmt > -5) {
 	//alert("Error: Invalid time zone. Must be between -5 and -10.");
