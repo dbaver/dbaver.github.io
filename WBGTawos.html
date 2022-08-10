@@ -364,7 +364,7 @@ var selAWOS = false,
     tacticalGear = "noTactical",
     awos = "",
     rdgDte = "",
-    utcOff = "",
+    utcOff = 0,
     Tnwb = 0,
     Tg = 0,
     Tdb = 0,
@@ -394,16 +394,23 @@ async function mesonet(mesoCall) {
           dta = "timeseries?",
           tkn = "token=21b8403530954b0086093a47b496e954",
           sid = "&stid=" + awos,
-          ds = new Date(parseInt(rdgDte.slice(6,10)),parseInt(rdgDte.slice(0,2))-1,parseInt(rdgDte.slice(3,5))),
-          ySt = ("00" + ds.getFullYear()).slice(-4),
-          mSt = ("00" + (ds.getMonth() + 1)).slice(-2),
-          dSt = ("00" + ds.getDate()).slice(-2),
-          st = "&start=" + ySt + mSt + dSt + utcOff,
-          de = new Date(ds.getTime()+(24*60*60*1000)),
-          yEn = ("00" + de.getFullYear()).slice(-4),
-          mEn = ("00" + (de.getMonth() + 1)).slice(-2),
-          dEn = ("00" + de.getDate()).slice(-2),
-          en = "&end=" + yEn + mEn + dEn + ("00" + (parseInt(utcOff.slice(0,2)) - 1)).slice(-2) + "59",
+          yy = parseInt(rdgDte.slice(6,10)),
+          mm = parseInt(rdgDte.slice(0,2))-1,
+          dd = parseInt(rdgDte.slice(3,5)),
+          ds = new Date(Date.UTC(yy,mm,dd)-utcOff*60*60*1000),
+          yyS = ("00" + ds.getUTCFullYear()).slice(-4),
+          mmS = ("00" + (ds.getUTCMonth() + 1)).slice(-2),
+          ddS = ("00" + ds.getUTCDate()).slice(-2),
+          hrS = ("00" + ds.getUTCHours()).slice(-2),
+          mnS = ("00" + ds.getUTCMinutes()).slice(-2),
+          st = "&start=" + yyS + mmS + ddS + hrS + mnS,
+          de = new Date(ds.getTime()+(24*60-1)*60*1000),
+          yyE = ("00" + de.getUTCFullYear()).slice(-4),
+          mmE = ("00" + (de.getUTCMonth() + 1)).slice(-2),
+          ddE = ("00" + de.getUTCDate()).slice(-2),
+          hrE = ("00" + de.getUTCHours()).slice(-2),
+          mnE = ("00" + de.getUTCMinutes()).slice(-2),
+          en = "&end=" + yyE + mmE + ddE + hrE + mnE,
           vrs = "&vars=air_temp,relative_humidity,wind_speed,pressure,cloud_layer_1",
           uts = "&units=english",
           otz = "&obtimezone=local",
@@ -415,7 +422,10 @@ async function mesonet(mesoCall) {
           dta = "nearesttime?",
           tkn = "token=21b8403530954b0086093a47b496e954",
           sid = "&stid=" + awos,
-          da = new Date(parseInt(rdgDte.slice(0,4)),parseInt(rdgDte.slice(5,7))-1,parseInt(rdgDte.slice(8,10))),
+          yy = parseInt(rdgDte.slice(0,4)),
+          mm = parseInt(rdgDte.slice(5,7))-1,
+          dd = parseInt(rdgDte.slice(8,10)),
+          da = new Date(yy,mm,dd),
           yAt = ("00" + da.getFullYear()).slice(-4),
           mAt = ("00" + (da.getMonth() + 1)).slice(-2),
           dAt = ("00" + da.getDate()).slice(-2),
@@ -455,10 +465,16 @@ function wbgtLatest(myObj) {
       obs = [dTa, dRH, dWs, dPa, dCl],
       lstObs = 0;
   obs.forEach( function(currentValue, index, arr) {
-    arr[index] = new Date(parseInt(currentValue.slice(6,10)),parseInt(currentValue.slice(0,2))-1,parseInt(currentValue.slice(3,5)),parseInt(currentValue.slice(14,16)),parseInt(currentValue.slice(17,19)));
+  var yy = parseInt(currentValue.slice(6,10)),
+      mm = parseInt(currentValue.slice(0,2))-1,
+      dd = parseInt(currentValue.slice(3,5)),
+      hr = parseInt(currentValue.slice(14,16)),
+      mn = parseInt(currentValue.slice(17,19)),
+      uo = parseInt(currentValue.slice(19,22));
+    arr[index] = new Date(yy,mm,dd,hr,mn);
     if (arr[index].getTime() > lstObs) {
       lstObs = arr[index].getTime();
-      utcOff = ("00" + parseInt(currentValue.slice(20,22))).slice(-2) + "00";
+      utcOff = uo;
     }
   });
   var dl = new Date(lstObs),
@@ -564,7 +580,7 @@ function wbgtNearest(myObj) {
       Ln = myObj.STATION[0]["LONGITUDE"],
       rDtTm = myObj.STATION[0]["OBSERVATIONS"]["air_temp_value_1"]["date_time"];
   rdgDte = rDtTm.slice(0,10);
-  utcOff = ("00" + parseInt(rDtTm.slice(20,22))).slice(-2) + "00";
+  utcOff = parseInt(rDtTm.slice(19,22));
   while (wbgtTable.rows.length > 3) {
     wbgtTable.deleteRow(2);
   }
