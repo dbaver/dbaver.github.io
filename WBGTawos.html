@@ -487,7 +487,11 @@ function wbgtLatest(myObj) {
         mLt = ("00" + (dl.getMonth() + 1)).slice(-2),
         dLt = ("00" + dl.getDate()).slice(-2);
     rdgDte = mLt + "/" + dLt + "/" + yLt;
+    var w = wbgtDate.clientWidth,
+        h = wbgtDate.clientHeight;
     wbgtDate.max = yLt + "-" + mLt + "-" + dLt;
+    wbgtDate.style.width = w + "px";
+    wbgtDate.style.height = h + "px";
     mesonet(wbgtSeries);
   }
 }
