@@ -455,40 +455,45 @@ async function mesonet(mesoCall) {
   mesoCall(myObj);
 }
 function wbgtLatest(myObj) {
-  var stID = myObj.STATION[0]["STID"],
-      Lt = myObj.STATION[0]["LATITUDE"],
-      Ln = myObj.STATION[0]["LONGITUDE"],
-      dTa = myObj.STATION[0]["OBSERVATIONS"]["air_temp_value_1"]["date_time"],
-      dRH = myObj.STATION[0]["OBSERVATIONS"]["relative_humidity_value_1"]["date_time"],
-      dWs = myObj.STATION[0]["OBSERVATIONS"]["wind_speed_value_1"]["date_time"],
-      dPa = myObj.STATION[0]["OBSERVATIONS"]["pressure_value_1d"]["date_time"],
-      dCl = myObj.STATION[0]["OBSERVATIONS"]["cloud_layer_1_value_1d"]["date_time"],
-      obs = [dTa, dRH, dWs, dPa, dCl],
-      lstObs = 0;
-  obs.forEach( function(currentValue, index, arr) {
-  var yy = parseInt(currentValue.slice(6,10)),
-      mm = parseInt(currentValue.slice(0,2))-1,
-      dd = parseInt(currentValue.slice(3,5)),
-      hr = parseInt(currentValue.slice(14,16)),
-      mn = parseInt(currentValue.slice(17,19)),
-      uo = parseInt(currentValue.slice(19,22));
-    arr[index] = new Date(yy,mm,dd,hr,mn);
-    if (arr[index].getTime() > lstObs) {
-      lstObs = arr[index].getTime();
-      utcOff = uo;
-    }
-  });
-  var dl = new Date(lstObs),
-      yLt = ("00" + dl.getFullYear()).slice(-4),
-      mLt = ("00" + (dl.getMonth() + 1)).slice(-2),
-      dLt = ("00" + dl.getDate()).slice(-2);
-  rdgDte = mLt + "/" + dLt + "/" + yLt;
-  mesonet(wbgtSeries);
+  if (myObj.SUMMARY["NUMBER_OF_OBJECTS"] == 0) {
+    alert("Mesonet latest call returned no results");
+  }
+  else {
+    var stID = myObj.STATION[0]["STID"],
+        Lt = myObj.STATION[0]["LATITUDE"],
+        Ln = myObj.STATION[0]["LONGITUDE"],
+        dTa = myObj.STATION[0]["OBSERVATIONS"]["air_temp_value_1"]["date_time"],
+        dRH = myObj.STATION[0]["OBSERVATIONS"]["relative_humidity_value_1"]["date_time"],
+        dWs = myObj.STATION[0]["OBSERVATIONS"]["wind_speed_value_1"]["date_time"],
+        dPa = myObj.STATION[0]["OBSERVATIONS"]["pressure_value_1d"]["date_time"],
+        dCl = myObj.STATION[0]["OBSERVATIONS"]["cloud_layer_1_value_1d"]["date_time"],
+        obs = [dTa, dRH, dWs, dPa, dCl],
+        lstObs = 0;
+    obs.forEach( function(currentValue, index, arr) {
+      var yy = parseInt(currentValue.slice(6,10)),
+          mm = parseInt(currentValue.slice(0,2))-1,
+          dd = parseInt(currentValue.slice(3,5)),
+          hr = parseInt(currentValue.slice(14,16)),
+          mn = parseInt(currentValue.slice(17,19)),
+          uo = parseInt(currentValue.slice(19,22));
+      arr[index] = new Date(yy,mm,dd,hr,mn);
+      if (arr[index].getTime() > lstObs) {
+        lstObs = arr[index].getTime();
+        utcOff = uo;
+      }
+    });
+    var dl = new Date(lstObs),
+        yLt = ("00" + dl.getFullYear()).slice(-4),
+        mLt = ("00" + (dl.getMonth() + 1)).slice(-2),
+        dLt = ("00" + dl.getDate()).slice(-2);
+    rdgDte = mLt + "/" + dLt + "/" + yLt;
+    wbgtDate.max = yLt + "-" + mLt + "-" + dLt;
+    mesonet(wbgtSeries);
+  }
 }
 function wbgtSeries(myObj) {
   if (myObj.SUMMARY["NUMBER_OF_OBJECTS"] == 0) {
-    alert("Mesonet JSON return contains no results");
-    return;
+    alert("Mesonet timeseries call returned no results");
   }
   else {
     var stID = myObj.STATION[0]["STID"],
@@ -576,16 +581,21 @@ function wbgtSeries(myObj) {
   wbgtDate.disabled = false;
 }
 function wbgtNearest(myObj) {
-  var stID = myObj.STATION[0]["STID"],
-      Lt = myObj.STATION[0]["LATITUDE"],
-      Ln = myObj.STATION[0]["LONGITUDE"],
-      rDtTm = myObj.STATION[0]["OBSERVATIONS"]["air_temp_value_1"]["date_time"];
-  rdgDte = rDtTm.slice(0,10);
-  utcOff = parseInt(rDtTm.slice(19,22));
-  while (wbgtTable.rows.length > 3) {
-    wbgtTable.deleteRow(2);
+  if (myObj.SUMMARY["NUMBER_OF_OBJECTS"] == 0) {
+    alert("Mesonet nearest call returned no results");
   }
-  mesonet(wbgtSeries);
+  else {
+    var stID = myObj.STATION[0]["STID"],
+        Lt = myObj.STATION[0]["LATITUDE"],
+        Ln = myObj.STATION[0]["LONGITUDE"],
+        rDtTm = myObj.STATION[0]["OBSERVATIONS"]["air_temp_value_1"]["date_time"];
+    rdgDte = rDtTm.slice(0,10);
+    utcOff = parseInt(rDtTm.slice(19,22));
+    while (wbgtTable.rows.length > 3) {
+      wbgtTable.deleteRow(2);
+    }
+    mesonet(wbgtSeries);
+  }
 }
 function csvSave() {
   var ds = new Date(parseInt(rdgDte.slice(6,10)),parseInt(rdgDte.slice(0,2))-1,parseInt(rdgDte.slice(3,5))),
