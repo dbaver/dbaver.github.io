@@ -385,58 +385,58 @@ async function mesonet(mesoCall) {
         dta = "latest?",
         tkn = "token=21b8403530954b0086093a47b496e954",
         sid = "&stid=" + awos,
-        vrs = "&vars=air_temp,relative_humidity,wind_speed,pressure,cloud_layer_1",
+        vrs = "&vars=metar,air_temp,relative_humidity,wind_speed,pressure,cloud_layer_1",
         uts = "&units=english",
         otz = "&obtimezone=local",
         tft = "&timeformat=%m/%d/%Y%20at%20%H:%M%z";
     url += dta + tkn + sid + vrs + uts + otz + tft;
   } else if (mesoCall == wbgtSeries) {
-      var url = "https://api.synopticdata.com/v2/stations/",
-          dta = "timeseries?",
-          tkn = "token=21b8403530954b0086093a47b496e954",
-          sid = "&stid=" + awos,
-          yy = parseInt(rdgDte.slice(6,10)),
-          mm = parseInt(rdgDte.slice(0,2))-1,
-          dd = parseInt(rdgDte.slice(3,5)),
-          ds = new Date(Date.UTC(yy,mm,dd)-utcOff*60*60*1000),
-          yyS = ("00" + ds.getUTCFullYear()).slice(-4),
-          mmS = ("00" + (ds.getUTCMonth() + 1)).slice(-2),
-          ddS = ("00" + ds.getUTCDate()).slice(-2),
-          hrS = ("00" + ds.getUTCHours()).slice(-2),
-          mnS = ("00" + ds.getUTCMinutes()).slice(-2),
-          st = "&start=" + yyS + mmS + ddS + hrS + mnS,
-          de = new Date(ds.getTime()+(24*60-1)*60*1000),
-          yyE = ("00" + de.getUTCFullYear()).slice(-4),
-          mmE = ("00" + (de.getUTCMonth() + 1)).slice(-2),
-          ddE = ("00" + de.getUTCDate()).slice(-2),
-          hrE = ("00" + de.getUTCHours()).slice(-2),
-          mnE = ("00" + de.getUTCMinutes()).slice(-2),
-          en = "&end=" + yyE + mmE + ddE + hrE + mnE,
-          vrs = "&vars=air_temp,relative_humidity,wind_speed,pressure,cloud_layer_1",
-          uts = "&units=english",
-          otz = "&obtimezone=local",
-          tft = "&timeformat=%m/%d/%Y%20at%20%H:%M%z";
-      url += dta + tkn + sid + st + en + vrs + uts + otz + tft;
+    var url = "https://api.synopticdata.com/v2/stations/",
+        dta = "timeseries?",
+        tkn = "token=21b8403530954b0086093a47b496e954",
+        sid = "&stid=" + awos,
+        yy = parseInt(rdgDte.slice(6,10)),
+        mm = parseInt(rdgDte.slice(0,2))-1,
+        dd = parseInt(rdgDte.slice(3,5)),
+        ds = new Date(Date.UTC(yy,mm,dd)-utcOff*60*60*1000),
+        yyS = ("00" + ds.getUTCFullYear()).slice(-4),
+        mmS = ("00" + (ds.getUTCMonth() + 1)).slice(-2),
+        ddS = ("00" + ds.getUTCDate()).slice(-2),
+        hrS = ("00" + ds.getUTCHours()).slice(-2),
+        mnS = ("00" + ds.getUTCMinutes()).slice(-2),
+        st = "&start=" + yyS + mmS + ddS + hrS + mnS,
+        de = new Date(ds.getTime()+(24*60-1)*60*1000),
+        yyE = ("00" + de.getUTCFullYear()).slice(-4),
+        mmE = ("00" + (de.getUTCMonth() + 1)).slice(-2),
+        ddE = ("00" + de.getUTCDate()).slice(-2),
+        hrE = ("00" + de.getUTCHours()).slice(-2),
+        mnE = ("00" + de.getUTCMinutes()).slice(-2),
+        en = "&end=" + yyE + mmE + ddE + hrE + mnE,
+        vrs = "&vars=metar,air_temp,relative_humidity,wind_speed,pressure,cloud_layer_1",
+        uts = "&units=english",
+        otz = "&obtimezone=local",
+        tft = "&timeformat=%m/%d/%Y%20at%20%H:%M%z";
+    url += dta + tkn + sid + st + en + vrs + uts + otz + tft;
   } else if (mesoCall == wbgtNearest) {
-      rdgDte = wbgtDate.value;
-      var url = "https://api.synopticdata.com/v2/stations/",
-          dta = "nearesttime?",
-          tkn = "token=21b8403530954b0086093a47b496e954",
-          sid = "&stid=" + awos,
-          yy = parseInt(rdgDte.slice(0,4)),
-          mm = parseInt(rdgDte.slice(5,7))-1,
-          dd = parseInt(rdgDte.slice(8,10)),
-          da = new Date(yy,mm,dd),
-          yAt = ("00" + da.getFullYear()).slice(-4),
-          mAt = ("00" + (da.getMonth() + 1)).slice(-2),
-          dAt = ("00" + da.getDate()).slice(-2),
-          atm = "&attime=" + yAt + mAt + dAt + "1200",
-          wtn = "&within=150",
-          vrs = "&vars=air_temp",
-          uts = "&units=english",
-          otz = "&obtimezone=local",
-          tft = "&timeformat=%m/%d/%Y%20at%20%H:%M%z";
-      url += dta + tkn + sid + atm + wtn + vrs + uts + otz + tft;
+    rdgDte = wbgtDate.value;
+    var url = "https://api.synopticdata.com/v2/stations/",
+        dta = "nearesttime?",
+        tkn = "token=21b8403530954b0086093a47b496e954",
+        sid = "&stid=" + awos,
+        yy = parseInt(rdgDte.slice(0,4)),
+        mm = parseInt(rdgDte.slice(5,7))-1,
+        dd = parseInt(rdgDte.slice(8,10)),
+        da = new Date(yy,mm,dd),
+        yAt = ("00" + da.getFullYear()).slice(-4),
+        mAt = ("00" + (da.getMonth() + 1)).slice(-2),
+        dAt = ("00" + da.getDate()).slice(-2),
+        atm = "&attime=" + yAt + mAt + dAt + "1200",
+        wtn = "&within=150",
+        vrs = "&vars=metar",
+        uts = "&units=english",
+        otz = "&obtimezone=local",
+        tft = "&timeformat=%m/%d/%Y%20at%20%H:%M%z";
+    url += dta + tkn + sid + atm + wtn + vrs + uts + otz + tft;
   }
   let myPromise = new Promise(function(resolve) {
     let req = new XMLHttpRequest();
@@ -457,17 +457,17 @@ async function mesonet(mesoCall) {
 function wbgtLatest(myObj) {
   if (myObj.SUMMARY["NUMBER_OF_OBJECTS"] == 0) {
     alert("Mesonet latest call returned no results");
-  }
-  else {
+  } else {
     var stID = myObj.STATION[0]["STID"],
         Lt = myObj.STATION[0]["LATITUDE"],
         Ln = myObj.STATION[0]["LONGITUDE"],
+        dMt = myObj.STATION[0]["OBSERVATIONS"]["metar_value_1"]["date_time"],
         dTa = myObj.STATION[0]["OBSERVATIONS"]["air_temp_value_1"]["date_time"],
         dRH = myObj.STATION[0]["OBSERVATIONS"]["relative_humidity_value_1"]["date_time"],
         dWs = myObj.STATION[0]["OBSERVATIONS"]["wind_speed_value_1"]["date_time"],
         dPa = myObj.STATION[0]["OBSERVATIONS"]["pressure_value_1d"]["date_time"],
         dCl = myObj.STATION[0]["OBSERVATIONS"]["cloud_layer_1_value_1d"]["date_time"],
-        obs = [dTa, dRH, dWs, dPa, dCl],
+        obs = [dMt, dTa, dRH, dWs, dPa, dCl],
         lstObs = 0;
     obs.forEach( function(currentValue, index, arr) {
       var yy = parseInt(currentValue.slice(6,10)),
@@ -498,8 +498,7 @@ function wbgtLatest(myObj) {
 function wbgtSeries(myObj) {
   if (myObj.SUMMARY["NUMBER_OF_OBJECTS"] == 0) {
     alert("Mesonet timeseries call returned no results");
-  }
-  else {
+  } else {
     var stID = myObj.STATION[0]["STID"],
         Lt = myObj.STATION[0]["LATITUDE"],
         Ln = myObj.STATION[0]["LONGITUDE"],
@@ -587,12 +586,11 @@ function wbgtSeries(myObj) {
 function wbgtNearest(myObj) {
   if (myObj.SUMMARY["NUMBER_OF_OBJECTS"] == 0) {
     alert("Mesonet nearest call returned no results");
-  }
-  else {
+  } else {
     var stID = myObj.STATION[0]["STID"],
         Lt = myObj.STATION[0]["LATITUDE"],
         Ln = myObj.STATION[0]["LONGITUDE"],
-        rDtTm = myObj.STATION[0]["OBSERVATIONS"]["air_temp_value_1"]["date_time"];
+        rDtTm = myObj.STATION[0]["OBSERVATIONS"]["metar_value_1"]["date_time"];
     rdgDte = rDtTm.slice(0,10);
     utcOff = parseInt(rDtTm.slice(19,22));
     while (wbgtTable.rows.length > 3) {
