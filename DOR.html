@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h2>Draft Order Randomizer</h2>
+
+<p id="demo"></p>
+
+<script>
+var order = "",
+    rnd = 16;
+for (let r = 0;r < rnd;r++) {
+  order += "<b>Round " + (r+1) + "</b>" + "<br>";
+  var teams = ["Doug","Zach","Kerscher","Turner","Dan","Lindsay","Cindy","Palmer","Chris","Tackett","Brett","James"],
+      idx = 0,
+      l = teams.length;
+  for (let i = 0;i < l;i++) {
+    idx = Math.floor(Math.random()*teams.length);
+    order += ("0"+(i+1)).slice(-2) + ". " + teams[idx] + "<br>";
+    teams.splice(idx,1);
+  }
+  order += "<br>";
+}
+document.getElementById("demo").innerHTML = order;
+</script>
+
+</body>
+</html>
