@@ -509,6 +509,7 @@ function wbgtSeries(myObj) {
     alert("Mesonet timeseries call returned no results");
   } else {
     if (Object.getOwnPropertyNames(myObj.STATION[0]["OBSERVATIONS"]).length != 7) {
+      alert(Mesonet timeseries call returned insufficient data. Change date or refresh page.");
       wbgtDate.disabled = false;
       return;
     }
