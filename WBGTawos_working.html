@@ -513,7 +513,7 @@ function wbgtSeries(myObj) {
     var stID = myObj.STATION[0]["STID"],
         Lt = myObj.STATION[0]["LATITUDE"],
         Ln = myObj.STATION[0]["LONGITUDE"],
-        rDtTm = "],
+        rDtTm = myObj.STATION[0]["OBSERVATIONS"]["date_time"],
         Ta = myObj.STATION[0]["OBSERVATIONS"]["air_temp_set_1"],
         RH = myObj.STATION[0]["OBSERVATIONS"]["relative_humidity_set_1"],
         Ws = myObj.STATION[0]["OBSERVATIONS"]["wind_speed_set_1"],
