@@ -349,7 +349,7 @@ p {
   <tr style="background-color:gray">
     <th colspan="5">
       <label id="lblWbgtDate" for="wbgtDate">--- Readings: </label>
-      <input type="date" id="wbgtDate" disabled="true"></input>
+      <input type="date" id="wbgtDate" onchange="mesonet(wbgtNearest)" disabled="true"></input>
     </th>
   </tr>
   <tr style="background-color:gray">
@@ -465,7 +465,7 @@ async function mesonet(mesoCall) {
 }
 function wbgtLatest(myObj) {
   if (myObj.SUMMARY["NUMBER_OF_OBJECTS"] == 0) {
-    alert("Mesonet latest call returned no results");
+    alert("Mesonet latest call returned no results. Refresh page.");
   } else {
     var stID = myObj.STATION[0]["STID"],
         Lt = myObj.STATION[0]["LATITUDE"],
@@ -506,8 +506,13 @@ function wbgtLatest(myObj) {
 }
 function wbgtSeries(myObj) {
   if (myObj.SUMMARY["NUMBER_OF_OBJECTS"] == 0) {
-    alert("Mesonet timeseries call returned no results");
+    alert("Mesonet timeseries call returned no results. Change date or refresh page.");
   } else {
+    const rslt = myObj.STATION[0]["OBSERVATIONS"];
+    if (Object.getOwnPropertyNames(rslt).length != 7) {
+      wbgtDate.disabled = false;
+      return;
+    }
     var stID = myObj.STATION[0]["STID"],
         Lt = myObj.STATION[0]["LATITUDE"],
         Ln = myObj.STATION[0]["LONGITUDE"],
@@ -590,12 +595,11 @@ function wbgtSeries(myObj) {
       }
     }
   }
-  wbgtDate.onchange = function() {mesonet(wbgtNearest);};
   wbgtDate.disabled = false;
 }
 function wbgtNearest(myObj) {
   if (myObj.SUMMARY["NUMBER_OF_OBJECTS"] == 0) {
-    alert("Mesonet nearest call returned no results");
+    alert("Mesonet nearest call returned no results. Change date or refresh page");
   } else {
     var stID = myObj.STATION[0]["STID"],
         Lt = myObj.STATION[0]["LATITUDE"],
