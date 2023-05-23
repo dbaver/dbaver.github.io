@@ -508,8 +508,7 @@ function wbgtSeries(myObj) {
   if (myObj.SUMMARY["NUMBER_OF_OBJECTS"] == 0) {
     alert("Mesonet timeseries call returned no results. Change date or refresh page.");
   } else {
-    const rslt = myObj.STATION[0]["OBSERVATIONS"];
-    if (Object.getOwnPropertyNames(rslt).length != 7) {
+    if (Object.getOwnPropertyNames(myObj.STATION[0]["OBSERVATIONS"]).length != 7) {
       wbgtDate.disabled = false;
       return;
     }
@@ -598,18 +597,19 @@ function wbgtSeries(myObj) {
   wbgtDate.disabled = false;
 }
 function wbgtNearest(myObj) {
+  while (wbgtTable.rows.length > 3) {
+    wbgtTable.deleteRow(2);
+  }
   if (myObj.SUMMARY["NUMBER_OF_OBJECTS"] == 0) {
     alert("Mesonet nearest call returned no results. Change date or refresh page");
   } else {
+    wbgtDate.disabled = true;
     var stID = myObj.STATION[0]["STID"],
         Lt = myObj.STATION[0]["LATITUDE"],
         Ln = myObj.STATION[0]["LONGITUDE"],
         rDtTm = myObj.STATION[0]["OBSERVATIONS"]["metar_value_1"]["date_time"];
     rdgDte = rDtTm.slice(0,10);
     utcOff = parseInt(rDtTm.slice(19,22));
-    while (wbgtTable.rows.length > 3) {
-      wbgtTable.deleteRow(2);
-    }
     mesonet(wbgtSeries);
   }
 }
