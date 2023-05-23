@@ -508,7 +508,8 @@ function wbgtSeries(myObj) {
   if (myObj.SUMMARY["NUMBER_OF_OBJECTS"] == 0) {
     alert("Mesonet timeseries call returned no results");
   } else {
-    alert(myObj.STATION[0]["OBSERVATIONS"].length);
+    var rslt = myObj.STATION[0]["OBSERVATIONS"];
+    alert(rslt.length);
     var stID = myObj.STATION[0]["STID"],
         Lt = myObj.STATION[0]["LATITUDE"],
         Ln = myObj.STATION[0]["LONGITUDE"],
