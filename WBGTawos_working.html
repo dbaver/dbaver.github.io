@@ -170,42 +170,42 @@ p {
     <div id="awosDiv">
       <select id="awosSel" onchange="selectAWOS()">
         <option value="" id="selDef">----Select AWOS----</option>
-	<option value="KAPN">KAPN - Alpena CRTC</option>
-	<option value="KBAB">KBAB - Beale AFB</option>
-	<option value="KBAD">KBAD - Barksdale AFB</option>
-	<option value="KBAF">KBAF - Barnes ANGB</option>
-	<option value="KBDL">KBDL - Bradley ANGB</option>
-	<option value="KBTV">KBTV - Burlington ANGB</option>
+        <option value="KAPN">KAPN - Alpena CRTC</option>
+        <option value="KBAB">KBAB - Beale AFB</option>
+        <option value="KBAD">KBAD - Barksdale AFB</option>
+        <option value="KBAF">KBAF - Barnes ANGB</option>
+        <option value="KBDL">KBDL - Bradley ANGB</option>
+        <option value="KBTV">KBTV - Burlington ANGB</option>
         <option value="KCNW">KCNW - Det 1 645 AESS Waco</option>
-	<option value="KCRW">KCRW - Charleston ANGB</option>
-	<option value="KDLH">KDLH - Duluth ANGB</option>
-	<option value="KDMA">KDMA - Davis-Monthan AFB</option>
-	<option value="KEDW">KEDW - Edwards AFB</option>
-	<option value="KFAR">KFAR - Fargo ANGB</option>
-	<option value="KFAT">KFAT - Fresno ANGB</option>
+        <option value="KCRW">KCRW - Charleston ANGB</option>
+        <option value="KDLH">KDLH - Duluth ANGB</option>
+        <option value="KDMA">KDMA - Davis-Monthan AFB</option>
+        <option value="KEDW">KEDW - Edwards AFB</option>
+        <option value="KFAR">KFAR - Fargo ANGB</option>
+        <option value="KFAT">KFAT - Fresno ANGB</option>
         <option value="KFFO">KFFO - Wright-Patterson AFB</option>
-	<option value="KFHU">KFHU - Fort Huachuca EPG</option>
-	<option value="KFWA">KFWA - Fort Wayne ANGB</option>
-	<option value="KGTF">KGTF - Great Falls ANGB</option>
+        <option value="KFHU">KFHU - Fort Huachuca EPG</option>
+        <option value="KFWA">KFWA - Fort Wayne ANGB</option>
+        <option value="KGTF">KGTF - Great Falls ANGB</option>
         <option value="KGVT">KGVT - 645 AESS Greenville</option>
         <option value="KLCK">KLCK - Rickenbacker ANGB</option>
         <option value="KMDT">KMDT - Harrisburg ANGB</option>
         <option value="KMFD">KMFD - Mansfield ANGB</option>
-	<option value="KMKE">KMKE - General Mitchell ANGB</option>
-	<option value="KMRB">KMRB - Martinsburg ANGB</option>
-	<option value="KMSN">KMSN - Truax Field ANGB</option>
+        <option value="KMKE">KMKE - General Mitchell ANGB</option>
+        <option value="KMRB">KMRB - Martinsburg ANGB</option>
+        <option value="KMSN">KMSN - Truax Field ANGB</option>
         <option value="KMTC">KMTC - Selfridge ANGB</option>
         <option value="KMTN">KMTN - Warfield ANGB</option>
         <option value="KMXF">KMXF - Maxwell AFB</option>
         <option value="KOFF">KOFF - Offutt AFB</option>
         <option value="KOKC">KOKC - Will Rogers ANGB</option>
         <option value="KPIA">KPIA - Peoria ANGB</option>
-	<option value="KRIV">KRIV - March ARB</option>
-	<option value="KRNO">KRNO - Reno ANGB</option>
+        <option value="KRIV">KRIV - March ARB</option>
+        <option value="KRNO">KRNO - Reno ANGB</option>
         <option value="KSGH">KSGH - Springfield ANGB</option>
-	<option value="KSJC">KSJC - San Jose IAP</option>
-	<option value="KSLC">KSLC - Roland R Wright ANGB</option>
-	<option value="KSTJ">KSTJ - Rosecrans ANGB</option>
+        <option value="KSJC">KSJC - San Jose IAP</option>
+        <option value="KSLC">KSLC - Roland R Wright ANGB</option>
+        <option value="KSTJ">KSTJ - Rosecrans ANGB</option>
         <option value="KTOL">KTOL - Toledo ANGB</option>
         <option value="KTUL">KTUL - Tulsa ANGB</option>
         <option value="KUNV">KUNV - State College AS</option>
@@ -221,7 +221,7 @@ p {
     <input type="range" min="600" max="900" value="750" class="slider" id="wbgtRange" oninput="wbgtValue(this.value)">
   </div>
   <div id="wbgtTimeDiv">
-    <h3 id="wbgtTime">&nbsp;</h3>
+    <h3 id="wbgtTime">&nbsp</h3>
   </div>
 </div>
 
@@ -366,8 +366,9 @@ p {
 </div>
 
 <script language="JavaScript" type="text/javascript">
-var selAWOS = false,
-    wbgtHead = false,
+var wbgtHead = false,
+    slEnbl = false,
+    rdEnbl = false,
     wbgtMod = 0,
     workLoad = "easy",
     addClothing = "noClothing",
@@ -380,7 +381,6 @@ var selAWOS = false,
     Tdb = 0,
     wbgt = 0;
 function selectAWOS() {
-  selAWOS = true;
   awos = awosSel.options[awosSel.selectedIndex].value;
   awosDiv.remove();
   workEasy.checked = true;
@@ -452,7 +452,6 @@ async function mesonet(mesoCall) {
     req.open('GET', url);
     req.onload = function() {
       if (req.status == 200) {
-        //const res = JSON.parse(req.responseText);
         resolve(JSON.parse(req.responseText));
       } else {
         resolve("File not Found");
@@ -552,6 +551,7 @@ function wbgtSeries(myObj) {
         lblWbgtDate.innerHTML = stID.slice(1) + " Readings: ";
         wbgtDate.value = rdgDte.slice(6,10) + "-" + rdgDte.slice(0,2) + "-" + rdgDte.slice(3,5);
         wbgtHead = true;
+        rdEnbl = true;
       }
       var table = wbgtTable,
           r = table.rows.length,
@@ -593,11 +593,33 @@ function wbgtSeries(myObj) {
       }
     }
   }
+  slEnbl = true;
   wbgtDate.disabled = false;
 }
 function wbgtNearest(myObj) {
   while (wbgtTable.rows.length > 3) {
     wbgtTable.deleteRow(2);
+  }
+  wbgtRead.innerHTML = "&nbsp";
+  wbgtRange.value = 750;
+  wbgtTime.innerHTML = "&nbsp";
+  slEnbl = false;
+  rdEnbl = false;
+  wbgt = 0;
+  wbgtMod = 0;
+  workLoad = "easy";
+  addClothing = "noClothing";
+  tacticalGear = "noTactical";
+  workEasy.checked = true;
+  clothingNone.checked = true;
+  armorNo.checked = true;
+  wbgtRead.style.backgroundColor = "gray";
+  wbgtReadDiv.style.backgroundColor = "gray";
+  flag.style.backgroundColor = "lightgray";
+  wbgtRow("&nbsp", "&nbsp", "&nbsp", "&nbsp", "&nbsp", "&nbsp", "&nbsp", "&nbsp");
+  var tds = document.getElementsByClassName("all");
+  for (var i = 0;i < tds.length;i++) {
+    tds[i].style.color = "lightgray";
   }
   if (myObj.SUMMARY["NUMBER_OF_OBJECTS"] == 0) {
     alert("Mesonet nearest call returned no results. Change date or refresh page");
@@ -628,6 +650,7 @@ function readingSelect(rw) {
   workEasy.checked = true;
   clothingNone.checked = true;
   armorNo.checked = true;
+  rdEnbl = true;
   flagColor(wbgt);
 }
 function csvSave() {
@@ -658,9 +681,9 @@ function csvSave() {
   a.download = fileName;
 }
 function wbgtValue(sliderValue) {
-  if (selAWOS == false) {
+  if (slEnbl == false) {
     return;
-  } else if (selAWOS == true) {
+  } else if (slEnbl == true) {
     var d = new Date(),
         mo = ("00" + (d.getMonth()+1)).slice(-2),
         dy = ("00" + d.getDate()).slice(-2),
@@ -677,6 +700,7 @@ function wbgtValue(sliderValue) {
     workEasy.checked = true;
     clothingNone.checked = true;
     armorNo.checked = true;
+    rdEnbl = true;
     flagColor(wbgt);
   }
 }
@@ -763,9 +787,9 @@ function wbgtRow(fC,fR,wrE,wiE,wrM,wiM,wrH,wiH) {
   document.getElementById("wiH").innerHTML = wiH;
 }
 function radioClick(radioValue) {
-  if (selAWOS == false) {
+  if (rdEnbl == false) {
     return;
-  } else if (selAWOS == true) {
+  } else if (rdEnbl == true) {
     switch (radioValue) {
       case "easy":
         workLoad = radioValue;
