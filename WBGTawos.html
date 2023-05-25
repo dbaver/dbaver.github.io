@@ -366,8 +366,9 @@ p {
 </div>
 
 <script language="JavaScript" type="text/javascript">
-var selAWOS = false,
-    wbgtHead = false,
+var wbgtHead = false,
+    slEnbl = false,
+    rdEnbl = false,
     wbgtMod = 0,
     workLoad = "easy",
     addClothing = "noClothing",
@@ -380,7 +381,6 @@ var selAWOS = false,
     Tdb = 0,
     wbgt = 0;
 function selectAWOS() {
-  selAWOS = true;
   awos = awosSel.options[awosSel.selectedIndex].value;
   awosDiv.remove();
   workEasy.checked = true;
@@ -452,7 +452,6 @@ async function mesonet(mesoCall) {
     req.open('GET', url);
     req.onload = function() {
       if (req.status == 200) {
-        //const res = JSON.parse(req.responseText);
         resolve(JSON.parse(req.responseText));
       } else {
         resolve("File not Found");
@@ -465,7 +464,7 @@ async function mesonet(mesoCall) {
 }
 function wbgtLatest(myObj) {
   if (myObj.SUMMARY["NUMBER_OF_OBJECTS"] == 0) {
-    alert("Mesonet latest call returned no results");
+    alert("Mesonet latest call returned no results. Change date or refresh page.");
   } else {
     var stID = myObj.STATION[0]["STID"],
         Lt = myObj.STATION[0]["LATITUDE"],
@@ -509,7 +508,6 @@ function wbgtSeries(myObj) {
     alert("Mesonet timeseries call returned no results. Change date or refresh page.");
   } else if (Object.getOwnPropertyNames(myObj.STATION[0]["OBSERVATIONS"]).length != 7) {
     alert("Mesonet timeseries call returned insufficient data. Change date or refresh page.");
-    wbgtDate.disabled = false;
   } else {
     var stID = myObj.STATION[0]["STID"],
         Lt = myObj.STATION[0]["LATITUDE"],
@@ -552,6 +550,7 @@ function wbgtSeries(myObj) {
         lblWbgtDate.innerHTML = stID.slice(1) + " Readings: ";
         wbgtDate.value = rdgDte.slice(6,10) + "-" + rdgDte.slice(0,2) + "-" + rdgDte.slice(3,5);
         wbgtHead = true;
+        rdEnbl = true;
       }
       var table = wbgtTable,
           r = table.rows.length,
@@ -559,6 +558,7 @@ function wbgtSeries(myObj) {
           cell = {},
           rdngs = [rDtTm[l-1-i].slice(14,19),Tnwb.toFixed(1),Tg.toFixed(1),Tdb.toFixed(1),wbgtS.toFixed(1)],
           j,bc,fc,dv;
+      row.onclick = function() {readingSelect(this);};
       row.style.backgroundColor = "lightgray";
       for (j = 0; j < rdngs.length; j++) {
         if (j == 4) {
@@ -591,12 +591,37 @@ function wbgtSeries(myObj) {
         cell.appendChild(dv);
       }
     }
+    if (!wbgtHead) {
+      alert("Mesonet timeseries call returned insufficient data. Change date or refresh page.");
+    }
   }
+  slEnbl = true;
   wbgtDate.disabled = false;
 }
 function wbgtNearest(myObj) {
   while (wbgtTable.rows.length > 3) {
     wbgtTable.deleteRow(2);
+  }
+  wbgtRead.innerHTML = "&nbsp";
+  wbgtRange.value = 750;
+  wbgtTime.innerHTML = "&nbsp";
+  slEnbl = false;
+  rdEnbl = false;
+  wbgt = 0;
+  wbgtMod = 0;
+  workLoad = "easy";
+  addClothing = "noClothing";
+  tacticalGear = "noTactical";
+  workEasy.checked = true;
+  clothingNone.checked = true;
+  armorNo.checked = true;
+  wbgtRead.style.backgroundColor = "gray";
+  wbgtReadDiv.style.backgroundColor = "gray";
+  flag.style.backgroundColor = "lightgray";
+  wbgtRow("&nbsp", "&nbsp", "&nbsp", "&nbsp", "&nbsp", "&nbsp", "&nbsp", "&nbsp");
+  var tds = document.getElementsByClassName("all");
+  for (var i = 0;i < tds.length;i++) {
+    tds[i].style.color = "lightgray";
   }
   if (myObj.SUMMARY["NUMBER_OF_OBJECTS"] == 0) {
     alert("Mesonet nearest call returned no results. Change date or refresh page");
@@ -610,6 +635,25 @@ function wbgtNearest(myObj) {
     utcOff = parseInt(rDtTm.slice(19,22));
     mesonet(wbgtSeries);
   }
+}
+function readingSelect(rw) {
+  var stID = lblWbgtDate.innerHTML.slice(0,3),
+      dte = wbgtDate.value,
+      tme = rw.children[0].children[0].innerHTML,
+      rdg = rw.children[4].children[0].innerHTML;
+  wbgtRead.innerHTML = "WBGT<sub>O</sub> (<small><sup>o</sup></small>F): " + rdg;
+  wbgt = parseFloat(rdg);
+  wbgtRange.value = wbgt*10;
+  wbgtTime.innerHTML = stID + " Reading: " + dte.slice(5,7) + "/" + dte.slice(8,10) + "/" + dte.slice(0,4) + " at " + tme;
+  wbgtMod = 0;
+  workLoad = "easy";
+  addClothing = "noClothing";
+  tacticalGear = "noTactical";
+  workEasy.checked = true;
+  clothingNone.checked = true;
+  armorNo.checked = true;
+  rdEnbl = true;
+  flagColor(wbgt);
 }
 function csvSave() {
   var ds = new Date(parseInt(rdgDte.slice(6,10)),parseInt(rdgDte.slice(0,2))-1,parseInt(rdgDte.slice(3,5))),
@@ -639,9 +683,9 @@ function csvSave() {
   a.download = fileName;
 }
 function wbgtValue(sliderValue) {
-  if (selAWOS == false) {
+  if (slEnbl == false) {
     return;
-  } else if (selAWOS == true) {
+  } else if (slEnbl == true) {
     var d = new Date(),
         mo = ("00" + (d.getMonth()+1)).slice(-2),
         dy = ("00" + d.getDate()).slice(-2),
@@ -658,6 +702,7 @@ function wbgtValue(sliderValue) {
     workEasy.checked = true;
     clothingNone.checked = true;
     armorNo.checked = true;
+    rdEnbl = true;
     flagColor(wbgt);
   }
 }
@@ -744,9 +789,9 @@ function wbgtRow(fC,fR,wrE,wiE,wrM,wiM,wrH,wiH) {
   document.getElementById("wiH").innerHTML = wiH;
 }
 function radioClick(radioValue) {
-  if (selAWOS == false) {
+  if (rdEnbl == false) {
     return;
-  } else if (selAWOS == true) {
+  } else if (rdEnbl == true) {
     switch (radioValue) {
       case "easy":
         workLoad = radioValue;
