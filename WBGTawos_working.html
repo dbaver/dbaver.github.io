@@ -397,7 +397,7 @@ p {
     <th style="width:20%">WBGT<sub>O</sub> (&#8457;)</th>
   </tr>
   <tr style="background-color:lightgray">
-    <td colspan="5"><a id="sl" href="#" onclick="csvSave()">Download</a></td>
+    <td colspan="5"><a id="sl" href="#">Download</a></td>
   </tr>
 </table>
 </div>
@@ -423,6 +423,7 @@ function selectAWOS() {
   workEasy.checked = true;
   clothingNone.checked = true;
   armorNo.checked = true;
+  sl.onclick= function() {csvSave();};
   mesonet(wbgtLatest);
 }
 async function mesonet(mesoCall) {
