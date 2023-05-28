@@ -164,7 +164,7 @@ p {
   consistent. During periods of hot weather, the WBGT for outdoor conditions is calculated with the below equation, and 
   the appropriate Heat Stress Risk and Flag Color can be determined using the table that follows.</p>
 
-<p style="text-align:center">WBGT<sub>O</sub> = 0.7(T<sub>nwb</sub>) + 0.2(T<sub>g</sub>) + 0.1(T<sub>db</sub>)</p>
+<p style="text-align:center">WBGT<sub>o</sub> = 0.7(T<sub>nwb</sub>) + 0.2(T<sub>g</sub>) + 0.1(T<sub>db</sub>)</p>
 
 <div style="overflow-x:auto">
 <table>
@@ -216,31 +216,31 @@ p {
 
 <div style="overflow-x:auto">
 <table onload="this.style.tableLayout = 'auto'">
-  <tr style="background-color:gray; vertical-align:center">
-    <th rowspan="3" style="width:11%">Flag<br>Color</th>
-    <th rowspan="3" style="width:11%">WBGT<br>(&#8457;)</th>
-    <th colspan="2" style="border-bottom:none">Easy Work<br>(250 W)</th>
-    <th colspan="2" style="border-bottom:none">Moderate Work<br>(425 W)</th>
-    <th colspan="2" style="border-bottom:none">Heavy Work<br>(600 W)</th>
-    <th colspan="2" style="border-bottom:none">Very Heavy Work<br>(800 W)</th>
+  <tr style="background-color:gray">
+    <th rowspan="3" style="width:11%; vertical-align:center">Flag<br>Color</th>
+    <th rowspan="3" style="width:11%; vertical-align:center">WBGT<br>(&#8457;)</th>
+    <th colspan="2" style="border-bottom:none; vertical-align:top">Easy Work<br>(250 W)</th>
+    <th colspan="2" style="border-bottom:none; vertical-align:top">Moderate Work<br>(425 W)</th>
+    <th colspan="2" style="border-bottom:none; vertical-align:top">Heavy Work<br>(600 W)</th>
+    <th colspan="2" style="border-bottom:none; vertical-align:top">Very Heavy Work<br>(800 W)</th>
   </tr>
   <tr style="background-color:gray; vertical-align:top">
     <td colspan="2" style="width:19%; text-align:left; border-top:none; border-left:none">Weapon maintenance, marksmanship training, drill and ceremony</td>
-    <td colspan="2" style="width:20%; text-align:left; border-top:none">Patrolling with 30 lb load, low and high crawl, dig defensive position</td>
-    <td colspan="2" style="width:19%; text-align:left; border-top:none">Patrolling with 45 lb load, four-person litter carry (180 lbs), jogging 4 mph</td>
-    <td colspan="2" style="width:20%; text-align:left; border-top:none">Two-person litter carry (150 lbs), move under direct fire, obstacle course</td>
+    <td colspan="2" style="width:20%; text-align:left; border-top:none">Patrolling with 30&nbsp;lb load, low and high crawl, dig defensive position</td>
+    <td colspan="2" style="width:19%; text-align:left; border-top:none">Patrolling with 45&nbsp;lb load, four-person litter carry (180&nbsp;lbs), jogging 4&nbsp;mph</td>
+    <td colspan="2" style="width:20%; text-align:left; border-top:none">Two-person litter carry (150&nbsp;lbs), move under direct fire, obstacle course</td>
   </tr>
-  <tr style="background-color:gray">
+  <tr style="background-color:gray; vertical-align:top">
     <td style="width:10%; border-left:none">Work/<br>Rest<br>Cycle</td>
-    <td style="width:9%">Water<br>Intake<br>Qt/hr</td>
+    <td style="width:9%">Water<br>Intake<br>Qt/Hr</td>
     <td style="width:10%">Work/<br>Rest<br>Cycle</td>
-    <td style="width:10%">Water<br>Intake<br>Qt/hr</td>
+    <td style="width:10%">Water<br>Intake<br>Qt/Hr</td>
     <td style="width:10%">Work/<br>Rest<br>Cycle</td>
-    <td style="width:9%">Water<br>Intake<br>Qt/hr</td>
+    <td style="width:9%">Water<br>Intake<br>Qt/Hr</td>
     <td style="width:10%">Work/<br>Rest<br>Cycle</td>
-    <td style="width:10%">Water<br>Intake<br>Qt/hr</td>
+    <td style="width:10%">Water<br>Intake<br>Qt/Hr</td>
   </tr>
-  <tr id="flag" style="background-color:lightgray">
+  <tr id="flag" style="background-color:lightgray; vertical-align:center">
     <td id="fC" class="all wbgt">&nbsp;</td>
     <td id="fR" class="all wbgt">&nbsp;</td>
     <td id="wrE" class="all easy">&nbsp;</td>
@@ -253,25 +253,25 @@ p {
     <td id="wiV" class="all very">&nbsp;</td>
   </tr>
   <tr style="background-color:lightgray; vertical-align:top">
-    <td colspan="10" style="text-align:left">Legend:<br>NL = no limit to work per hour (up to 4 
-      continuous hours).<br>Notes:<br><sup>1</sup>Applies for average-sized and heat-acclimatized service members 
-      wearing the OCP uniform.<br><sup>2</sup>The work-rest times and fluid replacement volumes will sustain 
-      performance and hydration for at least 4 hours of work in the specified heat category.<br><sup>3</sup>Fluid 
-      needs can vary based on individual differences (+/- 0.25 qt/hr) and exposure to full sun or full shade (+/- 
-      0.25 qt/hr).<br><sup>4</sup>Rest means minimal physical activity (sitting or standing) accomplished in the 
-      shade if possible.<br><sup>5</sup>CAUTION: Hourly and daily fluid intake should not exceed 1.5 qt and 12 qt, 
-      respectively.<br><sup>6</sup>If wearing heavy protective clothing (CBRN or firefighter turnout gear), add 
-      10&#8457; to the WBGT for easy work and 20&#8457; to the WBGT for moderate and heavy work.<br><sup>7</sup>If 
-      wearing body armor, add 5&#8457; to the WBGT.</td>
+    <td colspan="10" style="text-align:left">Legend:<br>NL = no limit to work per hour (up to 4 continuous hours).
+      <br>Notes:<br><sup>1</sup>Applies for average-sized and heat-acclimatized service members wearing OCPs.
+      <br><sup>2</sup>The work-rest times and fluid replacement volumes will sustain performance and hydration for 
+      at least 4 hours of work in the specified heat category.<br><sup>3</sup>Fluid needs can vary based on individual 
+      differences (+/-&nbsp;0.25&nbsp;qt/hr) and exposure to full sun or full shade (+/-&nbsp;0.25&nbsp;qt/hr).
+      <br><sup>4</sup>Rest means minimal physical activity (sitting or standing) accomplished in the shade if possible.
+      <br><sup>5</sup>CAUTION: Hourly and daily fluid intake should not exceed 1.5&nbsp;qt and 12&nbsp;qt, respectively.
+      <br><sup>6</sup>If wearing heavy protective clothing (CBRN or firefighter turnout gear), add 10&nbsp;&#8457; to 
+      the WBGT for easy work and 20&nbsp;&#8457; to the WBGT for moderate and heavy work.<br><sup>7</sup>If wearing body 
+      armor, add 5&nbsp;&#8457; to the WBGT.</td>
   </tr>
 </table>
 </div>
 
 <p>Normal duty-type uniforms, overalls, and long-sleeved civilian work clothes do not drive any adjustment to the WBGT. Wearing 
-  a second layer of clothing, such as chemical protective gear or firefighting bunker gear, adds 6&#8451;/10&#8457; to the WBGT 
-  measurement for easy work and 12&#8451;/20&#8457; for moderate/hard work. Additionally, wear of body armor adds an additional 
-  3&#8451;/5&#8457; to the WBGT measurement. This can, potentially, drive a shift from low or moderate to extreme risk of heat 
-  injury.</p>
+  a second layer of clothing, such as chemical protective gear or firefighting bunker gear, adds 6&nbsp;&#8451;/10&nbsp;&#8457; 
+  to the WBGT measurement for easy work and 12&nbsp;&#8451;/20&nbsp;&#8457; for moderate/hard work. Additionally, wear of body 
+  armor adds an additional 3&nbsp;&#8451;/5&nbsp;&#8457; to the WBGT measurement. This can, potentially, drive a shift from low 
+  or moderate to extreme risk of heat injury.</p>
 
 <div style="overflow-x:auto">
 <table>
@@ -323,7 +323,7 @@ p {
     <th style="width:20%">T<sub>nwb</sub> (&#8457;)</th>
     <th style="width:20%">T<sub>g</sub> (&#8457;)</th>
     <th style="width:20%">T<sub>db</sub> (&#8457;)</th>
-    <th style="width:20%">WBGT<sub>O</sub> (&#8457;)</th>
+    <th style="width:20%">WBGT<sub>o</sub> (&#8457;)</th>
   </tr>
   <tr style="background-color:lightgray">
     <td colspan="5"><a id="wbgtSave" href="#">Download</a></td>
@@ -507,7 +507,7 @@ function wbgtSeries(myObj) {
       wbgtS = wbgt_calculator(rDtTm[l-1-i],Ta[l-1-i],Tw,RH[l-1-i],Ws[l-1-i],Pa[l-1-i],cl,Lt,Ln);
       if (!wbgtHead) {
         wbgt = wbgtS;
-        wbgtRead.innerHTML = "WBGT<sub>O</sub> (&#8457;): " + wbgt.toFixed(1);
+        wbgtRead.innerHTML = "WBGT<sub>o</sub>: " + wbgt.toFixed(1) + " &#8457;";
         wbgtRange.value = wbgt*10;
         wbgtTime.innerHTML = stID.slice(1) + " Reading: " + rDtTm[l-1-i].slice(0,19);
         flagColor(wbgt);
@@ -605,7 +605,7 @@ function readingSelect(rw) {
       dte = wbgtDate.value,
       tme = rw.children[0].children[0].innerHTML,
       rdg = rw.children[4].children[0].innerHTML;
-  wbgtRead.innerHTML = "WBGT<sub>O</sub> (&#8457;): " + rdg;
+  wbgtRead.innerHTML = "WBGT<sub>o</sub>: " + rdg + " &#8457;";
   wbgt = parseFloat(rdg);
   wbgtRange.value = wbgt*10;
   wbgtTime.innerHTML = stID + " Reading: " + dte.slice(5,7) + "/" + dte.slice(8,10) + "/" + dte.slice(0,4) + " at " + tme;
@@ -658,7 +658,7 @@ function wbgtValue(sliderValue) {
         mn = ("00" + d.getMinutes()).slice(-2);
     wbgtTime.innerHTML = "BEE Reading: " + mo + "/" + dy + "/" + yr + " at " + hr + ":" + mn;
     wbgt = sliderValue/10;
-    wbgtRead.innerHTML = "WBGT<sub>O</sub> (&#8457;): " + wbgt.toFixed(1);
+    wbgtRead.innerHTML = "WBGT<sub>o</sub>: " + wbgt.toFixed(1) + " &#8457;";
     wbgtMod = 0;
     workLoad = "easy";
     addClothing = "noClothing";
@@ -797,22 +797,22 @@ function radioClick(radioValue) {
     }
     if (addClothing == "noClothing" && tacticalGear == "noTactical") {
       wbgtMod = wbgt;
-      wbgtRead.innerHTML = "WBGT<sub>O</sub> (&#8457;): " + wbgtMod.toFixed(1);
+      wbgtRead.innerHTML = "WBGT<sub>o</sub>: " + wbgtMod.toFixed(1) + " &#8457;";
     } else if (addClothing == "noClothing" && tacticalGear == "armor") {
       wbgtMod = wbgt + 5;
-      wbgtRead.innerHTML = "WBGT<sub>O</sub> (&#8457;): " + wbgtMod.toFixed(1);
+      wbgtRead.innerHTML = "WBGT<sub>o</sub>: " + wbgtMod.toFixed(1) + " &#8457;";
     } else if (workLoad == "easy" && addClothing == "mopp" && tacticalGear == "noTactical") {
       wbgtMod = wbgt + 10;
-      wbgtRead.innerHTML = "WBGT<sub>O</sub> (&#8457;): " + wbgtMod.toFixed(1);
+      wbgtRead.innerHTML = "WBGT<sub>o</sub>: " + wbgtMod.toFixed(1) + " &#8457;";
     } else if (workLoad == "easy" && addClothing == "mopp" && tacticalGear == "armor") {
       wbgtMod = wbgt + 15;
-      wbgtRead.innerHTML = "WBGT<sub>O</sub> (&#8457;): " + wbgtMod.toFixed(1);
+      wbgtRead.innerHTML = "WBGT<sub>o</sub>: " + wbgtMod.toFixed(1) + " &#8457;";
     } else if (workLoad != "easy" && addClothing == "mopp" && tacticalGear == "noTactical") {
       wbgtMod = wbgt + 20;
-      wbgtRead.innerHTML = "WBGT<sub>O</sub> (&#8457;): " + wbgtMod.toFixed(1);
+      wbgtRead.innerHTML = "WBGT<sub>o</sub>: " + wbgtMod.toFixed(1) + " &#8457;";
     } else if (workLoad != "easy" && addClothing == "mopp" && tacticalGear == "armor") {
       wbgtMod = wbgt + 25;
-      wbgtRead.innerHTML = "WBGT<sub>O</sub> (&#8457;): " + wbgtMod.toFixed(1);
+      wbgtRead.innerHTML = "WBGT<sub>o</sub>: " + wbgtMod.toFixed(1) + " &#8457;";
     }
     wbgtRange.value = wbgtMod*10;
     flagColor(wbgtMod);
