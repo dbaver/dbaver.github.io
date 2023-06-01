@@ -1117,8 +1117,8 @@ function wbgt_calculator(rDtTm, Ta, Tw, RH, Ws, Pa, Cl, Lt, Ln) {
     // wind speed and y is the height above the ground.
     ws = ws*Math.pow(2/10, 0.24);
 
-    // Enforce a minimum wind speed of 1 mph to account for the fact that
-    // outdoor workers are always moving.
+    // Enforce a minimum wind speed of 2 mph to account for the fact that
+    // outdoor workers are always moving. Changed from 1 mph.
     ws = Math.max(ws, 2);
     
     // Set the reference height for the wind speed.
