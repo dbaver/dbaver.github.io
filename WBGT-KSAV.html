@@ -21,29 +21,6 @@ body {
   border-bottom: 2px solid black;
 }
 
-#awosDiv {
-  width: 100%;
-  margin: 0;
-  padding: 0;
-  position: relative;
-  top: 50%;
-  -ms-transform: translateY(-50%);
-  transform: translateY(-50%);
-}
-
-#awosSel {
-  margin: 0;
-  padding: 0;
-  position: relative;
-  left: 50%;
-  -ms-transform: translateX(-50%);
-  transform: translateX(-50%);
-  box-sizing: border-box;
-  border-width: 1px;
-  font-family: monospace;
-  text-align: left;
-}
-
 #selDef {
   text-align: center;
 }
@@ -169,55 +146,6 @@ p {
 <body>
 <div style="position:fixed; left:0; top:0; width:100%">
   <div id="wbgtReadDiv">
-    <div id="awosDiv">
-      <select id="awosSel" onchange="selectAWOS()">
-        <option value="" id="selDef">----Select AWOS----</option>
-        <option value="KAPN">KAPN - Alpena CRTC</option>
-        <option value="KBAB">KBAB - Beale AFB</option>
-        <option value="KBAD">KBAD - Barksdale AFB</option>
-        <option value="KBAF">KBAF - Barnes ANGB</option>
-        <option value="KBDL">KBDL - Bradley ANGB</option>
-        <option value="KBTV">KBTV - Burlington ANGB</option>
-        <option value="KCNW">KCNW - Det 1 645 AESS Waco</option>
-        <option value="KCRW">KCRW - Charleston ANGB</option>
-        <option value="KDLH">KDLH - Duluth ANGB</option>
-        <option value="KDMA">KDMA - Davis-Monthan AFB</option>
-        <option value="KEDW">KEDW - Edwards AFB</option>
-        <option value="KFAR">KFAR - Fargo ANGB</option>
-        <option value="KFAT">KFAT - Fresno ANGB</option>
-        <option value="KFFO">KFFO - Wright-Patterson AFB</option>
-        <option value="KFHU">KFHU - Fort Huachuca EPG</option>
-        <option value="KFWA">KFWA - Fort Wayne ANGB</option>
-        <option value="KGTF">KGTF - Great Falls ANGB</option>
-        <option value="KGVT">KGVT - 645 AESS Greenville</option>
-        <option value="KLCK">KLCK - Rickenbacker ANGB</option>
-        <option value="KMDT">KMDT - Harrisburg ANGB</option>
-        <option value="KMFD">KMFD - Mansfield ANGB</option>
-        <option value="KMKE">KMKE - General Mitchell ANGB</option>
-        <option value="KMRB">KMRB - Martinsburg ANGB</option>
-        <option value="KMSN">KMSN - Truax Field ANGB</option>
-        <option value="KMTC">KMTC - Selfridge ANGB</option>
-        <option value="KMTN">KMTN - Warfield ANGB</option>
-        <option value="KMXF">KMXF - Maxwell AFB</option>
-        <option value="KOFF">KOFF - Offutt AFB</option>
-        <option value="KOKC">KOKC - Will Rogers ANGB</option>
-        <option value="KPIA">KPIA - Peoria ANGB</option>
-        <option value="KRIV">KRIV - March ARB</option>
-        <option value="KRNO">KRNO - Reno ANGB</option>
-        <option value="KSAV">KSAV - Savannah CRTC</option>
-        <option value="KSGH">KSGH - Springfield ANGB</option>
-        <option value="KSJC">KSJC - San Jose IAP</option>
-        <option value="KSLC">KSLC - Roland R Wright ANGB</option>
-        <option value="KSTJ">KSTJ - Rosecrans ANGB</option>
-        <option value="KTOL">KTOL - Toledo ANGB</option>
-        <option value="KTUL">KTUL - Tulsa ANGB</option>
-        <option value="KUNV">KUNV - State College AS</option>
-        <option value="KZZV">KZZV - Zanesville ANGB</option>
-        <option value="TISX">TISX - St Croix ANGB</option>
-        <option value="TJBQ">TJBQ - Ramey AFB</option>
-        <option value="TJSJ">TJSJ - Muniz ANGB</option>
-      </select>
-    </div>
     <h1 id="wbgtRead"></h1>
   </div>
   <div id="wbgtRangeDiv">
@@ -411,22 +339,18 @@ var wbgtHead = false,
     workLoad = "easy",
     addClothing = "noClothing",
     tacticalGear = "noTactical",
-    awos = "",
+    awos = "KSAV",
     rdgDte = "",
     utcOff = 0,
     Tnwb = 0,
     Tg = 0,
     Tdb = 0,
     wbgt = 0;
-function selectAWOS() {
-  awos = awosSel.options[awosSel.selectedIndex].value;
-  awosDiv.remove();
   workEasy.checked = true;
   clothingNone.checked = true;
   armorNo.checked = true;
   wbgtSave.onclick= function() {csvSave();};
   mesonet(wbgtLatest);
-}
 async function mesonet(mesoCall) {
   if (mesoCall == wbgtLatest) {
     var url = "https://api.synopticdata.com/v2/stations/",
