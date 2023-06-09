@@ -355,7 +355,7 @@ var wbgtHead = false,
 async function getToken(file) {
   let myObject = await fetch(file);
   let myText = await myObject.text();
-  tkn = myText;
+  tkn = "token=" + myText;
   mesonet(wbgtLatest);
 }
 async function mesonet(mesoCall) {
