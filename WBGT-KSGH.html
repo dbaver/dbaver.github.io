@@ -335,6 +335,7 @@ p {
 var wbgtHead = false,
     slEnbl = false,
     rdEnbl = false,
+    tkn = "",
     wbgtMod = 0,
     workLoad = "easy",
     addClothing = "noClothing",
@@ -350,12 +351,17 @@ var wbgtHead = false,
   clothingNone.checked = true;
   armorNo.checked = true;
   wbgtSave.onclick= function() {csvSave();};
+  getToken("mesonet_api_token.txt");
   mesonet(wbgtLatest);
+async function getToken(file) {
+  let myObject = await fetch(file);
+  let myText = await myObject.text();
+  tkn = myText;
+}
 async function mesonet(mesoCall) {
   if (mesoCall == wbgtLatest) {
     var url = "https://api.synopticdata.com/v2/stations/",
         dta = "latest?",
-        tkn = "token=21b8403530954b0086093a47b496e954",
         sid = "&stid=" + awos,
         vrs = "&vars=metar,air_temp,relative_humidity,wind_speed,pressure,cloud_layer_1",
         uts = "&units=english",
@@ -365,7 +371,6 @@ async function mesonet(mesoCall) {
   } else if (mesoCall == wbgtSeries) {
     var url = "https://api.synopticdata.com/v2/stations/",
         dta = "timeseries?",
-        tkn = "token=21b8403530954b0086093a47b496e954",
         sid = "&stid=" + awos,
         yy = parseInt(rdgDte.slice(6,10)),
         mm = parseInt(rdgDte.slice(0,2))-1,
@@ -393,7 +398,6 @@ async function mesonet(mesoCall) {
     rdgDte = wbgtDate.value;
     var url = "https://api.synopticdata.com/v2/stations/",
         dta = "nearesttime?",
-        tkn = "token=21b8403530954b0086093a47b496e954",
         sid = "&stid=" + awos,
         yy = parseInt(rdgDte.slice(0,4)),
         mm = parseInt(rdgDte.slice(5,7))-1,
