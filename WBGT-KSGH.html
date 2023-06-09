@@ -357,6 +357,7 @@ async function getToken(file) {
   let myObject = await fetch(file);
   let myText = await myObject.text();
   tkn = myText;
+  alert(tkn);
 }
 async function mesonet(mesoCall) {
   if (mesoCall == wbgtLatest) {
