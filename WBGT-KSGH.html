@@ -415,6 +415,7 @@ async function mesonet(mesoCall) {
         tft = "&timeformat=%m/%d/%Y%20at%20%H:%M%z";
     url += dta + tkn + sid + atm + wtn + vrs + uts + otz + tft;
   }
+  alert(url);
   let myPromise = new Promise(function(resolve) {
     let req = new XMLHttpRequest();
     req.open('GET', url);
