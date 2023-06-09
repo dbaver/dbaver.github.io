@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<body>
+<h1>JavaScript Fetch API</h1>
+<h2>The fetch() Method</h2>
+<p id="demo"></p>
+
+<script>
+getText("mesonet_api_token.txt");
+
+async function getText(file) {
+  let myObject = await fetch(file);
+  let myText = await myObject.text();
+  document.getElementById("demo").innerHTML = myText;
+}
+</script>
+
+</body>
+</html>
