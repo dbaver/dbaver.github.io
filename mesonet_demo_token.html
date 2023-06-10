@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<p id="demo"></p>
+
+<script>
+getToken();
+async function getToken() {
+  let myPromise = new Promise(function(resolve) {
+    let req = new XMLHttpRequest();
+    req.open('GET', "https://demos.synopticdata.com/data/demotoken");
+    req.onload = function() {
+      resolve(req.responseText);
+    };
+    req.send();
+  });
+  const myText = await myPromise;
+  demo.innerHTML = myText;
+}
+</script>
+
+</body>
+</html>

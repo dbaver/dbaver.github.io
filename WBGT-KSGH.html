@@ -351,10 +351,17 @@ var wbgtHead = false,
   clothingNone.checked = true;
   armorNo.checked = true;
   wbgtSave.onclick= function() {csvSave();};
-  getToken("mesonet_api_token.txt");
-async function getToken(file) {
-  let myObject = await fetch(file);
-  let myText = await myObject.text();
+  getToken();
+async function getToken() {
+  let myPromise = new Promise(function(resolve) {
+    let req = new XMLHttpRequest();
+    req.open('GET', "https://demos.synopticdata.com/data/demotoken");
+    req.onload = function() {
+      resolve(req.responseText);
+    };
+    req.send();
+  });
+  const myText = await myPromise;
   tkn = "token=" + myText;
   mesonet(wbgtLatest);
 }
