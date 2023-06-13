@@ -351,8 +351,8 @@ var wbgtHead = false,
   clothingNone.checked = true;
   armorNo.checked = true;
   wbgtSave.onclick= function() {csvSave();};
-  getToken();
-async function getToken() {
+  getToken(wbgtLatest);
+async function getToken(mesoCall) {
   let myPromise = new Promise(function(resolve) {
     let req = new XMLHttpRequest();
     req.open('GET', "https://demos.synopticdata.com/data/demotoken");
@@ -363,7 +363,7 @@ async function getToken() {
   });
   const myText = await myPromise;
   tkn = "token=" + myText;
-  mesonet(wbgtLatest);
+  mesonet(mesoCall);
 }
 async function mesonet(mesoCall) {
   if (mesoCall == wbgtLatest) {
@@ -608,7 +608,7 @@ function wbgtNearest(myObj) {
         rDtTm = myObj.STATION[0]["OBSERVATIONS"]["metar_value_1"]["date_time"];
     rdgDte = rDtTm.slice(0,10);
     utcOff = parseInt(rDtTm.slice(19,22));
-    mesonet(wbgtSeries);
+    getToken(wbgtSeries);
   }
 }
 function readingSelect(rw) {
