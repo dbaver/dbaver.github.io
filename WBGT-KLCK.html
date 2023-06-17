@@ -174,11 +174,11 @@ p {
     <th>Severity</th>
     <th>Color</th>
   </tr>
-  <tr style="background-color:lightgray">
+  <tr style="background-color:white">
     <td>78 - 81.9</td>
     <td>25.6 - 27.7</td>
     <td>Negligible</td>
-    <td>None</td>
+    <td>White</td>
   <tr style="background-color:green">
     <td>82 - 84.9</td>
     <td>27.8 - 29.4</td>
@@ -537,8 +537,11 @@ function wbgtSeries(myObj) {
       row.style.backgroundColor = "lightgray";
       for (j = 0; j < rdngs.length; j++) {
         if (j == 4) {
-          if (wbgtS<81.95) {
+          if (wbgtS<77.95) {
             bc = "lightgray";
+            fc = "black";
+          } else if(wbgtS>=77.95 && wbgtS<81.95) {
+            bc = "white";
             fc = "black";
           } else if(wbgtS>=81.95 && wbgtS<84.95) {
             bc = "green";
@@ -688,10 +691,14 @@ function flagColor(t) {
       tdWorkOff2,
       tdWorkOff3,
       i;
-  if (t<81.95) {
+  if (t<77.95) {
     wbgtRead.style.backgroundColor = "gray";
     wbgtReadDiv.style.backgroundColor = "gray";
     fillRow("nf", "lightgray", "black");
+  } else if(t>=77.95 && t<81.95) {
+    wbgtRead.style.backgroundColor = "white";
+    wbgtReadDiv.style.backgroundColor = "white";
+    fillRow("wf", "white", "black");
   } else if(t>=81.95 && t<84.95) {
     wbgtRead.style.backgroundColor = "green";
     wbgtReadDiv.style.backgroundColor = "green";
@@ -714,7 +721,10 @@ function fillRow(f, c1, c2) {
   document.getElementById("flag").style.backgroundColor = c1;
   switch (f) {
     case "nf":
-      wbgtRow("None", "78 - 81.9", "NL", "0.5", "NL", "0.75", "40/20 min", "0.75", "20/40 min", "1.0");
+      wbgtRow("&nbsp;", "&nbsp;", "&nbsp;", "&nbsp;", "&nbsp;", "&nbsp;", "&nbsp;", "&nbsp;");
+      break;
+    case "wf":
+      wbgtRow("White", "78 - 81.9", "NL", "0.5", "NL", "0.75", "40/20 min", "0.75", "20/40 min", "1.0");
       break;
     case "gf":
       wbgtRow("Green", "82 - 84.9", "NL", "0.5", "NL", "0.75", "30/30 min", "1.0", "15/45 min", "1.0");
