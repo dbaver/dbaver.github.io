@@ -977,8 +977,10 @@ function calcwetbulb(Edifference,Twguess,Ctemp,MBpressure,E2,previoussign,incr) 
 function wbgt_calculator(rDtTm, Ta, Tw, RH, Ws, Pa, Cl, Lt, Ln) {
   // First validate all of the inputs. Alert the user if there
   // is a problem.
-  var dateStr = rDtTm.slice(0,10);
-  var month = parseInt(dateStr.substring(0, n)),
+  var dateStr = rDtTm.slice(0,10),
+      n = dateStr.indexOf("/"),
+      n2 = dateStr.indexOf("/", n+1),
+      month = parseInt(dateStr.substring(0, n)),
 	    day = parseInt(dateStr.substring(n+1, n2)),
 	    year = parseInt(dateStr.substring(n2+1));
 
@@ -995,8 +997,8 @@ function wbgt_calculator(rDtTm, Ta, Tw, RH, Ws, Pa, Cl, Lt, Ln) {
     tmStr = "0" + tmStr;
   }
   var hour = parseInt(tmStr.substring(0, 2)),
-	    minute = parseInt(tmStr.substring(3));
-  var gmt = parseInt(rDtTm.slice(19,22));
+	    minute = parseInt(tmStr.substring(3)),
+      gmt = parseInt(rDtTm.slice(19,22));
 
   // Get the latitude. The number must be between 0 and 90. Then,
   // the calculator turns the latitude into a negative number if
