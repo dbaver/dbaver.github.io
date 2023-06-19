@@ -938,40 +938,34 @@ function calcwetbulb(Edifference,Twguess,Ctemp,MBpressure,E2,previoussign,incr) 
       incr = incr,
       previoussign = previoussign,
       Twguess = Twguess;
-  while (Math.abs(Edifference) > 0.005)  {
+  while (Math.abs(Edifference) > 0.005) {
     Ewguess = 6.112 * Math.exp((17.67 * Twguess) / (Twguess + 243.5));
     Eguess = Ewguess - MBpressure * (Ctemp - Twguess) * 0.00066 * (1 + (0.00115 * Twguess));
     Edifference = E2 - Eguess;
-
     if (Edifference == 0) {
       incr = 0;
-    } 
-    else {
+    } else {
       if (Edifference < 0) {
         cursign = -1;
         if (cursign != previoussign) {
           previoussign = cursign;
           incr = incr/10;
-        }
-        else {
+        } else {
           incr = incr;
         }
-      }
-      else {
+      } else {
         cursign = 1;
         if (cursign != previoussign) {
           previoussign = cursign;
           incr = incr/10;
-        }
-        else {
+        } else {
           incr = incr;
         }
       }
     }
-
     Twguess = Twguess + incr * previoussign;
   }
-  var wetbulb = Twguess - incr * previoussign;  // Thanks BruceZ
+  var wetbulb = Twguess - incr * previoussign;
   return wetbulb;
 }
 function wbgt_calculator(rDtTm, Ta, Tw, RH, Ws, Pa, Cl, Lt, Ln) {
@@ -1006,9 +1000,10 @@ function wbgt_calculator(rDtTm, Ta, Tw, RH, Ws, Pa, Cl, Lt, Ln) {
   // the user specifies the Western hemisphere (default).
   var lon = parseFloat(Ln);
   // Validate meteorologic inputs
-  var temp_f = parseFloat(Ta),
-      rh = parseFloat(RH),
-      ws = parseFloat(Ws)*1.15078; //knots to mph
+  var temp_f = parseFloat(Ta), //degrees F
+      rh = parseFloat(RH), // percent
+      ws = parseFloat(Ws)*1.15078, //knots to mph
+      pres = parseFloat(Pa)*0.0295; //mb to in Hg
   if (isNaN(temp_f) | temp_f < -40 | temp_f > 130) {
     alert("Error: Dry bulb temperature must be between -40 and 130 degrees F.");
     Tnwb = 9999;
@@ -1030,21 +1025,12 @@ function wbgt_calculator(rDtTm, Ta, Tw, RH, Ws, Pa, Cl, Lt, Ln) {
     Tdb = 9999;
     return (9999);
   }
-  var pres = parseFloat(Pa)*0.0295;
-  if (pres == "") {
-    // Default barometric pressure is 1 atm (29.92 inches of Hg)
-    // if not specified by the user.
-    pres = 29.92;
-  }
-  else {
-    pres = parseFloat(pres);
-    if (isNaN(pres) | pres < 24 | pres > 32) {
-      alert("Error: Barometric pressure must be between 25 and 32 inches Hg");
-      Tnwb = 9999;
-      Tg = 9999;
-      Tdb = 9999;
-      return (9999);
-    }
+  if (isNaN(pres) | pres < 24 | pres > 32) {
+    alert("Error: Barometric pressure must be between 25 and 32 inches Hg");
+    Tnwb = 9999;
+    Tg = 9999;
+    Tdb = 9999;
+    return (9999);
   }
   // Check whether wet bulb temperature is known.
   // TO DO: I believe the wet bulb temperature values supplied by NWS
@@ -1052,7 +1038,7 @@ function wbgt_calculator(rDtTm, Ta, Tw, RH, Ws, Pa, Cl, Lt, Ln) {
   // are psychrometric wet bulb temps then the calculations below
   // might need to change slightly.
   var wbKnown = "N";
-  var wb_user = parseFloat(Tw);
+  var wb_user = parseFloat(Tw); //degrees F
   if (wbKnown == "Y") {
     // The user wants to provide the wet bulb temperature. Make sure
     // it is valid. If wbKnown is N, we don't care if this value
@@ -1066,10 +1052,7 @@ function wbgt_calculator(rDtTm, Ta, Tw, RH, Ws, Pa, Cl, Lt, Ln) {
     }
   }
   // Check whether solar irradiance is known.
-  // To get the value of a radio button with cross-browser compatibility,
-  // check each element to see if it is checked.
   var solarKnown = "N";
-  var solar = parseFloat("");
   // If we made it here, the inputs are OK.
   // The input wind speed was measured at 10m above ground.
   // Set the reference height for the wind speed.
@@ -1077,9 +1060,9 @@ function wbgt_calculator(rDtTm, Ta, Tw, RH, Ws, Pa, Cl, Lt, Ln) {
       dT = 0; // temperature differential (10m minus 2m temp)
   // Convert wind speed to m/s, temperature to degrees Celsius, and
   // barometric pressure to millibars.
-  var temp_c = ftoc(temp_f);
-  var speed_mps = ws * 0.44704;
-  pres = pres * 33.8639;
+  var temp_c = ftoc(temp_f), //degrees F to degrees C
+      speed_mps = ws * 0.44704, //mph to m/s
+      pres = pres * 33.8639; //in Hg to mb
   // Assume an urban environment and a 0-minute meteorological
   // averaging period.
   // NOTE: The "urban" variable does not matter if the reference
@@ -1093,7 +1076,7 @@ function wbgt_calculator(rDtTm, Ta, Tw, RH, Ws, Pa, Cl, Lt, Ln) {
     // Get the solar parameters and estimate the clear-sky solar irradiance.
     var hour_gmt = hour - gmt + ( minute - 0.5 * avg ) / 60;
     var dday = day + hour_gmt / 24;
-    var solparam = calc_solar_parameters(year, month, dday, lat, lon, 900);
+    var solparam = calc_solar_parameters(year, month, dday, lat, lon, 910);
     var cza = solparam.cza;
     // Estimate the clear-sky solar irradiance.
     var csi = clearSkyIrradiance(cza);
@@ -1128,9 +1111,9 @@ function wbgt_calculator(rDtTm, Ta, Tw, RH, Ws, Pa, Cl, Lt, Ln) {
   }
   // Also compute the Heat Index, using an algorithm copied from the
   // NWS web site (http://www.wpc.ncep.noaa.gov/html/heatindex.shtml)
-  var hi = heat1((1.8*temp_c+32), rh);
-  wbgtSun = ctof(wbgtOutput.Twbg);
-  //wbgtSun = ctof(wbgtSun);
+  var hi = heat1(ctof(temp_c), rh);
+  //wbgtSun = ctof(wbgtOutput.Twbg);
+  wbgtSun = ctof(wbgtSun);
   return(wbgtSun);
 }
 function ftoc(Fahr) {
@@ -2226,8 +2209,8 @@ function est_wind_speed(speed, zspeed, stability_class, urban) {
     */
 
     // Define constants:
-    var MIN_SPEED = 0.89408,
-	REF_HEIGHT = 2.0;
+    var MIN_SPEED = 0.44704, //min wind speed of 1 mph for worker movement
+        REF_HEIGHT = 2.0;
     
     var urban_exp = [ 0.15, 0.15, 0.20, 0.25, 0.30, 0.30 ],
 	rural_exp = [ 0.07, 0.07, 0.10, 0.15, 0.35, 0.55 ],
