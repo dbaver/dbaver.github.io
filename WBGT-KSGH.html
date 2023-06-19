@@ -352,17 +352,22 @@ var wbgtHead = false,
   armorNo.checked = true;
   wbgtSave.onclick= function() {csvSave();};
   getToken(wbgtLatest);
-async function getToken(mesoCall) {
-  let myPromise = new Promise(function(resolve) {
-    let req = new XMLHttpRequest();
-    req.open('GET', "https://demos.synopticdata.com/data/demotoken");
-    req.onload = function() {
-      resolve(req.responseText);
-    };
-    req.send();
-  });
-  const myText = await myPromise;
-  tkn = "token=" + myText;
+  async function getToken(mesoCall) {
+  try {
+    let myPromise = new Promise(function(resolve) {
+      let req = new XMLHttpRequest();
+      req.open('GET', "https://demos.synopticdata.com/data/demotoken");
+      req.onload = function() {
+        resolve(req.responseText);
+      };
+      req.send();
+    });
+    const myText = await myPromise;
+    tkn = "token=" + myText;
+  }
+  catch(err) {
+    getToken(wbgtLatest);
+  }
   mesonet(mesoCall);
 }
 async function mesonet(mesoCall) {
@@ -873,341 +878,183 @@ function calcwetbulb(Edifference,Twguess,Ctemp,MBpressure,E2,previoussign,incr) 
       incr = incr,
       previoussign = previoussign,
       Twguess = Twguess;
-  while (Math.abs(Edifference) > 0.005)  {
+  while (Math.abs(Edifference) > 0.005) {
     Ewguess = 6.112 * Math.exp((17.67 * Twguess) / (Twguess + 243.5));
     Eguess = Ewguess - MBpressure * (Ctemp - Twguess) * 0.00066 * (1 + (0.00115 * Twguess));
     Edifference = E2 - Eguess;
-
     if (Edifference == 0) {
       incr = 0;
-    } 
-    else {
+    } else {
       if (Edifference < 0) {
         cursign = -1;
         if (cursign != previoussign) {
           previoussign = cursign;
           incr = incr/10;
-        }
-        else {
+        } else {
           incr = incr;
         }
-      }
-      else {
+      } else {
         cursign = 1;
         if (cursign != previoussign) {
           previoussign = cursign;
           incr = incr/10;
-        }
-        else {
+        } else {
           incr = incr;
         }
       }
     }
-
     Twguess = Twguess + incr * previoussign;
   }
-  var wetbulb = Twguess - incr * previoussign;  // Thanks BruceZ
+  var wetbulb = Twguess - incr * previoussign;
   return wetbulb;
 }
 function wbgt_calculator(rDtTm, Ta, Tw, RH, Ws, Pa, Cl, Lt, Ln) {
-
-    // First validate all of the inputs. Alert the user if there
-    // is a problem.
-
-    var dateStr = rDtTm.slice(0,10);
-    var n = dateStr.indexOf("/"); // returns -1 if the value does not exist in the string.
-    //if (n == -1) {
-	//alert("Error: Invalid date. Please enter date in MM/DD/YYYY format.");
-	//return;
-    //}
-    
-    var n2 = dateStr.indexOf("/", n+1);
-    //if (n2 == -1) {
-	//alert("Error: Invalid date. Please enter date in MM/DD/YYYY format.");
-	//return;
-    //}
-    
-    var month = parseInt(dateStr.substring(0, n)),
-	day = parseInt(dateStr.substring(n+1, n2)),
-	year = parseInt(dateStr.substring(n2+1));
-
-    //if (isNaN(month) | month < 1 | month > 12) {
-	//alert("Error: Invalid month. Please enter month in 2-digit format (MM). Month must be between 01 and 12.");
-	//return;
-    //}
-
-    // Next check the year.
-    //if (isNaN(year) | year < 1900 | year > 2050) {
-	//alert("Error: Invalid year. Please enter year in 4-digit format (YYYY). This calculator only handles years between 1900 and 2050.");
-	//return;
-    //}
-
-    // Get the number of days in each month, accounting for leap years:
-    var monthDays = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-    /* Leap years are divisible by 4, except for centurial years not divisible
-     * by 400. */
-    if (((year%4) == 0 & (year%100) != 0) | (year%400) == 0) {
-	monthDays[1] = 29;
+  // First validate all of the inputs. Alert the user if there
+  // is a problem.
+  var dateStr = rDtTm.slice(0,10),
+      n = dateStr.indexOf("/"),
+      n2 = dateStr.indexOf("/", n+1),
+      month = parseInt(dateStr.substring(0, n)),
+      day = parseInt(dateStr.substring(n+1, n2)),
+      year = parseInt(dateStr.substring(n2+1));
+  // Get the number of days in each month, accounting for leap years:
+  var monthDays = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+  /* Leap years are divisible by 4, except for centurial years not divisible
+   * by 400. */
+  if (((year%4) == 0 & (year%100) != 0) | (year%400) == 0) {
+    monthDays[1] = 29;
+  }
+  var tmStr = rDtTm.slice(14,19);
+  if (tmStr.length == 4) {
+    tmStr = "0" + tmStr;
+  }
+  var hour = parseInt(tmStr.substring(0, 2)),
+      minute = parseInt(tmStr.substring(3)),
+      gmt = parseInt(rDtTm.slice(19,22));
+  // Get the latitude. The number must be between 0 and 90. Then,
+  // the calculator turns the latitude into a negative number if
+  // the user specifies the Southern hemisphere.
+  var lat = parseFloat(Lt);
+  // Get the longitude. The number must be between 0 and 180. Then,
+  // the calculator turns the longitude into a negative number if
+  // the user specifies the Western hemisphere (default).
+  var lon = parseFloat(Ln);
+  // Validate meteorologic inputs
+  var temp_f = parseFloat(Ta), //degrees F
+      rh = parseFloat(RH), // percent
+      ws = parseFloat(Ws)*1.15078, //knots to mph
+      pres = parseFloat(Pa)*0.0295; //mb to in Hg
+  if (isNaN(temp_f) | temp_f < -40 | temp_f > 130) {
+    alert("Error: Dry bulb temperature must be between -40 and 130 degrees F.");
+    Tnwb = 9999;
+    Tg = 9999;
+    Tdb = 9999;
+    return (9999);
+  }
+  if (isNaN(rh) | rh < 0 | rh > 100) {
+    alert("Error: Relative humidity must be between 0 and 100%.");
+    Tnwb = 9999;
+    Tg = 9999;
+    Tdb = 9999;
+    return (9999);
+  }
+  if (isNaN(ws) | ws < 0 | ws > 100) {
+    alert("Error: Wind speed must be between 0 and 100 mph.");
+    Tnwb = 9999;
+    Tg = 9999;
+    Tdb = 9999;
+    return (9999);
+  }
+  if (isNaN(pres) | pres < 24 | pres > 32) {
+    alert("Error: Barometric pressure must be between 25 and 32 inches Hg");
+    Tnwb = 9999;
+    Tg = 9999;
+    Tdb = 9999;
+    return (9999);
+  }
+  // Check whether wet bulb temperature is known.
+  // TO DO: I believe the wet bulb temperature values supplied by NWS
+  // are *natural* wet bulb temps, but I need to confirm this. If they
+  // are psychrometric wet bulb temps then the calculations below
+  // might need to change slightly.
+  var wbKnown = "N";
+  var wb_user = parseFloat(Tw); //degrees F
+  if (wbKnown == "Y") {
+    // The user wants to provide the wet bulb temperature. Make sure
+    // it is valid. If wbKnown is N, we don't care if this value
+    // is valid or not because we won't use it.
+    if (isNaN(wb_user) | wb_user < -40 | wb_user > 130) {
+      alert("Error: Wet bulb temperature must be between -40 and 130 degrees F");
+      Tnwb = 9999;
+      Tg = 9999;
+      Tdb = 9999;
+      return (9999);
     }
-    
-    //if (isNaN(day) | day < 1 | day > monthDays[month-1]) {
-	//alert("Error: Invalid day. Please enter day in 2-digit format (DD). Day must be between 1 and the number of days in the given month.");
-	//return;
-    //}
-
-    var tmStr = rDtTm.slice(14,19);
-    if (tmStr.length == 4) {
-      tmStr = "0" + tmStr;
+  }
+  // Check whether solar irradiance is known.
+  var solarKnown = "N";
+  // If we made it here, the inputs are OK.
+  // The input wind speed was measured at 10m above ground.
+  // Set the reference height for the wind speed.
+  var zspeed = 10, // reference height (10 m)
+      dT = 0; // temperature differential (10m minus 2m temp)
+  // Convert wind speed to m/s, temperature to degrees Celsius, and
+  // barometric pressure to millibars.
+  var temp_c = ftoc(temp_f), //degrees F to degrees C
+      speed_mps = ws * 0.44704, //mph to m/s
+      pres = pres * 33.8639; //in Hg to mb
+  // Assume an urban environment and a 0-minute meteorological
+  // averaging period.
+  // NOTE: The "urban" variable does not matter if the reference
+  // height is 2 meters, because urban/rural is only
+  // used when the wind speed reference height is not 2 meters.
+  // Also, I believe avg should be 0 minutes here, since we'll be working
+  // with instantaneous observations from NOAA stations.
+  // TO DO: Check whether avg should be other than 0 minutes.
+  var urban = 1, avg = 0;
+  if (solarKnown == "N") {
+    // Get the solar parameters and estimate the clear-sky solar irradiance.
+    var hour_gmt = hour - gmt + ( minute - 0.5 * avg ) / 60;
+    var dday = day + hour_gmt / 24;
+    var solparam = calc_solar_parameters(year, month, dday, lat, lon, 910);
+    var cza = solparam.cza;
+    // Estimate the clear-sky solar irradiance.
+    var csi = clearSkyIrradiance(cza);
+    var cl = Cl;
+    //adjust solar irradiance for cloud layer
+    if (cl == "clear") {
+      csi = csi*(1-(0.75*Math.pow(0.000,3.4))); //0% to 5% cloud coverage
+    } else if (cl == "thin scattered") {
+      csi = csi*(1-(0.75*Math.pow(0.060,3.4))); //6% to 25% cloud coverage
+    } else if (cl == "scattered") {
+      csi = csi*(1-(0.75*Math.pow(0.260,3.4))); //26% to 50% cloud coverage
+    } else if (cl == "broken") {
+      csi = csi*(1-(0.75*Math.pow(0.510,3.4))); //51% to 87% cloud coverage
+    } else if (cl == "overcast" || cl == "obscured") {
+      csi = csi*(1-(0.75*Math.pow(0.880,3.4))); //88% to 100% cloud coverage
     }
-    // The time should be in the format "HH:MM" with a colon as
-    // the third character.
-    var ndd = tmStr.indexOf(":"); // returns -1 if not found
-    //if (ndd != 2 | tmStr.length != 5) {
-	//alert("Error: Invalid time. Please enter time in HH:MM format with a colon separating the hours from the minutes. Do not use AM/PM. The hour should be in 24-hour format (e.g., from 00 to 23) and the hour should be two digits (i.e., write '07:30' instead of '7:30').");
-	//return;
-    //}
-    var hour = parseInt(tmStr.substring(0, 2)),
-	minute = parseInt(tmStr.substring(3));
-    //if (isNaN(hour) | hour < 0 | hour > 23) {
-	//alert("Error: Invalid time. Please enter time in HH:MM format (no AM/PM -- hour should be from 00 to 23).");
-	//return;
-    //}
-
-    //if (isNaN(minute) | minute < 0 | minute > 59) {
-	//alert("Error: Invalid time. Please enter time in HH:MM format (MM should be minutes, from 00 to 59).");
-	//return;
-    //}
-    
-    var gmt = parseInt(rDtTm.slice(19,22));
-    //utcOff = ("00" + -gmt).slice(-2) + "00";
-    //var gmt = -5;
-    //if (isNaN(gmt) | gmt < -10 | gmt > -5) {
-	//alert("Error: Invalid time zone. Must be between -5 and -10.");
-	//return;
-    //}
-
-    // change to dst = "N" after fall back
-    //var dst = "N";
-
-    //if (dst != "Y" & dst != "N") {
-	//alert("Error: Invalid DST answer (must be Y or N): " + dst);
-	//return;
-    //}
-
-    // Now adjust the GMT offset for possible Daylight Savings Time.
-    //if (dst == "Y") {
-	//gmt += 1;
-    //}
-
-    // Get the latitude. The number must be between 0 and 90. Then,
-    // the calculator turns the latitude into a negative number if
-    // the user specifies the Southern hemisphere.
-    var lat = parseFloat(Lt);
-    //var lat = 39.81667;
-    //if (isNaN(lat) | lat < 0 | lat > 90) {
-	//alert("Error: Invalid latitude. Must be between 0 and +90 degrees.");
-	//return;
-    //}
-    //var latNS = "N";
-    //if (latNS != "N" & latNS != "S") {
-	//alert("Error: Invalid latitude hemisphere (must be N or S): " + latNS);
-	//return;
-    //}
-    //if (latNS == "S") {
-	// Southern hemisphere, latitude is negative:
-	//lat = -lat;
-    //}
-
-    // Get the longitude. The number must be between 0 and 180. Then,
-    // the calculator turns the longitude into a negative number if
-    // the user specifies the Western hemisphere (default).
-    var lon = parseFloat(Ln);
-    //var lon = 82.93333;
-    //if (isNaN(lon) | lon > 180 | lon < 0) {
-	//alert("Error: Invalid longitude. Must be between 0 and +180 degrees.");
-	//return;
-    //}
-    //var lonWE = "W";
-    //if (lonWE != "W" & lonWE != "E") {
-	//alert("Error: Invalid longitude hemisphere (must be W or E): " + lonWE);
-	//return;
-    //}
-    //if (lonWE == "W") {
-	// Western hemisphere (default): longitude is negative:
-	//lon = -lon;
-    //}
-
-    // Validate meteorologic inputs
-    var temp_f = parseFloat(Ta),
-	rh = parseFloat(RH),
-	ws = parseFloat(Ws)*1.15078;
-    
-    if (isNaN(temp_f) | temp_f < -40 | temp_f > 130) {
-	alert("Error: Dry bulb temperature must be between -40 and 130 degrees F.");
-        Tnwb = 9999;
-        Tg = 9999;
-        Tdb = 9999;
-	return (9999);
-    }
-
-    if (isNaN(rh) | rh < 0 | rh > 100) {
-	alert("Error: Relative humidity must be between 0 and 100%.");
-        Tnwb = 9999;
-        Tg = 9999;
-        Tdb = 9999;
-	return (9999);
-    }
-
-    if (isNaN(ws) | ws < 0 | ws > 100) {
-        alert("Error: Wind speed must be between 0 and 100 mph.");
-        Tnwb = 9999;
-        Tg = 9999;
-        Tdb = 9999;
-	return (9999);
-    }
-
-    var pres = parseFloat(Pa)*0.0295;
-    if (pres == "") {
-	// Default barometric pressure is 1 atm (29.92 inches of Hg)
-	// if not specified by the user.
-	pres = 29.92;
-    }
-    else {
-	pres = parseFloat(pres);
-	if (isNaN(pres) | pres < 24 | pres > 32) {
-	    alert("Error: Barometric pressure must be between 25 and 32 inches Hg");
-            Tnwb = 9999;
-            Tg = 9999;
-            Tdb = 9999;
-	    return (9999);
-	}
-    }
-
-    // Check whether wet bulb temperature is known.
-    // TO DO: I believe the wet bulb temperature values supplied by NWS
-    // are *natural* wet bulb temps, but I need to confirm this. If they
-    // are psychrometric wet bulb temps then the calculations below
-    // might need to change slightly.
-    var wbKnown = "N";
-    //if (wbKnown != "Y" & wbKnown != "N") {
-	//alert("Error: Invalid answer to whether wet bulb temperature is known (must be Y or N)");
-	//return;
-    //}
-    var wb_user = parseFloat(Tw);
+    //calculate wbgt
+    var wbgtOutput = calc_wbgt(year, month, day, hour, minute, gmt, avg,
+        lat, lon, csi, cl, pres, temp_c, rh, speed_mps, zspeed, dT, urban);
+    Tnwb = ctof(wbgtOutput.Tnwb);
+    //Tnwb = wb_user;
+    Tg = ctof(wbgtOutput.Tg);
+    Tdb = temp_f;
+    // Use the WBGT values calculated by the Liljegren function,
+    // unless the user supplied the wet bulb temperature, in which
+    // case we need to calculate the weighted average, using only
+    // the globe temperature from Liljegren.
+    var wbgtSun = wbgtOutput.Twbg; // Celsius
     if (wbKnown == "Y") {
-	// The user wants to provide the wet bulb temperature. Make sure
-	// it is valid. If wbKnown is N, we don't care if this value
-	// is valid or not because we won't use it.
-	if (isNaN(wb_user) | wb_user < -40 | wb_user > 130) {
-	    alert("Error: Wet bulb temperature must be between -40 and 130 degrees F");
-	    Tnwb = 9999;
-            Tg = 9999;
-            Tdb = 9999;
-	    return (9999);
-	}
+      wbgtSun = 0.7*ftoc(wb_user) + 0.2*wbgtOutput.Tg + 0.1*ftoc(temp_f);
     }
-    
-    // Check whether solar irradiance is known.
-    // To get the value of a radio button with cross-browser compatibility,
-    // check each element to see if it is checked.
-    var solarKnown = "N";
-    
-    //if (solarKnown != "Y" & solarKnown != "N") {
-	//alert("Error: Invalid answer to whether solar irradiance is known (must be Y or N)");
-	//return;
-    //}
-
-    var solar = parseFloat("");
-    if (solarKnown == "Y") {
-	// The user wants to provide the solar irradiance. Make sure
-	// it is valid. If solarKnown is N, we don't care if this value
-	// is valid or not because we won't use it.
-	//if (isNaN(solar) | solar < 0 | solar > 1400) {
-	    //alert("Error: Solar irradiance must be between 0 and 1400 W/m^2");
-	    //return;
-	//}
-    }
-    
-    // If we made it here, the inputs are OK.
-
-    // The input wind speed was measured at 10m above ground.
-    // This is the standard anemometer height. Use the power law referenced
-    // on page 865 of Steadman's Assessment of Sultriness Part I (1979)
-    // to reduce the 10-meter wind speed to a 2-meter wind speed.
-    // The power law is v = v_10*(y/10)^0.24, where v_10 is the 10-meter
-    // wind speed and y is the height above the ground.
-    ws = ws*Math.pow(2/10, 0.24);
-
-    // Enforce a minimum wind speed of 2 mph to account for the fact that
-    // outdoor workers are always moving. Changed from 1 mph.
-    ws = Math.max(ws, 2);
-    
-    // Set the reference height for the wind speed.
-    var zspeed = 2, // reference height (2 m)
-	dT = 0; // temperature differential (10m minus 2m temp)
-
-    // Convert wind speed to m/s, temperature to degrees Celsius, and
-    // barometric pressure to millibars.
-    var temp_c = ftoc(temp_f);
-    var speed_mps = ws * 0.44704;
-    pres = pres * 33.8639;
-
-    // Assume an urban environment and a 0-minute meteorological
-    // averaging period.
-    // NOTE: The "urban" variable does not matter if the reference
-    // height is 2 meters, because urban/rural is only
-    // used when the wind speed reference height is not 2 meters.
-    // Also, I believe avg should be 0 minutes here, since we'll be working
-    // with instantaneous observations from NOAA stations.
-    // TO DO: Check whether avg should be other than 0 minutes.
-    var urban = 1, avg = 0;
-
-    if (solarKnown == "N") {
-	// Get the solar parameters and estimate the clear-sky solar irradiance.
-	var hour_gmt = hour - gmt + ( minute - 0.5 * avg ) / 60; 
-	var dday = day + hour_gmt / 24;
-	var solparam = calc_solar_parameters(year, month, dday, lat, lon, 900);
-	var cza = solparam.cza;
-	
-	// Estimate the clear-sky solar irradiance.
-	var csi = clearSkyIrradiance(cza);
-        var cl = Cl;
-	
-	// Call the WBGT function twice. Once for shade (irradiance = 0)
-	// and once for full sun.
-	//var wbgtOutput1 = calc_wbgt(year, month, day, hour, minute, gmt, avg,
-				    //lat, lon, 0, cl, pres, temp_c, rh, speed_mps,
-				    //zspeed, dT, urban); // shade (solar=0)
-	
-	var wbgtOutput2 = calc_wbgt(year, month, day, hour, minute, gmt, avg,
-				    lat, lon, csi, cl, pres, temp_c, rh, speed_mps,
-				    zspeed, dT, urban); // full sun
-
-        Tnwb = ctof(wbgtOutput2.Tnwb);
-	//Tnwb = wb_user;
-        Tg = ctof(wbgtOutput2.Tg);
-        Tdb = temp_f;
-
-	// Use the WBGT values calculated by the Liljegren function,
-	// unless the user supplied the wet bulb temperature, in which
-	// case we need to calculate the weighted average, using only
-	// the globe temperature from Liljegren.
-	var wbgtSun = wbgtOutput2.Twbg; // Celsius
-	//var wbgtShade = wbgtOutput1.Twbg; // Celsius
-	if (wbKnown == "Y") {
-	    wbgtSun = 0.7*ftoc(wb_user) + 0.2*wbgtOutput2.Tg + 0.1*ftoc(temp_f);
-	    //wbgtShade = 0.7*ftoc(wb_user) + 0.2*wbgtOutput1.Tg + 0.1*ftoc(temp_f);
-	}
-    }
-	
-    // Also compute the Heat Index, using an algorithm copied from the
-    // NWS web site (http://www.wpc.ncep.noaa.gov/html/heatindex.shtml)
-    var hi = heat1((1.8*temp_c+32), rh);
-
-    wbgtSun = ctof(wbgtOutput2.Twbg);
-    //wbgtSun = ctof(wbgtSun);
-
-    return(wbgtSun);
+  }
+  // Also compute the Heat Index, using an algorithm copied from the
+  // NWS web site (http://www.wpc.ncep.noaa.gov/html/heatindex.shtml)
+  var hi = heat1(ctof(temp_c), rh);
+  //wbgtSun = ctof(wbgtOutput.Twbg);
+  wbgtSun = ctof(wbgtSun);
+  return(wbgtSun);
 }
 function ftoc(Fahr) {
   var Cels;
@@ -1370,13 +1217,11 @@ function calc_wbgt(year, month, day, hour, minute, gmt, avg, lat, lon,
     // In the original C code the outputs were passed as pointers.
     // Here we return all of them in a single JavaScript object.
     var outputs = new Object();
-
     /* 
      *  convert time to GMT and center in avg period;
      */
     var hour_gmt = hour - gmt + ( minute - 0.5 * avg ) / 60; 
     var dday = day + hour_gmt / 24;
-    
     /*
      *  calculate the cosine of the solar zenith angle and 
      * fraction of solar irradiance
@@ -1384,27 +1229,8 @@ function calc_wbgt(year, month, day, hour, minute, gmt, avg, lat, lon,
      */
     var retVar = calc_solar_parameters(year, month, dday, lat, lon, solar);
     var solar = retVar.solarRet; // adjusted solar irradiance if out of bounds
-    //adjust solar irradiance for cloud layer
-    var cl = cldlyr;
-    if (cl == "clear") {
-      solar = solar*(1-(0.75*Math.pow(0.000,3.4))); //0% to 5% cloud coverage
-    }
-    else if (cl == "thin scattered") {
-      solar = solar*(1-(0.75*Math.pow(0.060,3.4))); //6% to 25% cloud coverage
-    }
-    else if (cl == "scattered") {
-      solar = solar*(1-(0.75*Math.pow(0.260,3.4))); //26% to 50% cloud coverage
-    }
-    else if (cl == "broken") {
-      solar = solar*(1-(0.75*Math.pow(0.510,3.4))); //51% to 87% cloud coverage
-    }
-    else if (cl == "overcast" || cl == "obscured") {
-      solar = solar*(1-(0.75*Math.pow(0.880,3.4))); //88% to 100% cloud coverage
-      //wbgtTime.innerHTML = solar.toFixed(1);
-    }
     var cza = retVar.cza; // cosine of solar zenith angle
     var fdir = retVar.fdir; // fraction of solar irradiance due to direct beam
-
     /* 
      *  estimate the wind speed, if necessary
      */
@@ -1419,13 +1245,11 @@ function calc_wbgt(year, month, day, hour, minute, gmt, avg, lat, lon,
 	outputs.est_speed = est_wind_speed(speed, zspeed, stability_class, urban);
 	var speed = outputs.est_speed;
     }
-    
     /*
      *  unit conversions
      */
     var tk = Tair + 273.15; /* degC to kelvin */
     var rh = 0.01 * relhum; /* relative humidity % to fraction  */
-    
     /*
      *  calculate the globe, natural wet bulb, psychrometric wet bulb, and 
      *  outdoor wet bulb globe temperatures
@@ -1434,7 +1258,6 @@ function calc_wbgt(year, month, day, hour, minute, gmt, avg, lat, lon,
     outputs.Tnwb = Twb(tk, rh, pres, speed, solar, fdir, cza, 1);
     outputs.Tpsy = Twb(tk, rh, pres, speed, solar, fdir, cza, 0);
     outputs.Twbg = 0.1 * Tair + 0.2 * (outputs.Tg) + 0.7 * (outputs.Tnwb); 
-    
     if ( outputs.Tg == -9999 | outputs.Tnwb == -9999 ) {
 	// There is a problem.
 	outputs.Twbg = -9999;
@@ -1443,7 +1266,6 @@ function calc_wbgt(year, month, day, hour, minute, gmt, avg, lat, lon,
     else
 	// Everything seemed to work.
 	outputs.retVal = 0;
-    
     return(outputs);
 }
 /* ============================================================================
@@ -2327,8 +2149,8 @@ function est_wind_speed(speed, zspeed, stability_class, urban) {
     */
 
     // Define constants:
-    var MIN_SPEED = 0.13,
-	REF_HEIGHT = 2.0;
+    var MIN_SPEED = 0.44704, //min wind speed of 1 mph for worker movement
+        REF_HEIGHT = 2.0;
     
     var urban_exp = [ 0.15, 0.15, 0.20, 0.25, 0.30, 0.30 ],
 	rural_exp = [ 0.07, 0.07, 0.10, 0.15, 0.35, 0.55 ],
