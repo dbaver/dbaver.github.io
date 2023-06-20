@@ -352,22 +352,10 @@ var wbgtHead = false,
   armorNo.checked = true;
   wbgtSave.onclick= function() {csvSave();};
   getToken(wbgtLatest);
-  async function getToken(mesoCall) {
-  try {
-    let myPromise = new Promise(function(resolve) {
-      let req = new XMLHttpRequest();
-      req.open('GET', "https://demos.synopticdata.com/data/demotoken");
-      req.onload = function() {
-        resolve(req.responseText);
-      };
-      req.send();
-    });
-    const myText = await myPromise;
-    tkn = "token=" + myText;
-  }
-  catch(err) {
-    getToken(mesoCall);
-  }
+async function getToken(mesoCall) {
+  let x = await fetch("https://demos.synopticdata.com/data/demotoken");
+	dtk = await x.text();
+	tkn = "token=" + dtk;
   mesonet(mesoCall);
 }
 async function mesonet(mesoCall) {
