@@ -427,8 +427,8 @@ function selectAWOS() {
 }
 async function getToken(mesoCall) {
   let x = await fetch("https://demos.synopticdata.com/data/demotoken");
-	dtk = await x.text();
-	tkn = "token=" + dtk;
+  dtk = await x.text();
+  tkn = "token=" + dtk;
   mesonet(mesoCall);
 }
 async function mesonet(mesoCall) {
