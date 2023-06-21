@@ -19,7 +19,7 @@ with open("\\ESOH Data\\mesonet_api_token.txt", "r") as text_file:
 if tkn != tko:
     with open("\\ESOH Data\\mesonet_api_token.txt", "w") as text_file:
         text_file.write(tkn)
-    g = Github("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")
+    g = Github("insert Github API token here")
     r = g.get_user().get_repo("dbaver.github.io")
     f = r.get_contents("./mesonet_api_token.txt")
     r.update_file("./mesonet_api_token.txt","Mesonet API Token Update",tkn,f.sha)
