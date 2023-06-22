@@ -221,7 +221,7 @@ p {
     <input type="range" min="600" max="900" value="750" class="slider" id="wbgtRange" oninput="wbgtValue(this.value)">
   </div>
   <div id="wbgtTimeDiv">
-    <h3 id="wbgtTime">&nbsp</h3>
+    <h3 id="wbgtTime">&nbsp;</h3>
   </div>
 </div>
 
@@ -426,7 +426,8 @@ function selectAWOS() {
   getToken(wbgtLatest);
 }
 async function getToken(mesoCall) {
-  let x = await fetch("https://demos.synopticdata.com/data/demotoken");
+  //let x = await fetch("https://demos.synopticdata.com/data/demotoken");
+  let x = await fetch("mesonet_api_token.txt");
   dtk = await x.text();
   tkn = "token=" + dtk;
   mesonet(mesoCall);

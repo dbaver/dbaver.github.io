@@ -353,7 +353,8 @@ var wbgtHead = false,
   wbgtSave.onclick= function() {csvSave();};
   getToken(wbgtLatest);
 async function getToken(mesoCall) {
-  let x = await fetch("https://demos.synopticdata.com/data/demotoken");
+  //let x = await fetch("https://demos.synopticdata.com/data/demotoken");
+  let x = await fetch("mesonet_api_token.txt");
   dtk = await x.text();
   tkn = "token=" + dtk;
   mesonet(mesoCall);
