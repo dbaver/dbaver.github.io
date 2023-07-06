@@ -1088,7 +1088,6 @@ function wbgt_calculator(rDtTm, Ta, Tw, RH, Ws, Pa, Cl, Lt, Ln) {
     // Estimate the clear-sky solar irradiance.
     var csi = clearSkyIrradiance(cza);
     var cl = Cl;
-    cl = "clear";
     //adjust solar irradiance for cloud layer
     if (cl == "clear") {
       csi = csi*(1-(0.75*Math.pow(0.000,3.4))); //0% to 5% cloud coverage
@@ -2233,6 +2232,7 @@ function est_wind_speed(speed, zspeed, stability_class, urban) {
 	
     var est_speed = speed * Math.pow( REF_HEIGHT/zspeed, exponent );
     est_speed = Math.max( est_speed, MIN_SPEED );
+    est_speed = 0.3;
     return (est_speed);
 }
 /* ============================================================================
