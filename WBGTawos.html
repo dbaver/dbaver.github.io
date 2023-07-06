@@ -2232,7 +2232,6 @@ function est_wind_speed(speed, zspeed, stability_class, urban) {
 	
     var est_speed = speed * Math.pow( REF_HEIGHT/zspeed, exponent );
     est_speed = Math.max( est_speed, MIN_SPEED );
-    est_speed = 0.3;
     return (est_speed);
 }
 /* ============================================================================
