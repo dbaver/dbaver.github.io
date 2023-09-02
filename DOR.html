@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h2>Draft Order Randomizer</h2>
+<h2 id="count">Clicked: 0</h2>
+<input value="Randomize" type="button" onclick="randomize()"></input>
+<p id="demo"></p>
+
+<script>
+var cnt = -2;
+function randomize() {
+  if (cnt == -2) {
+    alert("Dan Steeley gets last pick in every round...");
+    alert("...sexxxxxxy shirts rule!");
+    cnt += 1;
+  } else if (cnt == -1) {
+    alert("Seriously, he's just going to draft all kickers...");
+    alert("...sexxxxxxy shirts still rule!");
+    cnt += 1;
+  } else {
+    var order = "",
+        rnd = 1;
+    for (let r = 0;r < rnd;r++) {
+      order += "<b>Round " + (r+1) + "</b>" + "<br>";
+      var teams = ["Brettsy","Chris","Cindy","Dan","Doug","James","Kerscher","Lindsay","Palmer","Tackett","Turner","Zach"],
+          idx = 0,
+          l = teams.length;
+      for (let i = 0;i < l;i++) {
+        idx = Math.floor(Math.random()*teams.length);
+        order += ("0"+(i+1)).slice(-2) + ". " + teams[idx] + "<br>";
+        teams.splice(idx,1);
+      }
+      order += "<br>";
+    }
+    document.getElementById("demo").innerHTML = order;
+    cnt += 1;
+    document.getElementById("count").innerHTML = "Clicked: " + cnt;
+  }
+}
+</script>
+
+</body>
+</html>
