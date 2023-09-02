@@ -3,13 +3,14 @@
   
 <head>
 <title>Draft Order Randomizer</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
   
 <body>
 <h2>Draft Order Randomizer</h2>
 <h2 id="count">Clicked: 0</h2>
 <input value="Randomize" type="button" onclick="randomize()"></input>
-<p id="demo"></p>
+<p id="draft"></p>
 
 <script>
 var cnt = -2;
@@ -37,9 +38,9 @@ function randomize() {
       }
       order += "<br>";
     }
-    document.getElementById("demo").innerHTML = order;
+    draft.innerHTML = order;
     cnt += 1;
-    document.getElementById("count").innerHTML = "Clicked: " + cnt;
+    count.innerHTML = "Clicked: " + cnt;
   }
 }
 </script>
