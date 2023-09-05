@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+  <head>
+    <title>FitPro+ Export/DOEHRS Import</title>
+  </head>
+  <body>
+    <input onchange="readFile(this)" type="file">
+    <p id="demo"></p>
+    <a id="qnftSave" href="#">Download</a>
+    <script>
+      function readFile(input) {
+        var file = input.files[0]; 
+        var fileReader = new FileReader(); 
+        fileReader.readAsText(file);
+        fileReader.onload = function() {
+          var strTblFPP = fileReader.result;
+          strTblFPP = strTblFPP.replaceAll("False","N");
+          strTblFPP = strTblFPP.replaceAll("True","Y");
+          strTblFPP = strTblFPP.replaceAll("FAIL","N");
+          strTblFPP = strTblFPP.replaceAll("PASS","Y");
+          var arrTblFPP = strTblFPP.split("\n");
+          if (arrTblFPP[arrTblFPP.length - 1] == "") {
+            arrTblFPP = arrTblFPP.slice(1,-1);
+          } else {
+            arrTblFPP = arrTblFPP.slice(1);
+          }
+          var hdrDIH = ["TESTDATE","TESTTIME","DUEDATE","OPERATOR","FIRSTNAME","LASTNAME",
+                          "IDNUMBER","COMPANY","LOCATION","PEOPNOTE","MANUFACTUR","MODEL",
+                          "MASKSTYLE","MASKSIZE","APPROVAL","FFPASSLEV","DESCRIPT","PROTOCOL",
+                          "AMBPURGE","AMBSAMPLE","MASKPURGE","EXERCISE1","MASKSAMP1","EXCLUDE1",
+                          "FITFACT1","PASS1","EXERCISE2","MASKSAMP2","EXCLUDE2","FITFACT2",
+                          "PASS2","EXERCISE3","MASKSAMP3","EXCLUDE3","FITFACT3","PASS3",
+                          "EXERCISE4","MASKSAMP4","EXCLUDE4","FITFACT4","PASS4","EXERCISE5",
+                          "MASKSAMP5","EXCLUDE5","FITFACT5","PASS5","EXERCISE6","MASKSAMP6",
+                          "EXCLUDE6","FITFACT6","PASS6","EXERCISE7","MASKSAMP7","EXCLUDE7",
+                          "FITFACT7","PASS7","EXERCISE8","MASKSAMP8","EXCLUDE8","FITFACT8",
+                          "PASS8","EXERCISE9","MASKSAMP9","EXCLUDE9","FITFACT9","PASS9",
+                          "EXERCISE10","MASKSAMP10","EXCLUDE10","FITFACT10","PASS10","EXERCISE11",
+                          "MASKSAMP11","EXCLUDE11","FITFACT11","PASS11","EXERCISE12","MASKSAMP12",
+                          "EXCLUDE12","FITFACT12","PASS12","PERIOD","AVGAMBIENT","OVERALLFF",
+                          "OVERALLPAS","SERIALNO","CLASS","COMPANION","CUSTOM1LABEL","CUSTOM1DATA",
+                          "CUSTOM2LABEL","CUSTOM2DATA","CUSTOM3LABEL","CUSTOM3DATA","CUSTOM4LABEL",
+                          "CUSTOM4DATA"];
+          var arrTblDIH = [];
+          for (let i = 0; i < arrTblFPP.length; i++) {
+            arrTblFPP[i] = arrTblFPP[i].slice(1,-2).split('","');
+            let rcrd = [];
+            rcrd[0] = arrTblFPP[i][0].slice(0,10) + " 00:00";
+            rcrd[1] = arrTblFPP[i][0].slice(11,16);
+            rcrd[2] = arrTblFPP[i][1].slice(0,16);
+            rcrd[3] = arrTblFPP[i][3];
+            rcrd[4] = arrTblFPP[i][32];
+            rcrd[5] = arrTblFPP[i][31];
+            rcrd[6] = arrTblFPP[i][33];
+            rcrd[7] = arrTblFPP[i][34];
+            rcrd[8] = arrTblFPP[i][35];
+            rcrd[9] = arrTblFPP[i][36];
+            rcrd[10] = arrTblFPP[i][46];
+            rcrd[11] = arrTblFPP[i][47];
+            rcrd[12] = arrTblFPP[i][48];
+            rcrd[13] = arrTblFPP[i][2];
+            rcrd[14] = arrTblFPP[i][49];
+            rcrd[15] = arrTblFPP[i][50];
+            rcrd[16] = arrTblFPP[i][51];
+            rcrd[17] = arrTblFPP[i][54];
+            rcrd[18] = arrTblFPP[i][56];
+            rcrd[19] = arrTblFPP[i][57];
+            rcrd[20] = arrTblFPP[i][58];
+            rcrd[21] = arrTblFPP[i][59];
+            if (rcrd[21] != "") {
+              rcrd[22] = arrTblFPP[i][60];
+              rcrd[23] = arrTblFPP[i][61];
+              rcrd[24] = arrTblFPP[i][7];
+              rcrd[25] = arrTblFPP[i][8];
+            } else {
+              rcrd[22] = "";
+              rcrd[23] = "";
+              rcrd[24] = "";
+              rcrd[25] = "";
+            }
+            rcrd[26] = arrTblFPP[i][62];
+            if (rcrd[26] != "") {
+              rcrd[27] = arrTblFPP[i][63];
+              rcrd[28] = arrTblFPP[i][64];
+              rcrd[29] = arrTblFPP[i][9];
+              rcrd[30] = arrTblFPP[i][10];
+            } else {
+              rcrd[27] = "";
+              rcrd[28] = "";
+              rcrd[29] = "";
+              rcrd[30] = "";
+            }
+            rcrd[31] = arrTblFPP[i][65];
+            if (rcrd[31] != "") {
+              rcrd[32] = arrTblFPP[i][66];
+              rcrd[33] = arrTblFPP[i][67];
+              rcrd[34] = arrTblFPP[i][11];
+              rcrd[35] = arrTblFPP[i][12];
+            } else {
+              rcrd[32] = "";
+              rcrd[33] = "";
+              rcrd[34] = "";
+              rcrd[35] = "";
+            }
+            rcrd[36] = arrTblFPP[i][68];
+            if (rcrd[36] != "") {
+              rcrd[37] = arrTblFPP[i][69];
+              rcrd[38] = arrTblFPP[i][70];
+              rcrd[39] = arrTblFPP[i][13];
+              rcrd[40] = arrTblFPP[i][14];
+            } else {
+              rcrd[37] = "";
+              rcrd[38] = "";
+              rcrd[39] = "";
+              rcrd[40] = "";
+            }
+            rcrd[41] = arrTblFPP[i][71];
+            if (rcrd[41] != "") {
+              rcrd[42] = arrTblFPP[i][72];
+              rcrd[43] = arrTblFPP[i][73];
+              rcrd[44] = arrTblFPP[i][15];
+              rcrd[45] = arrTblFPP[i][16];
+            } else {
+              rcrd[42] = "";
+              rcrd[43] = "";
+              rcrd[44] = "";
+              rcrd[45] = "";
+            }
+            rcrd[46] = arrTblFPP[i][74];
+            if (rcrd[46] != "") {
+              rcrd[47] = arrTblFPP[i][75];
+              rcrd[48] = arrTblFPP[i][76];
+              rcrd[49] = arrTblFPP[i][17];
+              rcrd[50] = arrTblFPP[i][18];
+            } else {
+              rcrd[47] = "";
+              rcrd[48] = "";
+              rcrd[49] = "";
+              rcrd[50] = "";
+            }
+            rcrd[51] = arrTblFPP[i][77];
+            if (rcrd[51] != "") {
+              rcrd[52] = arrTblFPP[i][78];
+              rcrd[53] = arrTblFPP[i][79];
+              rcrd[54] = arrTblFPP[i][19];
+              rcrd[55] = arrTblFPP[i][20];
+            } else {
+              rcrd[52] = "";
+              rcrd[53] = "";
+              rcrd[54] = "";
+              rcrd[55] = "";
+            }
+            rcrd[56] = arrTblFPP[i][80];
+            if (rcrd[56] != "") {
+              rcrd[57] = arrTblFPP[i][81];
+              rcrd[58] = arrTblFPP[i][82];
+              rcrd[59] = arrTblFPP[i][21];
+              rcrd[60] = arrTblFPP[i][22];
+            } else {
+              rcrd[57] = "";
+              rcrd[58] = "";
+              rcrd[59] = "";
+              rcrd[60] = "";
+            }
+            rcrd[61] = arrTblFPP[i][83];
+            if (rcrd[61] != "") {
+              rcrd[62] = arrTblFPP[i][84];
+              rcrd[63] = arrTblFPP[i][85];
+              rcrd[64] = arrTblFPP[i][23];
+              rcrd[65] = arrTblFPP[i][24];
+            } else {
+              rcrd[62] = "";
+              rcrd[63] = "";
+              rcrd[64] = "";
+              rcrd[65] = "";
+            }
+            rcrd[66] = arrTblFPP[i][86];
+            if (rcrd[66] != "") {
+              rcrd[67] = arrTblFPP[i][87];
+              rcrd[68] = arrTblFPP[i][88];
+              rcrd[69] = arrTblFPP[i][25];
+              rcrd[70] = arrTblFPP[i][26];
+            } else {
+              rcrd[67] = "";
+              rcrd[68] = "";
+              rcrd[69] = "";
+              rcrd[70] = "";
+            }
+            rcrd[71] = arrTblFPP[i][89];
+            if (rcrd[71] != "") {
+              rcrd[72] = arrTblFPP[i][90];
+              rcrd[73] = arrTblFPP[i][91];
+              rcrd[74] = arrTblFPP[i][27];
+              rcrd[75] = arrTblFPP[i][28];
+            } else {
+              rcrd[72] = "";
+              rcrd[73] = "";
+              rcrd[74] = "";
+              rcrd[75] = "";
+            }
+            rcrd[76] = arrTblFPP[i][92];
+            if (rcrd[76] != "") {
+              rcrd[77] = arrTblFPP[i][93];
+              rcrd[78] = arrTblFPP[i][94];
+              rcrd[79] = arrTblFPP[i][29];
+              rcrd[80] = arrTblFPP[i][30];
+            } else {
+              rcrd[77] = "";
+              rcrd[78] = "";
+              rcrd[79] = "";
+              rcrd[80] = "";
+            }
+            rcrd[81] = arrTblFPP[i][95];
+            rcrd[82] = "0";
+            rcrd[83] = arrTblFPP[i][5];
+            rcrd[84] = arrTblFPP[i][4];
+            rcrd[85] = arrTblFPP[i][6];
+            rcrd[86] = arrTblFPP[i][52];
+            rcrd[87] = arrTblFPP[i][52];
+            rcrd[88] = arrTblFPP[i][37];
+            rcrd[89] = arrTblFPP[i][38];
+            rcrd[90] = arrTblFPP[i][39];
+            rcrd[91] = arrTblFPP[i][40];
+            rcrd[92] = arrTblFPP[i][41];
+            rcrd[93] = arrTblFPP[i][42];
+            rcrd[94] = arrTblFPP[i][43];
+            rcrd[95] = arrTblFPP[i][44];
+            arrTblDIH.push(rcrd);
+          }
+          demo.innerHTML = "Loaded " + arrTblDIH.length + " records. Click below to download DOEHRS RPP import file.";
+          arrTblDIH.splice(0,0,hdrDIH);
+          arrTblDIH = arrTblDIH.join("\n");
+          var csvFile = new Blob([arrTblDIH],{type:'text/csv'}),
+              a = document.getElementById("qnftSave"),
+              ds = new Date(),
+              ySv = ("00" + ds.getFullYear()).slice(-4),
+              mSv = ("00" + (ds.getMonth() + 1)).slice(-2),
+              dSv = ("00" + ds.getDate()).slice(-2),
+              hSv = ("00" + ds.getHours()).slice(-2),
+              nSv = ("00" + ds.getMinutes()).slice(-2),
+              fileName = "FitPro Export to DOEHRS " + ySv + mSv + dSv + "-" + hSv + nSv + ".csv";
+          a.href = URL.createObjectURL(csvFile);
+          a.download = fileName;
+        }; 
+        fileReader.onerror = function() {
+          demo.innerHTML = fileReader.error;
+        }; 
+      }
+    </script>
+  </body>
+</html>
