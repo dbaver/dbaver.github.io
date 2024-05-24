@@ -192,7 +192,7 @@ async function nwsapi(nwsCall) {
       if (req.status == 200) {
         resolve(JSON.parse(req.responseText));
       } else {
-        resolve("File not Found");
+        resolve("Server Error");
       }
     };
     req.send();
@@ -201,89 +201,101 @@ async function nwsapi(nwsCall) {
   nwsCall(myObj);
 }
 function stations(myObj) {
-  lat = myObj["geometry"]["coordinates"][1];
-  lon = myObj["geometry"]["coordinates"][0];
-  prs = myObj["properties"]["barometricPressure"]["value"]
-  nwsapi(points);
+  if ((typeof myObj) == "string") {
+    alert("NWS API stations call resulted in a server error. Refresh page.");
+  } else {
+    lat = myObj["geometry"]["coordinates"][1];
+    lon = myObj["geometry"]["coordinates"][0];
+    prs = myObj["properties"]["barometricPressure"]["value"]
+    nwsapi(points);
+  }
 }
 function points(myObj) {
-  hfu = myObj["properties"]["forecastHourly"];
-  nwsapi(forecast);
+  if ((typeof myObj) == "string") {
+    alert("NWS API points call resulted in a server error. Refresh page.");
+  } else {
+    hfu = myObj["properties"]["forecastHourly"];
+    nwsapi(forecast);
+  }
 }
 function forecast(myObj) {
-  var tdy = myObj["properties"]["periods"][0]["startTime"].slice(0,10),
-      fcs = myObj["properties"]["periods"].filter(function(currentValue, index, arr) {
-            return currentValue["startTime"].slice(0,10) == tdy;
-            });
-  lblWbgtDate.innerHTML = awos + " Forecast: " + tdy;
-  for (var i=0; i < fcs.length; i++) {
-    var yy = parseInt(fcs[i]["startTime"].slice(0,4)),
-        mm = parseInt(fcs[i]["startTime"].slice(5,7)),
-        dd = parseInt(fcs[i]["startTime"].slice(8,10)),
-        hr = parseInt(fcs[i]["startTime"].slice(11,13)),
-        mn = parseInt(fcs[i]["startTime"].slice(14,16)),
-        gmt = parseInt(fcs[i]["startTime"].slice(19,22)),
-        cza=0;
-    for (var nn = 0; nn < 60; nn++){
-      var hr_gmt = hr - gmt + nn/60,
-          dday = dd + hr_gmt/24,
-          solparam = calc_solar_parameters(yy, mm, dday, lat, lon, 910);
-      if (solparam.cza > cza) {
-        mn = nn;
-        cza = solparam.cza;
+  if ((typeof myObj) == "string") {
+    alert("NWS API forecast call resulted in a server error. Refresh page.");
+  } else {
+    var tdy = myObj["properties"]["periods"][0]["startTime"].slice(0,10),
+        fcs = myObj["properties"]["periods"].filter(function(currentValue, index, arr) {
+              return currentValue["startTime"].slice(0,10) == tdy;
+              });
+    lblWbgtDate.innerHTML = awos + " Forecast: " + tdy;
+    for (var i=0; i < fcs.length; i++) {
+      var yy = parseInt(fcs[i]["startTime"].slice(0,4)),
+          mm = parseInt(fcs[i]["startTime"].slice(5,7)),
+          dd = parseInt(fcs[i]["startTime"].slice(8,10)),
+          hr = parseInt(fcs[i]["startTime"].slice(11,13)),
+          mn = parseInt(fcs[i]["startTime"].slice(14,16)),
+          gmt = parseInt(fcs[i]["startTime"].slice(19,22)),
+          cza=0;
+      for (var nn = 0; nn < 60; nn++){
+        var hr_gmt = hr - gmt + nn/60,
+            dday = dd + hr_gmt/24,
+            solparam = calc_solar_parameters(yy, mm, dday, lat, lon, 910);
+        if (solparam.cza > cza) {
+          mn = nn;
+          cza = solparam.cza;
+        }
       }
-    }
-    var Lt = lat.toString(),
-        Ln = lon.toString(),
-        rDtTm = ("00" + mm).slice(-2) + "/" + ("00" + dd).slice(-2) + "/" + ("0000" + yy).slice(-4) + " at " + ("00" + hr).slice(-2) + ":" + ("00" + mn).slice(-2) + fcs[i]["startTime"].slice(19,22) + "00",
-        rTm = ("00" + hr).slice(-2) + ":00 - " + ("00" + hr).slice(-2) + ":59",
-        Ta = fcs[i]["temperature"].toString(), // degrees F
-        RH = fcs[i]["relativeHumidity"]["value"].toString(), //percent
-        Ws = fcs[i]["windSpeed"].slice(0,fcs[i]["windSpeed"].length-4), //mph
-        Pa = (prs*0.01*0.02953).toFixed(2), //pa to mb to in Hg
-        wbgtS = wbgt_calculator(rDtTm, Ta, RH, Ws, Pa, Lt, Ln),
-        table = wbgtTable,
-        r = table.rows.length,
-        row = table.insertRow(r-1),
-        cell = {},
-        rdngs = [rTm,Ta,RH,Ws,wbgtS.toFixed(1)],
-        bc,fc,dv;
-    row.style.backgroundColor = "lightgray";
-    for (var j = 0; j < rdngs.length; j++) {
-      if (j == 4) {
-        if (wbgtS<77.95) {
+      var Lt = lat.toString(),
+          Ln = lon.toString(),
+          rDtTm = ("00" + mm).slice(-2) + "/" + ("00" + dd).slice(-2) + "/" + ("0000" + yy).slice(-4) + " at " + ("00" + hr).slice(-2) + ":" + ("00" + mn).slice(-2) + fcs[i]["startTime"].slice(19,22) + "00",
+          rTm = ("00" + hr).slice(-2) + ":00 - " + ("00" + hr).slice(-2) + ":59",
+          Ta = fcs[i]["temperature"].toString(), // degrees F
+          RH = fcs[i]["relativeHumidity"]["value"].toString(), //percent
+          Ws = fcs[i]["windSpeed"].slice(0,fcs[i]["windSpeed"].length-4), //mph
+          Pa = (prs*0.01*0.02953).toFixed(2), //pa to mb to in Hg
+          wbgtS = wbgt_calculator(rDtTm, Ta, RH, Ws, Pa, Lt, Ln),
+          table = wbgtTable,
+          r = table.rows.length,
+          row = table.insertRow(r-1),
+          cell = {},
+          rdngs = [rTm,Ta,RH,Ws,wbgtS.toFixed(1)],
+          bc,fc,dv;
+      row.style.backgroundColor = "lightgray";
+      for (var j = 0; j < rdngs.length; j++) {
+        if (j == 4) {
+          if (wbgtS<77.95) {
+            bc = "lightgray";
+            fc = "black";
+          } else if(wbgtS>=77.95 && wbgtS<81.95) {
+            bc = "white";
+            fc = "black";
+          } else if(wbgtS>=81.95 && wbgtS<84.95) {
+            bc = "green";
+            fc = "black";
+          } else if (wbgtS>=84.95 && wbgtS<87.95) {
+            bc = "yellow";
+            fc = "black";
+          } else if (wbgtS>=87.95 && wbgtS<89.95) {
+            bc = "red";
+            fc = "black";
+          } else if (wbgtS>=89.95) {
+            bc = "black";
+            fc = "white";
+          }
+        } else {
           bc = "lightgray";
           fc = "black";
-        } else if(wbgtS>=77.95 && wbgtS<81.95) {
-          bc = "white";
-          fc = "black";
-        } else if(wbgtS>=81.95 && wbgtS<84.95) {
-          bc = "green";
-          fc = "black";
-        } else if (wbgtS>=84.95 && wbgtS<87.95) {
-          bc = "yellow";
-          fc = "black";
-        } else if (wbgtS>=87.95 && wbgtS<89.95) {
-          bc = "red";
-          fc = "black";
-        } else if (wbgtS>=89.95) {
-          bc = "black";
-          fc = "white";
         }
-      } else {
-        bc = "lightgray";
-        fc = "black";
+        cell = row.insertCell(j);
+        dv = document.createElement("DIV");
+        dv.style.margin = "0% 15%";
+        dv.style.backgroundColor = bc;
+        dv.style.color = fc;
+        dv.innerHTML = rdngs[j];
+        cell.appendChild(dv);
       }
-      cell = row.insertCell(j);
-      dv = document.createElement("DIV");
-      dv.style.margin = "0% 15%";
-      dv.style.backgroundColor = bc;
-      dv.style.color = fc;
-      dv.innerHTML = rdngs[j];
-      cell.appendChild(dv);
     }
+    wbgtSave.onclick= function() {csvSave();};
   }
-  wbgtSave.onclick= function() {csvSave();};
 }
 function csvSave() {
   var rdgDte = lblWbgtDate.innerHTML.slice(-10);
