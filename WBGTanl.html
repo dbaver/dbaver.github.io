@@ -1088,6 +1088,7 @@ function wbgt_calculator(rDtTm, Ta, Tw, RH, Ws, Pa, Cl, Lt, Ln) {
     // Estimate the clear-sky solar irradiance.
     var csi = clearSkyIrradiance(cza);
     var cl = Cl;
+    cl = "clear";
     //adjust solar irradiance for cloud layer
     if (cl == "clear") {
       csi = csi*(1-(0.75*Math.pow(0.000,3.4))); //0% to 5% cloud coverage
