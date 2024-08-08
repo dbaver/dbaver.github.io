@@ -1530,7 +1530,7 @@ function est_wind_speed(speed, zspeed, stability_class, urban) {
     */
 
     // Define constants:
-    var MIN_SPEED = 0.3, //wind speed set to QUESTemp 46 default setting
+    var MIN_SPEED = 1*1609.3/60/60, //wind speed set to QUESTemp 46 default setting
         REF_HEIGHT = 2.0;
     
     var urban_exp = [ 0.15, 0.15, 0.20, 0.25, 0.30, 0.30 ],
