@@ -557,7 +557,7 @@ function wbgtLatest(myObj) {
 function wbgtSeries(myObj) {
   if (myObj.SUMMARY["NUMBER_OF_OBJECTS"] == 0) {
     alert("Mesonet timeseries call returned no results. Change date or refresh page.");
-  } else if (Object.getOwnPropertyNames(myObj.STATION[0]["OBSERVATIONS"]).length != 7) {
+  } else if (Object.getOwnPropertyNames(myObj.STATION[0]["OBSERVATIONS"]).length != 6) {
     alert("Mesonet timeseries call returned insufficient data. Change date or refresh page.");
   } else {
     var stID = myObj.STATION[0]["STID"],
