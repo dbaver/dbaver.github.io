@@ -446,7 +446,7 @@ function selectAWOS() {
 }
 async function getToken(mesoCall) {
   //let x = await fetch("https://demos.synopticdata.com/data/demotoken");
-  let x = await fetch("mesonet_api_token_dbaver.txt");
+  let x = await fetch("https://dbaver.github.io/mesonet_api_token_dbaver.txt");
   dtk = await x.text();
   tkn = "token=" + dtk;
   mesonet(mesoCall);
