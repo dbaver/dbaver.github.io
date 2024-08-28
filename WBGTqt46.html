@@ -2229,7 +2229,8 @@ function est_wind_speed(speed, zspeed, stability_class, urban) {
     */
 
     // Define constants:
-    var MIN_SPEED = 1*1609.3/60/60, //min wind speed of 1 mph
+    //var MIN_SPEED = 1*1609.3/60/60, //min wind speed of 1 mph
+    var MIN_SPEED = 0.3,
         REF_HEIGHT = 2.0;
     
     var urban_exp = [ 0.15, 0.15, 0.20, 0.25, 0.30, 0.30 ],
