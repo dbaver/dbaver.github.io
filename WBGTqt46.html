@@ -458,7 +458,7 @@ async function mesonet(mesoCall) {
     var url = "https://api.synopticdata.com/v2/stations/",
         dta = "latest?",
         sid = "&stid=" + awos,
-        vrs = "&vars=metar,air_temp,relative_humidity,pressure,cloud_layer_1",
+        vrs = "&vars=metar,air_temp,relative_humidity,wind_speed,pressure,cloud_layer_1",
         uts = "&units=english",
         otz = "&obtimezone=local",
         tft = "&timeformat=%m/%d/%Y%20at%20%H:%M%z";
@@ -484,7 +484,7 @@ async function mesonet(mesoCall) {
         hrE = ("00" + de.getUTCHours()).slice(-2),
         mnE = ("00" + de.getUTCMinutes()).slice(-2),
         en = "&end=" + yyE + mmE + ddE + hrE + mnE,
-        vrs = "&vars=metar,air_temp,relative_humidity,pressure,cloud_layer_1",
+        vrs = "&vars=metar,air_temp,relative_humidity,wind_speed,pressure,cloud_layer_1",
         uts = "&units=english",
         otz = "&obtimezone=local",
         tft = "&timeformat=%m/%d/%Y%20at%20%H:%M%z";
@@ -535,9 +535,10 @@ function wbgtLatest(myObj) {
         dMt = myObj.STATION[0]["OBSERVATIONS"]["metar_value_1"]["date_time"],
         dTa = myObj.STATION[0]["OBSERVATIONS"]["air_temp_value_1"]["date_time"],
         dRH = myObj.STATION[0]["OBSERVATIONS"]["relative_humidity_value_1"]["date_time"],
+        dWs = myObj.STATION[0]["OBSERVATIONS"]["wind_speed_value_1"]["date_time"],
         dPa = myObj.STATION[0]["OBSERVATIONS"]["pressure_value_1d"]["date_time"],
         dCl = myObj.STATION[0]["OBSERVATIONS"]["cloud_layer_1_value_1d"]["date_time"],
-        obs = [dMt, dTa, dRH, dPa, dCl],
+        obs = [dMt, dTa, dRH, dWs, dPa, dCl],
         lstObs = 0;
     obs.forEach( function(currentValue, index, arr) {
       var yy = parseInt(currentValue.slice(6,10)),
@@ -568,7 +569,7 @@ function wbgtLatest(myObj) {
 function wbgtSeries(myObj) {
   if (myObj.SUMMARY["NUMBER_OF_OBJECTS"] == 0) {
     alert("Mesonet timeseries call returned no results. Change date or refresh page.");
-  } else if (Object.getOwnPropertyNames(myObj.STATION[0]["OBSERVATIONS"]).length != 6) {
+  } else if (Object.getOwnPropertyNames(myObj.STATION[0]["OBSERVATIONS"]).length != 7) {
     alert("Mesonet timeseries call returned insufficient data. Change date or refresh page.");
   } else {
     var stID = myObj.STATION[0]["STID"],
@@ -577,18 +578,20 @@ function wbgtSeries(myObj) {
         rDtTm = myObj.STATION[0]["OBSERVATIONS"]["date_time"],
         Ta = myObj.STATION[0]["OBSERVATIONS"]["air_temp_set_1"],
         RH = myObj.STATION[0]["OBSERVATIONS"]["relative_humidity_set_1"],
+        Ws = myObj.STATION[0]["OBSERVATIONS"]["wind_speed_set_1"],
         Pa = myObj.STATION[0]["OBSERVATIONS"]["pressure_set_1d"],
         Cl = myObj.STATION[0]["OBSERVATIONS"]["cloud_layer_1_set_1d"],
         badObs = false,
         obs, cl, Tw, wbgtS, i,
         l = rDtTm.length;
     for (i = 0; i < l; i++) {
-      obs = [rDtTm[l-1-i], Ta[l-1-i], RH[l-1-i], Pa[l-1-i], Cl[l-1-i]];
+      obs = [rDtTm[l-1-i], Ta[l-1-i], RH[l-1-i], Ws[l-1-i], Pa[l-1-i], Cl[l-1-i]];
       obs.forEach(function(currentValue, index, arr) {
         if (currentValue == null) {
           rDtTm[l-1-i] = "---";
           Ta[l-1-i] = "---";
           RH[l-1-i] = "---";
+          Ws[l-1-i] = "---";
           Pa[l-1-i] = "---";
           Cl[l-1-i] = {"sky_condition":"---"};
           badObs = true;
@@ -600,7 +603,7 @@ function wbgtSeries(myObj) {
       }
       Tw =  decideConvert(Ta[l-1-i],RH[l-1-i],Pa[l-1-i]);
       cl = Cl[l-1-i]["sky_condition"];
-      wbgtS = wbgt_calculator(rDtTm[l-1-i],Ta[l-1-i],Tw,RH[l-1-i],"0.0",Pa[l-1-i],cl,Lt,Ln);
+      wbgtS = wbgt_calculator(rDtTm[l-1-i],Ta[l-1-i],Tw,RH[l-1-i],Ws[l-1-i],Pa[l-1-i],cl,Lt,Ln);
       if (!wbgtHead) {
         wbgt = wbgtS;
         wbgtRead.innerHTML = "WBGT<sub>o</sub>: " + wbgt.toFixed(1) + " &#8457;";
@@ -1335,8 +1338,8 @@ function calc_wbgt(year, month, day, hour, minute, gmt, avg, lat, lon,
      *  outdoor wet bulb globe temperatures
      */
     outputs.Tg   = Tglobe(tk, rh, pres, speed, solar, fdir, cza);
-    outputs.Tnwb = Twb(tk, rh, pres, speed, solar, fdir, cza, 1);
-    outputs.Tpsy = Twb(tk, rh, pres, speed, solar, fdir, cza, 0);
+    outputs.Tnwb = Twb(tk, rh, pres, 0.3, solar, fdir, cza, 1);
+    outputs.Tpsy = Twb(tk, rh, pres, 0.3, solar, fdir, cza, 0);
     outputs.Twbg = 0.1 * Tair + 0.2 * (outputs.Tg) + 0.7 * (outputs.Tnwb); 
     if ( outputs.Tg == -9999 | outputs.Tnwb == -9999 ) {
 	// There is a problem.
@@ -2229,8 +2232,7 @@ function est_wind_speed(speed, zspeed, stability_class, urban) {
     */
 
     // Define constants:
-    //var MIN_SPEED = 1*1609.3/60/60, //min wind speed of 1 mph
-    var MIN_SPEED = 0.3,
+    var MIN_SPEED = 1*1609.34/60/60, //min wind speed of 1 mph for worker movement
         REF_HEIGHT = 2.0;
     
     var urban_exp = [ 0.15, 0.15, 0.20, 0.25, 0.30, 0.30 ],
