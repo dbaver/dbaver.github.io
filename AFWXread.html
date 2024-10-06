@@ -7,7 +7,7 @@
     <p id="demo"></p>
     <a id="qnftSave" href="#">Download</a>
     <script>
-      var Mo = "",
+      var Ym = "",
           Dt = [],
           Cl = [],
           Ws = [],
@@ -28,31 +28,34 @@
           for (let i = 0; i < arrTblWx.length; i++) {
             arrTblWx[i] = arrTblWx[i].split(",");
             switch (arrTblWx[i][0]) {
-              case "Date":
-                Mo = arrTblWx[i][1];
+              case "YYYYMM":
+                Ym = arrTblWx[i][1];
+                arrTblFx.push(arrTblWx[i]);
+                break;
               case "Time":
                 Dt = arrTblWx[i].slice(1);
+                arrTblFx.push(arrTblWx[i]);
                 break;
               case "Clouds":
                 Cl = arrTblWx[i].slice(1);
+                arrTblFx.push(arrTblWx[i]);
                 break;
               case "Wind Spd(kt)":
                 Ws = arrTblWx[i].slice(1);
+                arrTblFx.push(arrTblWx[i]);
                 break;
               case "Temp(C)":
                 Ta = arrTblWx[i].slice(1);
+                arrTblFx.push(arrTblWx[i]);
                 break;
               case "RH(%)":
                 Rh = arrTblWx[i].slice(1);
+                arrTblFx.push(arrTblWx[i]);
                 break;
               case "ALSTG":
                 Pa = arrTblWx[i].slice(1);
-                break
-            }
-            if (arrTblWx[i][0].length == 0) {
-              continue;
-            } else {
-              arrTblFx.push(arrTblWx[i]);
+                arrTblFx.push(arrTblWx[i]);
+                break;
             }
           }
           demo.innerHTML = "Loaded " + arrTblFx.length + " rows.";
