@@ -42,7 +42,7 @@
                           "CUSTOM4DATA"];
           var arrTblDIH = [];
           for (let i = 0; i < arrTblFPP.length; i++) {
-            arrTblFPP[i] = arrTblFPP[i].slice(1,-2).split('","');
+            arrTblFPP[i] = arrTblFPP[i].slice(arrTblFPP[i].indexOf('"')+1,arrTblFPP[i].lastIndexOf('"')).split('","');
             let rcrd = [];
             rcrd[0] = arrTblFPP[i][0].slice(0,10) + " 00:00";
             rcrd[1] = arrTblFPP[i][0].slice(11,16);
