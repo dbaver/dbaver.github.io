@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+  <head>
+    <title>FitPro+ Export/DOEHRS Import</title>
+  </head>
+  <body>
+    <input onchange="readFile(this)" type="file">
+    <p id="demo"></p>
+    <a id="qnftSave" href="#">Download</a>
+    <script>
+      var Mo = "",
+          Dt = [],
+          Cl = [],
+          Ws = [],
+          Ta = [],
+          Rh = [],
+          Pa = [];
+      function readFile(input) {
+        var file = input.files[0]; 
+        var fileReader = new FileReader(); 
+        fileReader.readAsText(file);
+        fileReader.onload = function() {
+          var strTblWx = fileReader.result;
+          var arrTblWx = strTblWx.split("\n");
+          if (arrTblWx[arrTblWx.length - 1] == "") {
+            arrTblWx = arrTblWx.slice(0,-1);
+          }
+          var arrTblFx = [];
+          for (let i = 0; i < arrTblWx.length; i++) {
+            arrTblWx[i] = arrTblWx[i].split(",");
+            switch (arrTblWx[i][0]) {
+              case "Date":
+                Mo = arrTblWx[i][1];
+              case "Time":
+                Dt = arrTblWx[i].slice(1);
+                break;
+              case "Clouds":
+                Cl = arrTblWx[i].slice(1);
+                break;
+              case "Wind Spd(kt)":
+                Ws = arrTblWx[i].slice(1);
+                break;
+              case "Temp(C)":
+                Ta = arrTblWx[i].slice(1);
+                break;
+              case "RH(%)":
+                Rh = arrTblWx[i].slice(1);
+                break;
+              case "ALSTG":
+                Pa = arrTblWx[i].slice(1);
+                break
+            }
+            if (arrTblWx[i][0].length == 0) {
+              continue;
+            } else {
+              arrTblFx.push(arrTblWx[i]);
+            }
+          }
+          demo.innerHTML = "Loaded " + arrTblFx.length + " rows.";
+          arrTblFx = arrTblFx.join("\n");
+          var csvFile = new Blob([arrTblFx],{type:'text/csv'}),
+              a = document.getElementById("qnftSave"),
+              ds = new Date(),
+              ySv = ("00" + ds.getFullYear()).slice(-4),
+              mSv = ("00" + (ds.getMonth() + 1)).slice(-2),
+              dSv = ("00" + ds.getDate()).slice(-2),
+              hSv = ("00" + ds.getHours()).slice(-2),
+              nSv = ("00" + ds.getMinutes()).slice(-2),
+              fileName = "CSMB Wx Fx " + ySv + mSv + dSv + "-" + hSv + nSv + ".csv";
+          a.href = URL.createObjectURL(csvFile);
+          a.download = fileName;
+        }; 
+        fileReader.onerror = function() {
+          demo.innerHTML = fileReader.error;
+        }; 
+      }
+    </script>
+  </body>
+</html>
