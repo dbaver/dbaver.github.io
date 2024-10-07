@@ -95,7 +95,7 @@ td {
     </th>
   </tr>
   <tr style="background-color:gray">
-    <th style="width:20%">Time</th>
+    <th style="width:20%">Time (Z)</th>
     <th style="width:20%">T<sub>db</sub> (&#8457;)</th>
     <th style="width:20%">RH (%)</th>
     <th style="width:20%">WS (mph)</th>
@@ -112,7 +112,8 @@ td {
 </div>
 
 <script>
-var Tnwb = 0,
+var sid = "",
+    Tnwb = 0,
     Tg = 0,
     Tdb = 0;
 async function readAFWX(input) {
@@ -191,9 +192,9 @@ function forecast(myObj) {
       fcs = myObj.filter(function(currentValue, index, arr) {
             return currentValue["startTime"].slice(0,8) == tdy;
             }),
-      sid = fcs[0]["site"],
       lat = fcs[0]["latitude"],
       lon = fcs[0]["longitude"];
+  sid = fcs[0]["site"];
   tdy = tdy.slice(0,4) + "-" + tdy.slice(4,6) + "-" + tdy.slice(6,8);
   lblWbgtDate.innerHTML = sid + " Forecast: " + tdy;
   for (var i=0; i < fcs.length; i++) {
@@ -272,7 +273,7 @@ function csvSave() {
       ySv = ("00" + ds.getFullYear()).slice(-4),
       mSv = ("00" + (ds.getMonth() + 1)).slice(-2),
       dSv = ("00" + ds.getDate()).slice(-2),
-      fileName = awos + "_WHF_" + ySv + mSv + dSv + ".csv",
+      fileName = sid + "_WHF_" + ySv + mSv + dSv + ".csv",
       CSV = [],
       rows = document.getElementById("wbgtTable").rows,
       iTr;
