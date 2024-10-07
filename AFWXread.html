@@ -1,22 +1,16 @@
 <!DOCTYPE html>
   <head>
-    <title>FitPro+ Export/DOEHRS Import</title>
+    <title>AF WX Filereader</title>
   </head>
   <body>
-    <input onchange="readFile(this)" type="file">
+    <input onchange="readAFWX(this)" type="file">
     <p id="demo"></p>
-    <a id="qnftSave" href="#">Download</a>
-    <script>
-      var Ym = "",
-          Dt = [],
-          Cl = [],
-          Ws = [],
-          Ta = [],
-          Rh = [],
-          Pa = [];
-      function readFile(input) {
-        var file = input.files[0]; 
-        var fileReader = new FileReader(); 
+  <script>
+    async function readAFWX(input) {
+      var file = input.files[0];
+      let myPromise = new Promise(function(resolve) {
+        var outputs = new Object();
+        let fileReader = new FileReader(); 
         fileReader.readAsText(file);
         fileReader.onload = function() {
           var strTblWx = fileReader.result;
@@ -24,58 +18,66 @@
           if (arrTblWx[arrTblWx.length - 1] == "") {
             arrTblWx = arrTblWx.slice(0,-1);
           }
-          var arrTblFx = [];
           for (let i = 0; i < arrTblWx.length; i++) {
             arrTblWx[i] = arrTblWx[i].split(",");
             switch (arrTblWx[i][0]) {
+              case "Site":
+                outputs.St = arrTblWx[i][1];
+                break;
+              case "Lat":
+                outputs.Lt = arrTblWx[i][1];
+                break;
+              case "Lon":
+                outputs.Ln = arrTblWx[i][1];
+                break;
+              case "Elev":
+                outputs.El = arrTblWx[i][1];
+                break;
               case "YYYYMM":
-                Ym = arrTblWx[i][1];
-                arrTblFx.push(arrTblWx[i]);
+                outputs.Ym = arrTblWx[i][1];
                 break;
               case "Time":
-                Dt = arrTblWx[i].slice(1);
-                arrTblFx.push(arrTblWx[i]);
+                outputs.Dt = arrTblWx[i].slice(1);
                 break;
               case "Clouds":
-                Cl = arrTblWx[i].slice(1);
-                arrTblFx.push(arrTblWx[i]);
+                outputs.Cl = arrTblWx[i].slice(1);
                 break;
               case "Wind Spd(kt)":
-                Ws = arrTblWx[i].slice(1);
-                arrTblFx.push(arrTblWx[i]);
+                outputs.Ws = arrTblWx[i].slice(1);
                 break;
               case "Temp(C)":
-                Ta = arrTblWx[i].slice(1);
-                arrTblFx.push(arrTblWx[i]);
+                outputs.Ta = arrTblWx[i].slice(1);
                 break;
               case "RH(%)":
-                Rh = arrTblWx[i].slice(1);
-                arrTblFx.push(arrTblWx[i]);
+                outputs.Rh = arrTblWx[i].slice(1);
                 break;
               case "ALSTG":
-                Pa = arrTblWx[i].slice(1);
-                arrTblFx.push(arrTblWx[i]);
+                outputs.Pa = arrTblWx[i].slice(1);
                 break;
             }
           }
-          demo.innerHTML = "Loaded " + arrTblFx.length + " rows.";
-          arrTblFx = arrTblFx.join("\n");
-          var csvFile = new Blob([arrTblFx],{type:'text/csv'}),
-              a = document.getElementById("qnftSave"),
-              ds = new Date(),
-              ySv = ("00" + ds.getFullYear()).slice(-4),
-              mSv = ("00" + (ds.getMonth() + 1)).slice(-2),
-              dSv = ("00" + ds.getDate()).slice(-2),
-              hSv = ("00" + ds.getHours()).slice(-2),
-              nSv = ("00" + ds.getMinutes()).slice(-2),
-              fileName = "CSMB Wx Fx " + ySv + mSv + dSv + "-" + hSv + nSv + ".csv";
-          a.href = URL.createObjectURL(csvFile);
-          a.download = fileName;
-        }; 
-        fileReader.onerror = function() {
-          demo.innerHTML = fileReader.error;
-        }; 
+          var fx = [];
+          for (let i=0; i < outputs.Dt.length; i++) {
+            fx[i] = {"site":outputs.St,
+                     "latitude":outputs.Lt,
+                     "longitude":outputs.Ln,
+                     "elevation":outputs.El,
+                     "startTime":outputs.Ym+outputs.Dt[i],
+                     "cloudLayer":outputs.Cl[i],
+                     "windSpeed":outputs.Ws[i], //convert kts to mph
+                     "temperature":outputs.Ta,  //convert c to f
+                     "relativeHumidity":outputs.Rh[i],
+                     "pressure":outputs.Pa[i]};  //convert altimeter setting to station pressure in in Hg
       }
-    </script>
+      resolve(fx);
+    }; 
+  });
+  const myObj = await myPromise;
+  forecast(myObj);
+}
+function forecast(myObj) {
+  demo.innerHTML = myObj[0]["site"];
+}
+  </script>
   </body>
 </html>
