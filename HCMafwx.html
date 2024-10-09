@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html style="background-color:lightgray">
+
+<head>
+<link rel="shortcut icon" href="./images/WBGT/favicon.ico"></link>
+<title>HCM WBGT</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body {
+  margin: 0vw 2vw 2vw 2vw;
+  padding: 0vh 0vw;
+}
+
+#afwxDiv {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+#afwxSel {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  border-width: 1px;
+  font-family: monospace;
+  text-align: left;
+}
+
+#selDef {
+  text-align: center;
+}
+
+table {
+  text-align: center;
+  border-collapse: separate;
+  border-spacing: 0px;
+  padding: 5px;
+  width: 100%;
+}
+
+tr:first-of-type th {
+  border-top: 2px solid black;
+  border-bottom: 2px solid black;
+}
+
+tr:first-of-type td {
+  border-top: 2px solid black;
+  border-bottom: 2px solid black;
+}
+
+tr th:first-of-type {
+  border-right: 2px solid black;
+  border-left: 2px solid black;
+}
+
+tr td:first-of-type {
+  border-right: 2px solid black;
+  border-left: 2px solid black;
+}
+
+th {
+  text-align: center;
+  font-size: large;
+  color: lightgray;
+  text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+  border-right: 2px solid black;
+  border-bottom: 2px solid black;
+  padding: 5px;
+}
+
+td {
+  font-size:small;
+  text-align: center;
+  border-right: 2px solid black;
+  border-bottom: 2px solid black;
+  padding: 5px;
+}
+
+</style>
+</head>
+<body>
+
+<div style="overflow-x:auto">
+<table id="wbgtTable">
+  <tr style="background-color:gray">
+    <th colspan="4">
+      <div id="afwxDiv">
+        <input id="afwxSel" onchange="readAFWX(this)" type="file"></input>
+      </div>
+      <div>
+        <label id="lblWbgtDate"></label>
+      </div>
+    </th>
+  </tr>
+  <tr style="background-color:gray">
+    <th style="width:20%">Time</th>
+    <th style="width:20%">T<sub>db</sub> (&#8457;)</th>
+    <th style="width:20%">RH (%)</th>
+    <th style="width:20%">WBGT<sub>o</sub> (&#8457;)</th>
+  </tr>
+  <tr style="background-color:lightgray">
+    <td colspan="4">
+      <div>
+        <a id="wbgtSave" href="#">Download</a>
+      </div>
+    </td>
+  </tr>
+</table>
+</div>
+
+<script>
+var site = "",
+    lat = "",
+    lon = "",
+    elev = "";
+async function readAFWX(input) {
+  afwxDiv.remove();
+  lblWbgtDate.innerHTML = "&nbsp;";
+  var file = input.files[0];
+  let myPromise = new Promise(function(resolve) {
+    var outputs = new Object();
+    let fileReader = new FileReader(); 
+    fileReader.readAsText(file);
+    fileReader.onload = function() {
+      var strTblWx = fileReader.result,
+          arrTblWx = strTblWx.split("\n");
+      if (arrTblWx[arrTblWx.length - 1] == "") {
+        arrTblWx = arrTblWx.slice(0,-1);
+      }
+      arrTblWx = arrTblWx.filter(function(currentValue, index, arr) {
+                   const fld = /(Site|Lat|Lon|Elev|YYYYMM|Time|Temp|RH)/;
+                   return fld.test(currentValue);
+                   });
+      arrTblWx.forEach(function(currentValue, index, arr) {
+        const svf = /(Site|Lat|Lon|Elev|YYYYMM)/,
+              avf = /(Time|Temp|RH)/;
+        if (svf.test(currentValue)) {
+          arr[index] = currentValue.split(",")[1];
+        } else if (avf.test(currentValue)) {
+          arr[index] = currentValue.split(",").slice(1);
+        }
+      });
+      [site,lat,lon,elev,outputs.Ym,
+       outputs.Dt,outputs.Ta,outputs.Rh] = arrTblWx;
+      var fcs = [];
+      for (let i=0; i < outputs.Dt.length; i++) {
+        fcs[i] = {"startTime":outputs.Ym+outputs.Dt[i],
+                  "temperature":ctof(parseFloat(outputs.Ta[i])).toFixed(1),  //f
+                  "relativeHumidity":parseFloat(outputs.Rh[i]).toFixed(1)};  //%
+      }
+      resolve(fcs);
+    }; 
+  });
+  const myObj = await myPromise;
+  forecast(myObj);
+}
+function forecast(myObj) {
+  var tdy = myObj[0]["startTime"].slice(0,8),
+      fcs = myObj.filter(function(currentValue, index, arr) {
+            return currentValue["startTime"].slice(0,8) == tdy;
+            });
+  tdy = tdy.slice(0,4) + "-" + tdy.slice(4,6) + "-" + tdy.slice(6,8);
+  lblWbgtDate.innerHTML = site + " Forecast: " + tdy;
+  for (var i=0; i < fcs.length; i++) {
+    var hr = parseInt(fcs[i]["startTime"].slice(9,11)),
+        rTm = ("00" + hr).slice(-2) + "Z",
+        Ta = fcs[i]["temperature"], // degrees F
+        RH = fcs[i]["relativeHumidity"], //percent
+        wbgtS = HCM(Ta,RH),
+        table = wbgtTable,
+        r = table.rows.length,
+        row = table.insertRow(r-1),
+        cell = {},
+        rdngs = [rTm,Ta,RH,wbgtS.toFixed(1)],
+        bc,fc,dv;
+    row.style.backgroundColor = "lightgray";
+    for (var j = 0; j < rdngs.length; j++) {
+      if (j == 3) {
+        if (wbgtS<77.95) {
+          bc = "lightgray";
+          fc = "black";
+        } else if(wbgtS>=77.95 && wbgtS<81.95) {
+          bc = "white";
+          fc = "black";
+        } else if(wbgtS>=81.95 && wbgtS<84.95) {
+          bc = "green";
+          fc = "black";
+        } else if (wbgtS>=84.95 && wbgtS<87.95) {
+          bc = "yellow";
+          fc = "black";
+        } else if (wbgtS>=87.95 && wbgtS<89.95) {
+          bc = "red";
+          fc = "black";
+        } else if (wbgtS>=89.95) {
+          bc = "black";
+          fc = "white";
+        }
+      } else {
+        bc = "lightgray";
+        fc = "black";
+      }
+      cell = row.insertCell(j);
+      dv = document.createElement("DIV");
+      dv.style.margin = "0% 15%";
+      dv.style.backgroundColor = bc;
+      dv.style.color = fc;
+      dv.innerHTML = rdngs[j];
+      cell.appendChild(dv);
+    }
+  }
+  wbgtSave.onclick= function() {csvSave();};
+}
+function csvSave() {
+  var rdgDte = lblWbgtDate.innerHTML.slice(-10);
+  var ds = new Date(parseInt(rdgDte.slice(0,4)),parseInt(rdgDte.slice(5,7))-1,parseInt(rdgDte.slice(8,10))),
+      ySv = ("00" + ds.getFullYear()).slice(-4),
+      mSv = ("00" + (ds.getMonth() + 1)).slice(-2),
+      dSv = ("00" + ds.getDate()).slice(-2),
+      fileName = site + "_WHF_" + ySv + mSv + dSv + ".csv",
+      CSV = [],
+      rows = document.getElementById("wbgtTable").rows,
+      iTr;
+  CSV.push('"' + lblWbgtDate.innerHTML + '"');
+  CSV.push('"Time","Tdb (F)","RH (%)","WBGTo (F)"');
+  for (iTr = 2;iTr < rows.length-1;iTr++) {
+    var sTr = '',
+        cells = rows[iTr].cells,
+        iTd = 0;
+    for (iTd = 0;iTd < cells.length;iTd++) {
+      sTr += '"' + cells[iTd].firstElementChild.innerHTML + '"' + ',';
+    }
+    sTr = sTr.slice(0,sTr.length-1);
+    CSV.push(sTr);
+  }
+  CSV = CSV.join("\n");
+  var csvFile = new Blob([CSV],{type:'text/csv'}),
+      a = document.getElementById("wbgtSave");
+  a.href = URL.createObjectURL(csvFile);
+  a.download = fileName;
+}
+function HCM(Ta, RH) {
+  var temp = Math.round(parseFloat(Ta)*10)/10,
+      rhum = Math.round(parseFloat(RH)*10)/10,
+      hcm = [// 0      1      2      3      4      5      6      7       8       9      10      11      12      13      14      15      16
+             [81.3,  82.9,  84.8,  86.9,  89.2,  91.8,  94.6,  97.6,  100.8,  104.3,  108.0,  111.9,  116.0,  120.4,  125.0,  129.8,  137.5],  //0
+             [81.5,  82.9,  84.6,  86.4,  88.5,  90.8,  93.4,  96.1,   99.1,  102.2,  105.6,  109.2,  113.1,  117.1,  121.4,  125.9,  133.0],  //1
+             [81.6,  82.9,  84.3,  86.0,  87.9,  89.9,  92.2,  94.7,   97.4,  100.3,  103.4,  106.7,  110.3,  114.0,  117.9,  122.1,  128.7],  //2
+             [81.8,  82.8,  84.1,  85.6,  87.2,  89.1,  91.2,  93.4,   95.9,   98.5,  101.3,  104.4,  107.6,  111.0,  114.7,  118.5,  124.6],  //3
+             [81.9,  82.8,  83.9,  85.2,  86.7,  88.3,  90.2,  92.2,   94.4,   96.8,   99.4,  102.2,  105.1,  108.3,  111.6,  115.1,  120.7],  //4
+             [82.0,  82.7,  83.7,  84.8,  86.1,  87.6,  89.3,  91.1,   93.1,   95.2,   97.6,  100.1,  102.8,  105.6,  108.7,  111.9,  117.0],  //5
+             [82.0,  82.7,  83.5,  84.5,  85.6,  86.9,  88.4,  90.0,   91.8,   93.8,   95.9,   98.2,  100.6,  103.2,  106.0,  108.9,  113.6],  //6
+             [82.1,  82.6,  83.3,  84.2,  85.2,  86.3,  87.6,  89.1,   90.7,   92.4,   94.3,   96.4,  98.6,   101.0,  103.5,  106.1,  110.4],  //7
+             [82.1,  82.6,  83.2,  83.9,  84.8,  85.8,  86.9,  88.2,   89.7,   91.2,   92.9,   94.8,  96.7,   98.9,   101.1,  103.5,  107.4],  //8
+             [82.1,  82.5,  83.0,  83.6,  84.4,  85.3,  86.3,  87.5,   88.7,   90.1,   91.6,   93.3,  95.1,   97.0,    99.0,  101.1,  104.6],  //9
+             [82.1,  82.4,  82.9,  83.4,  84.1,  84.9,  85.8,  86.8,   87.9,   89.1,   90.5,   91.9,  93.5,   95.2,    97.0,   98.9,  102.0],  //10
+             [82.1,  82.3,  82.7,  83.2,  83.8,  84.5,  85.3,  86.2,   87.2,   88.3,   89.5,   90.8,  92.1,   93.6,    95.2,   96.9,   99.7],  //11
+             [82.0,  82.2,  82.6,  83.0,  83.6,  84.2,  84.9,  85.7,   86.5,   87.5,   88.6,   89.7,  90.9,   92.3,    93.7,   95.2,   97.6],  //12
+             [81.9,  82.2,  82.5,  82.9,  83.4,  83.9,  84.5,  85.2,   86.0,   86.9,   87.8,   88.8,  89.9,   91.0,    92.3,   93.6,   95.7],  //13
+             [81.8,  82.1,  82.4,  82.8,  83.2,  83.7,  84.3,  84.9,   85.6,   86.4,   87.2,   88.0,  89.0,   90.0,    91.0,   92.2,   94.0],  //14
+             [81.7,  81.9,  82.3,  82.7,  83.1,  83.6,  84.1,  84.7,   85.5,   86.0,   86.7,   87.4,  88.3,   89.1,    90.0,   91.0,   92.8],  //15
+             [81.5,  81.8,  82.2,  82.6,  83.0,  83.5,  84.0,  84.5,   85.1,   85.7,   86.3,   87.0,  87.7,   88.4,    89.2,   90.0,   91.9],  //16
+             [81.3,  81.7,  82.1,  82.5,  83.0,  83.5,  83.9,  84.4,   85.0,   85.5,   86.1,   86.7,  87.3,   87.9,    88.5,   89.2,   91.1],  //17
+             [81.1,  81.6,  82.1,  82.5,  83.0,  83.5,  84.0,  84.5,   85.0,   85.5,   86.0,   86.5,  87.0,   87.5,    88.1,   88.6,   90.5],  //18
+             [80.9,  81.5,  82.0,  82.5,  83.1,  83.6,  84.1,  84.6,   85.1,   85.5,   86.0,   86.5,  86.9,   87.4,    87.8,   88.2,   90.0]   //19
+            ];
+  if (rhum >=  95.1 && rhum < 100.1) idxR =  0;
+  if (rhum >=  90.1 && rhum <  95.1) idxR =  1;
+  if (rhum >=  80.1 && rhum <  90.1) idxR =  2;
+  if (rhum >=  80.1 && rhum <  85.1) idxR =  3;
+  if (rhum >=  70.1 && rhum <  80.1) idxR =  4;
+  if (rhum >=  70.1 && rhum <  75.1) idxR =  5;
+  if (rhum >=  60.1 && rhum <  70.1) idxR =  6;
+  if (rhum >=  60.1 && rhum <  65.1) idxR =  7;
+  if (rhum >=  50.1 && rhum <  60.1) idxR =  8;
+  if (rhum >=  50.1 && rhum <  55.1) idxR =  9;
+  if (rhum >=  40.1 && rhum <  50.1) idxR = 10;
+  if (rhum >=  40.1 && rhum <  45.1) idxR = 11;
+  if (rhum >=  30.1 && rhum <  40.1) idxR = 12;
+  if (rhum >=  30.1 && rhum <  35.1) idxR = 13;
+  if (rhum >=  20.1 && rhum <  30.1) idxR = 14;
+  if (rhum >=  20.1 && rhum <  25.1) idxR = 15;
+  if (rhum >=  10.1 && rhum <  20.1) idxR = 16;
+  if (rhum >=  10.1 && rhum <  15.1) idxR = 17;
+  if (rhum >=   5.1 && rhum <  10.1) idxR = 18;
+  if (rhum >=   0.0 && rhum <   5.1) idxR = 19;
+  if (temp >=  75.0 && temp <  77.0) idxT =  0;
+  if (temp >=  77.0 && temp <  79.0) idxT =  1;
+  if (temp >=  79.0 && temp <  81.0) idxT =  2;
+  if (temp >=  81.0 && temp <  83.0) idxT =  3;
+  if (temp >=  83.0 && temp <  85.0) idxT =  4;
+  if (temp >=  85.0 && temp <  87.0) idxT =  5;
+  if (temp >=  87.0 && temp <  89.0) idxT =  6;
+  if (temp >=  89.0 && temp <  91.0) idxT =  7;
+  if (temp >=  91.0 && temp <  93.0) idxT =  8;
+  if (temp >=  93.0 && temp <  95.0) idxT =  9;
+  if (temp >=  95.0 && temp <  97.0) idxT = 10;
+  if (temp >=  97.0 && temp <  99.0) idxT = 11;
+  if (temp >=  99.0 && temp < 101.0) idxT = 12;
+  if (temp >= 101.0 && temp < 103.0) idxT = 13;
+  if (temp >= 103.0 && temp < 105.0) idxT = 14;
+  if (temp >= 105.0 && temp < 107.0) idxT = 15;
+  if (temp >= 107) idxT = 16;
+  return(hcm[idxR][idxT]);
+}
+function ctof(Cels) {
+  var Fahr;
+  Fahr = 1.8 * Cels + 32;
+  return Fahr;
+}
+</script>
+
+</body>
+</html>

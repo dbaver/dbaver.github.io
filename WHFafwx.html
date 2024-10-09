@@ -128,8 +128,8 @@ async function readAFWX(input) {
     let fileReader = new FileReader(); 
     fileReader.readAsText(file);
     fileReader.onload = function() {
-      var strTblWx = fileReader.result;
-      var arrTblWx = strTblWx.split("\n");
+      var strTblWx = fileReader.result,
+          arrTblWx = strTblWx.split("\n");
       if (arrTblWx[arrTblWx.length - 1] == "") {
         arrTblWx = arrTblWx.slice(0,-1);
       }
@@ -168,7 +168,7 @@ function forecast(myObj) {
   var tdy = myObj[0]["startTime"].slice(0,8),
       fcs = myObj.filter(function(currentValue, index, arr) {
             return currentValue["startTime"].slice(0,8) == tdy;
-            }),
+            });
   tdy = tdy.slice(0,4) + "-" + tdy.slice(4,6) + "-" + tdy.slice(6,8);
   lblWbgtDate.innerHTML = site + " Forecast: " + tdy;
   for (var i=0; i < fcs.length; i++) {
@@ -198,6 +198,7 @@ function forecast(myObj) {
         Pa = fcs[i]["pressure"], //in Hg
         Cl = fcs[i]["cloudLayer"],
         wbgtS = wbgt_calculator(rDtTm, Ta, RH, Ws, Pa, Cl, Lt, Ln),
+        //wbgtS = wbgt_calculator(rDtTm, Ta, RH, "0.0", Pa, Cl, Lt, Ln), //use pre-defined windspeed in est_wind_speed function
         table = wbgtTable,
         r = table.rows.length,
         row = table.insertRow(r-1),
@@ -1485,7 +1486,7 @@ function est_wind_speed(speed, zspeed, stability_class, urban) {
     */
 
     // Define constants:
-    var MIN_SPEED = 1*1609.34/60/60, //min wind speed of 1 mph for worker movement
+    var MIN_SPEED = 2*1609.34/60/60, //min wind speed of 2 mph for worker movement
         REF_HEIGHT = 2.0;
     
     var urban_exp = [ 0.15, 0.15, 0.20, 0.25, 0.30, 0.30 ],
