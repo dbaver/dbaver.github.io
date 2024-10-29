@@ -78,6 +78,11 @@ td {
   padding: 5px;
 }
 
+footer {
+  width: 100%;
+  text-align: center;
+}
+
 </style>
 </head>
 <body>
@@ -216,6 +221,16 @@ td {
 </table>
 </div>
 
+<div style="overflow-x:auto">
+  <footer>
+    <a href="https://www.accuweather.com">
+      <image src="https://ang-apps.github.io/images/WBGT/AW_Black_Small_R.png" style="width:100px"></image>
+    </a>
+    <p style="font-size:small; margin:0px">This product includes software produced by UChicago Argonne, LLC<br>
+    under Contract No. DE-AC02-06CH11357 with the Department of Energy.</p>
+  </footer>
+</div>
+
 <script>
 var icao,
     sid,
@@ -240,10 +255,10 @@ function selectICAO() {
 }
 async function awapi(awCall) {
   if (awCall == stations) {
-    var url = "http://dataservice.accuweather.com/locations/v1/cities/geoposition/search?apikey=" +
+    var url = "https://dataservice.accuweather.com/locations/v1/cities/geoposition/search?apikey=" +
                tkn + "&q=" + lat + "%2C" + lon + "&details=true";
   } else if (awCall == forecast) {
-    var url = "http://dataservice.accuweather.com/forecasts/v1/hourly/12hour/" + lky + "?apikey=" +
+    var url = "https://dataservice.accuweather.com/forecasts/v1/hourly/12hour/" + lky + "?apikey=" +
                tkn + "&details=true";
   }
   let myPromise = new Promise(function(resolve) {
