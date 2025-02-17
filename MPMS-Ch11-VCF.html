@@ -89,7 +89,7 @@
         <td>kPa (gauge)</td>
       </tr>
       <tr>
-        <td colspan="3" style="background-color:gray; text-align:center">&nbsp;</td>
+        <td id="errDisp" colspan="3" style="background-color:gray; color:white; text-align:center">&nbsp;</td>
       </tr>
       <tr>
         <td>Base Density (&rho;<sub>60</sub>):</td>
@@ -205,19 +205,19 @@
     //        0 psig <= P0psi <= 1500 psig
     //        470.4 kg/m3 <= rho0 <= 1209.5 kg/m3
     if (t < -58.0 || t > 302.0) {
-      alert("observed temperature out of range");
+      errDisp.innerHTML = "observed temperature out of range";
       return;
     }
     if (P < 0.0 || P > 1500) {
       if (P < 0.0) {
         P = 0.0;
       } else {
-      alert("observed pressure out of range");
+      errDisp.innerHTML = "observed pressure out of range";
       return;
       }
     }
     if (rho < 470.4 || rho > 1209.5) {
-      alert("observed density out of range");
+      errDisp.innerHTML = "observed density out of range";
       return;
     }
 
@@ -260,7 +260,7 @@
       //        If this condition is true, break and go to Step 7
       var drho0m = rho - rho60m*CTPLm;
       if (Math.abs(drho0m) < err) {
-        //alert(drho0m);
+        //errDisp.innerHTML = drho0m + " < " + err;
         break;
       }
 
@@ -298,7 +298,6 @@
       //        counter is <= 15, continue the iterative procedure with Step 3. Otherwise,
       //        alert an error condition for non-convergence and break.
       if (m == 15) {
-        //alert("calculation did not converge: " + drho0m + " !< " + err);
         err = err*1000000/100000;
         rho60m = rho;
         if (rho60m < rho60min) {
@@ -318,7 +317,7 @@
     //        Alert an error condition and return. Otherwise, round this value of CTPL
     //        IAW 11.1.5.4.
     if (rho60m < rho60min || rho60m > rho60max) {
-      alert("calculation converged out of range of Standard");
+      errDisp.innerHTML = "calculation converged out of range of Standard";
       return;
     } else {
       CTPLm = Math.round(CTPLm/0.00001)*0.00001;
@@ -333,19 +332,19 @@
     //        0 psig <= P0psi <= 1500 psig
     //        470.4 kg/m3 <= rho0 <= 1209.5 kg/m3
     if (t < -58.0 || t > 302.0) {
-      alert("metric base temperature out of range");
+      errDisp.innerHTML = "metric base temperature out of range";
       return;
     }
     if (P < 0.0 || P > 1500) {
       if (P < 0.0) {
         P = 0.0;
       } else {
-      alert("metric base pressure out of range");
+      errDisp.innerHTML = "metric base pressure out of range";
       return;
       }
     }
     if (rho < 610.6 || rho > 1163.5) {
-      alert("60 F base density out of range");
+      errDisp.innerHTML = "60 F base density out of range";
       return;
     }
 
