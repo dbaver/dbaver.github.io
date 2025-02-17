@@ -299,7 +299,7 @@
       //        alert an error condition for non-convergence and break.
       if (m == 15) {
         //alert("calculation did not converge: " + drho0m + " !< " + err);
-        err *= 10;
+        err = err*1000000/100000;
         rho60m = rho;
         if (rho60m < rho60min) {
           rho60m = rho60min;
